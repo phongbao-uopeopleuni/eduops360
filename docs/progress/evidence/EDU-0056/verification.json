@@ -1,0 +1,46 @@
+{
+  "task_id": "EDU-0056",
+  "recorded_at": "2026-11-15T09:54:00+07:00",
+  "conclusion": "local_fix_passed__hosted_rerun_pending",
+  "fail_first": {
+    "run_id": 43669694836,
+    "url": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43669694836",
+    "commit": "446c0a871854fb8236361801f8a19a7fdd8df5c3",
+    "result": "foundation failure",
+    "first_failure": "6 root test subcases raised FileNotFoundError because ignored ROOT/.local did not exist in a clean checkout",
+    "secondary_failure": "always cleanup referenced infra/.env before the workflow created it"
+  },
+  "root_cause": "Tests incorrectly relied on an ignored workspace-local parent directory being present in source control",
+  "changes": [
+    "SyntheticStudentsTests.setUpClass creates ROOT/.local with parents=True and exist_ok=True",
+    "foundation workflow cleanup runs docker compose down only when infra/.env exists"
+  ],
+  "local_commands": [
+    {
+      "command": "python -m unittest tests.foundation.test_synthetic_students -v",
+      "exit_code": 0,
+      "result": "3 tests OK"
+    },
+    {
+      "command": "python -m unittest discover -s tests -p test_*.py",
+      "exit_code": 0,
+      "result": "24 tests OK"
+    },
+    {
+      "command": "ruff check and format --check tests/foundation/test_synthetic_students.py",
+      "exit_code": 0,
+      "result": "clean; 1 file formatted"
+    },
+    {
+      "command": "sync_task_board; check_text_encoding",
+      "exit_code": 0,
+      "result": "51 tasks; 470 text files; 0 encoding errors"
+    }
+  ],
+  "hosted_rerun": "pending",
+  "side_effects": [
+    "Root tests created and removed temporary synthetic CSV directories below ignored .local",
+    "TASK_BOARD regenerated",
+    "No package, lockfile, schema, database, credential or runtime service change"
+  ]
+}

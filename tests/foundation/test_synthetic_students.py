@@ -9,6 +9,11 @@ from scripts.validate_students_csv import validate
 
 
 class SyntheticStudentsTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # `.local` is intentionally gitignored, so clean CI checkouts must create it.
+        (ROOT / ".local").mkdir(parents=True, exist_ok=True)
+
     def test_2k_and_10k_fixtures_validate_and_preserve_codes(self):
         for count in (2000, 10000):
             with (
