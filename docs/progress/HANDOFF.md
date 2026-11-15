@@ -1,8 +1,16 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P04-T01 PUBLISHED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 03 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P05-T01 IMPLEMENTED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 04 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0057 and EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly requested Phase 04 but also required strict adherence to Markdown specifications. Therefore only the documentation-only P04-T01 publication may proceed while Phase 03 remains unaccepted. Do not present this as Phase 03 acceptance or automatically begin P04-T02..T09.
+Start at EDU-0058, EDU-0057 and EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly requested Phase 05 with complete Markdown evidence. Therefore only the pure-domain P05-T01 model may proceed while Phase 04 remains unaccepted. Do not present this as Phase 04 acceptance or automatically begin P05-T02..T09.
+
+## Conditional P05-T01 kickoff EDU-0058 — 2026-11-15
+
+- Scope is limited to immutable pure-domain values for schedule template school/year ownership, locale-neutral weekday, AM/PM session and per-slot start/end `TIME` values.
+- Fail-first collection exited `1` before the module existed. Final targeted tests pass `4`; backend host passes `97` with `20` isolated-PostgreSQL tests skipped; Ruff, OpenAPI, root governance and encoding gates pass.
+- No overlap/duration/legal-limit rule, holiday, make-up day, persistence, migration, endpoint, OpenAPI, UI, audit write or scheduling solver is part of this slice.
+- EDU-0058 is stacked on the open EDU-0057 branch so its review dependency is explicit. It must remain `in_review` until an independent Domain SME/QA reviewer acts.
+- Phase 04 and all earlier debt remain open; P05-T02..T09 stay gated.
 
 ## Conditional P04-T01 kickoff EDU-0057 — 2026-11-15
 

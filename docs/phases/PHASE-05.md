@@ -1,10 +1,17 @@
 # PHASE-05 — Calendar, time slots, holidays & temporal integrity
 
-**Status:** NOT_STARTED / SPEC_ONLY  
+**Status:** P05_T01_IMPLEMENTED_IN_REVIEW / PHASE_04_DEBT_OPEN
 **Implementers:** Backend Agent / UX Agent  
 **Independent reviewer:** Domain SME / QA  
 **Prerequisite:** PHASE-04 accepted; cross-phase tasks explicitly reviewed.  
 **Approval:** domain owner/tech lead; high-impact security, grades, legal or production changes require designated human sign-off.
+
+**Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
+the agent to proceed with Phase 05 while preserving complete Markdown evidence.
+Because Phase 04 is not accepted, the exception is limited to P05-T01's pure
+domain model for schedule-template identity and slot fields. It does not accept
+Phase 04 or authorize P05-T02..T09, migrations, APIs, UI, holiday policy, legal
+limits, real data or production use. Evidence: EDU-0058.
 
 ## A. Purpose and implementation boundaries
 Calendar, time slots, holidays & temporal integrity; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -16,7 +23,7 @@ Calendar, time slots, holidays & temporal integrity; implement only the scope ap
 - `Temporal tests`
 
 ## C. Detailed execution steps
-1. **P05-T01:** Model schedule templates per school, year and day-of-week with AM/PM and per-slot start/end.
+1. **P05-T01:** Model schedule templates per school, year and day-of-week with AM/PM and per-slot start/end. Conditional implementation in EDU-0058; independent review pending.
 2. **P05-T02:** Implement Add Slot, Insert Break, edit start/end, reorder, duplicate and weekday override.
 3. **P05-T03:** Validate non-null time, zero-duration rejection, actual interval overlap and applicable legal daily limits.
 4. **P05-T04:** Model one-day/multi-day/partial-day/recurring holidays and school/multi-class scopes.

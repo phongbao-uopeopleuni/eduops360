@@ -1,0 +1,1 @@
+"""School calendar domain tests."""
