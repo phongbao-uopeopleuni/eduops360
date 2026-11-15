@@ -20,8 +20,8 @@
 | SCH-03 | Phase 06 | unit + integration + E2E per phase | docs/phases/PHASE-06* / task evidence |
 | EXAM-01 | Phase 07 | unit + integration + E2E per phase | EDU-0060 P07-T01 official-source/applicability brief; policy model/rules/tests remain P07-T02..T09 |
 | EXAM-02 | Phase 07 | unit + integration + E2E per phase | EDU-0060 explicitly activates no policy and mutates no grade; approval/workflow/audit remain gated |
-| LEGAL-01 | Phase 08 | unit + integration + E2E per phase | docs/phases/PHASE-08* / task evidence |
-| LEGAL-02 | Phase 08 | unit + integration + E2E per phase | docs/phases/PHASE-08* / task evidence |
+| LEGAL-01 | Phase 08 | unit + integration + E2E per phase | EDU-0061 P08-T01 fail-closed official-source registry; collection/archive/versioning remain P08-T02..T05 |
+| LEGAL-02 | Phase 08 | unit + integration + E2E per phase | EDU-0061 enables no connector/search/RAG; retrieval/search/human confirmation remain P08-T02..T09 |
 | ANA-01 | Phase 09 | unit + integration + E2E per phase | docs/phases/PHASE-09* / task evidence |
 | ML-01 | Phase 10 | eval + security + nonfunctional tests | docs/phases/PHASE-10* / task evidence |
 | ML-02 | Phase 10 | eval + security + nonfunctional tests | docs/phases/PHASE-10* / task evidence |

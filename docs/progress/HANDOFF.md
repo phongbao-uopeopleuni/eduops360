@@ -1,8 +1,15 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P07-T01 RESEARCHED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 06 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P08-T01 REGISTRY PUBLISHED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 07 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0060, EDU-0059, EDU-0058, EDU-0057 and EDU-0054. The user explicitly requested Phases 07–09. Phase 07 is limited to a manual official-source brief because Phase 06 remains unaccepted. Do not present source identification as an approved assessment policy or begin P07-T02..T09 automatically.
+Start at EDU-0061 and EDU-0060, then the earlier stacked tasks. The user explicitly requested Phases 07–09. Phase 08 is limited to a fail-closed source registry because Phase 07 remains unaccepted. Do not enable connectors or begin P08-T02..T09 automatically.
+
+## Conditional P08-T01 kickoff EDU-0061 — 2026-11-15
+
+- Published `LEGAL_SOURCE_REGISTRY_V1.md` for Government legal metadata/signed files, Ministry corroboration and the national legal database.
+- Government pages require source attribution. No official public API/rate contract was confirmed; automated rate and concurrency are therefore zero for every source.
+- Automated access to `vbpl.vn` returned `403` during preflight and was not bypassed. It remains manual-only until an approved integration exists.
+- No connector, credential, job, archive, extraction, search, RAG or policy activation was implemented. EDU-0061 is stacked on PR #4 and remains `in_review`.
 
 ## Conditional P07-T01 kickoff EDU-0060 — 2026-11-15
 
