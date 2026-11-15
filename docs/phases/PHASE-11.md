@@ -1,10 +1,17 @@
 # PHASE-11 — Operations, security hardening, performance & release
 
-**Status:** NOT_STARTED / SPEC_ONLY  
+**Status:** P11_T01_CONTRACT_IN_REVIEW / PHASE_10_DEBT_OPEN
 **Implementers:** DevOps Agent / Security Agent / QA Lead  
 **Independent reviewer:** Human Product Owner + Operations Owner  
 **Prerequisite:** PHASE-10 accepted; cross-phase tasks explicitly reviewed.  
 **Approval:** domain owner/tech lead; high-impact security, grades, legal or production changes require designated human sign-off.
+
+**Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
+the agent to proceed to the next phase. Because Phase 10 is not accepted, this
+exception is limited to a review-only P11-T01 environment isolation, service IAM,
+secret custody and TLS contract. It authorizes no environment provisioning,
+credential access, migration, release or deployment. P11-T02..T09 remain gated.
+Evidence: EDU-0064.
 
 ## A. Purpose and implementation boundaries
 Operations, security hardening, performance & release; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -16,7 +23,7 @@ Operations, security hardening, performance & release; implement only the scope 
 - `Staging UAT`
 
 ## C. Detailed execution steps
-1. **P11-T01:** Build staging and prod isolated environment configs, secrets management, minimal service IAM and TLS.
+1. **P11-T01:** Build staging and prod isolated environment configs, secrets management, minimal service IAM and TLS. Review-only boundary contract published in EDU-0064; deployable configuration and human approval remain pending.
 2. **P11-T02:** Create CI gates: lint/types/tests, migration dry-run, API contract, security scans, UTF-8 and model eval when changed.
 3. **P11-T03:** Implement metrics/tracing/logs, redaction, alerts, job queue health and correlation IDs.
 4. **P11-T04:** Run RLS/IDOR tests, injection cases, privilege escalation, bulk export abuse and worker DoS simulations.

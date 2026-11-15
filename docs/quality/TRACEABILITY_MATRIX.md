@@ -5,7 +5,7 @@
 | GOV-01 | Phase 00 | decision baseline + ADR + independent review | docs/quality/PHASE_00_ACCEPTANCE.md / EDU-0005 |
 | SCALE-01 | Phase 01/11 | synthetic fixture generation + load tests; targets unverified | docs/phases/PHASE-01.md / PHASE-11.md |
 | APPROVAL-01 | Phase 02/05/07 | state transition tests + actor≠approver + audit | docs/phases/PHASE-02.md / PHASE-07.md |
-| ENV-01 | Phase 01/11 | compose health + staging isolation + secret scan | EDU-0040 / docs/phases/PHASE-01.md / PHASE-11.md |
+| ENV-01 | Phase 01/11 | compose health + staging isolation + secret scan | EDU-0040 local foundation; EDU-0064 P11-T01 review-only isolation/IAM/secret/TLS contract; deployable staging remains gated |
 | AUTH-01 | Phase 02 | unit + PostgreSQL integration + browser E2E | EDU-0025/0027/0028/0030/0038/0040 |
 | AUTH-02 | Phase 02 | default-deny, scope/IDOR/escalation tests + independent review | EDU-0012/0026/0028/0032/0034 |
 | YEAR-01 | Phase 03 | unit + integration + E2E per phase | EDU-0054 pure-domain unit slice; DB/API/E2E remain later Phase 03 tasks |
@@ -25,8 +25,8 @@
 | ANA-01 | Phase 09 | unit + integration + E2E per phase | EDU-0062 P09-T01 chart-input role allowlist and direct PII/identifier rejection; queries/charts/privacy/export remain P09-T02..T09 |
 | ML-01 | Phase 10 | eval + security + nonfunctional tests | EDU-0063 P10-T01 prediction-time/entity/label contract; feature snapshots, splits, baseline/evals/model card remain P10-T02..T07 |
 | ML-02 | Phase 10 | eval + security + nonfunctional tests | EDU-0063 limits use to private human review with manual fallback; no model, ability label or autonomous action exists |
-| SEC-01 | Phase 02/11 | transaction/audit privilege tests + negative API/E2E | EDU-0024/0028/0030/0034/0036/0037/0038; Phase 11 evidence later |
-| OPS-01 | Phase 11 | eval + security + nonfunctional tests | docs/phases/PHASE-11* / task evidence |
+| SEC-01 | Phase 02/11 | transaction/audit privilege tests + negative API/E2E | EDU-0024/0028/0030/0034/0036/0037/0038; EDU-0064 defines Phase 11 least-privilege/fail-closed review boundary; deployment tests remain later |
+| OPS-01 | Phase 11 | eval + security + nonfunctional tests | EDU-0064 P11-T01 environment contract; CI, observability, load, restore, UAT, rollback and release evidence remain P11-T02..T09 |
 | UI-01 | Phase 01 | unit + integration + E2E per phase | EDU-0040 / docs/phases/PHASE-01* / task evidence |
 
 Detailed feature tests for later phases are added as implementation proceeds.

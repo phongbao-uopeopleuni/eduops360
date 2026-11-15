@@ -1,8 +1,15 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P10-T01 TARGET CONTRACT / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 09 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P11-T01 ENVIRONMENT CONTRACT / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 10 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0063, then EDU-0062..0060 and earlier stacked tasks. The user explicitly requested the next phase. Phase 10 is limited to a review-only prediction target because Phase 09 remains unaccepted. Do not create features, access data, train a model or begin P10-T02..T09 automatically.
+Start at EDU-0064, then EDU-0063..0060 and earlier stacked tasks. The user explicitly requested the next phase. Phase 11 is limited to a review-only environment isolation contract because Phase 10 remains unaccepted. Do not provision staging/production, access credentials, run migrations, deploy or begin P11-T02..T09 automatically.
+
+## Conditional P11-T01 kickoff EDU-0064 — 2026-11-15
+
+- Published local/synthetic-staging/production separation rules and prohibited all cross-environment data, credentials, keys, stores and service identities.
+- Defined minimum roles for edge, API runtime, migrator, audit/domain workers, backup/restore and CI deployment, with fail-closed secrets/TLS/migration behavior.
+- Recorded human gates for ownership, hosts/DNS, secret manager, lawful basis, retention, RPO/RTO, incident response, backup/restore, monitoring, UAT and release.
+- No `.env` value, credential, certificate, cloud account, domain, infrastructure config, container, migration, release or deployment was created. EDU-0064 is stacked on PR #7 and remains `in_review`.
 
 ## Conditional P10-T01 kickoff EDU-0063 — 2026-11-15
 
