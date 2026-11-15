@@ -1,8 +1,15 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P03-T01 IMPLEMENTED / IN_REVIEW UNDER USER DEBT EXCEPTION; PHASE 02 STILL NOT ACCEPTED`.
+**Status:** `P04-T01 PUBLISHED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 03 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly allowed the narrow P03-T01 kickoff while carrying Phase 02 debt. Phase 01/02 remain unaccepted; do not present this exception as acceptance or automatically begin P03-T02..T09.
+Start at EDU-0057 and EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly requested Phase 04 but also required strict adherence to Markdown specifications. Therefore only the documentation-only P04-T01 publication may proceed while Phase 03 remains unaccepted. Do not present this as Phase 03 acceptance or automatically begin P04-T02..T09.
+
+## Conditional P04-T01 kickoff EDU-0057 — 2026-11-15
+
+- Published the existing synthetic `students_import_template.csv` as CSV v1 without changing its bytes. The Vietnamese guide fixes the eight ASCII headers, field rules and SHA-256 `7cabce06705ed7935aad934ae5a2883975fe9900352465b3354da15f6f33d235`.
+- This is documentation/template scope only. No schema, migration, database, endpoint, contract, UI, import, export or production behavior was added.
+- Phase 03 is not accepted. P04-T02..T09 remain gated, including strict upload processing, NFC staging, DB/reference checks, preview/confirm, idempotency, safe export and rollback tests.
+- EDU-0057 is implementer-authored and may move only to `in_review`; it needs an independent reviewer.
 
 ## Git bootstrap EDU-0055 — 2026-11-15
 

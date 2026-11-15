@@ -11,8 +11,8 @@
 | YEAR-01 | Phase 03 | unit + integration + E2E per phase | EDU-0054 pure-domain unit slice; DB/API/E2E remain later Phase 03 tasks |
 | YEAR-02 | Phase 03 | unit + integration + E2E per phase | EDU-0054 date/timezone/revision unit slice; DB/API/E2E remain later Phase 03 tasks |
 | SIS-01 | Phase 03 | unit + integration + E2E per phase | docs/phases/PHASE-03* / task evidence |
-| IMPORT-01 | Phase 04 | unit + integration + E2E per phase | docs/phases/PHASE-04* / task evidence |
-| IMPORT-02 | Phase 04 | unit + integration + E2E per phase | docs/phases/PHASE-04* / task evidence |
+| IMPORT-01 | Phase 04 | unit + integration + E2E per phase | EDU-0057 publishes P04-T01 CSV v1 guide/template evidence; staging/API/DB/E2E remain gated |
+| IMPORT-02 | Phase 04 | unit + integration + E2E per phase | EDU-0057 covers only template encoding/header documentation; import/export security tests remain P04-T02..T09 |
 | CAL-01 | Phase 05 | unit + integration + E2E per phase | docs/phases/PHASE-05* / task evidence |
 | CAL-02 | Phase 05 | unit + integration + E2E per phase | docs/phases/PHASE-05* / task evidence |
 | SCH-01 | Phase 06 | unit + integration + E2E per phase | docs/phases/PHASE-06* / task evidence |

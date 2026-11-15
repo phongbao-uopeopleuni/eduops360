@@ -1,10 +1,17 @@
 # PHASE-04 — Student bulk import/export & Unicode
 
-**Status:** NOT_STARTED / SPEC_ONLY  
+**Status:** P04_T01_PUBLISHED_IN_REVIEW / PHASE_03_DEBT_OPEN
 **Implementers:** Data Engineer / Backend Agent  
 **Independent reviewer:** QA Agent / Security Agent  
 **Prerequisite:** PHASE-03 accepted; cross-phase tasks explicitly reviewed.  
 **Approval:** domain owner/tech lead; high-impact security, grades, legal or production changes require designated human sign-off.
+
+**Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
+the agent to proceed with Phase 04 while following the Markdown specifications.
+Because Phase 03 is not accepted, this exception is limited to P04-T01's
+documentation-only publication of the already-existing synthetic CSV template
+as v1. It does not accept Phase 03 or authorize P04-T02..T09, database/API/UI
+work, real student data or production use. Evidence: EDU-0057.
 
 ## A. Purpose and implementation boundaries
 Student bulk import/export & Unicode; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -16,7 +23,7 @@ Student bulk import/export & Unicode; implement only the scope approved on task 
 - `Error download`
 
 ## C. Detailed execution steps
-1. **P04-T01:** Publish versioned CSV template with stable ASCII headers and Vietnamese field guide.
+1. **P04-T01:** Publish versioned CSV template with stable ASCII headers and Vietnamese field guide. Published in EDU-0057; independent review pending.
 2. **P04-T02:** Accept UTF-8 and BOM with strict decoding; validate length, delimiter, header schema and file type/size.
 3. **P04-T03:** Normalize NFC on appropriate fields; keep immutable student code as TEXT, date ISO and leading zeros.
 4. **P04-T04:** Validate referential class/year existence, duplicate within file, duplicate already in DB and scope permission.
