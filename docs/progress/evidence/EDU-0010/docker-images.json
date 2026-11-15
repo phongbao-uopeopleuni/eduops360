@@ -1,0 +1,21 @@
+{
+  "recorded_at": "2026-11-12T13:04:02.598459+07:00",
+  "images": [
+    {
+      "name": "postgres:18",
+      "exit_code": 0,
+      "id": "\"sha256:e3d24f6906d0760bf4da0dae872415391ededefad23fd471c47dc53b0ddf3c42\""
+    },
+    {
+      "name": "eduops360-local-backend:latest",
+      "exit_code": 0,
+      "id": "\"sha256:00027fe500568907e6ce9358f50fc6f8fd0b18bc9c2398e146eeea77c7147f14\""
+    },
+    {
+      "name": "eduops360-local-frontend:latest",
+      "exit_code": 0,
+      "id": "\"sha256:0baa4c3683fb91430af7318633395f8ecb0a399962c533e48d5f2fa8d14cb0ab\""
+    }
+  ],
+  "retained_volume": "eduops360-local_postgres-data"
+}

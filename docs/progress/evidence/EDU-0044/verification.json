@@ -1,0 +1,61 @@
+{
+  "task_id": "EDU-0044",
+  "recorded_at": "2026-11-14T17:46:00+07:00 (before the final journal edit; final row in the journal)",
+  "implementer": "Claude acting Frontend implementer; not a reviewer or approver",
+  "request": "User asked to update the UI using 'Đặc tả kỹ thuật UI — Minimalist SaaS (Soft UI, Product-led)' (copied verbatim to docs/requirements/UI_STYLE_MINIMALIST_SAAS_2026-11-14.md)",
+  "user_decisions_in_session": [
+    "Fonts: self-host via npm (chosen over the Google Fonts CDN in the spec and over keeping Source Sans 3)",
+    "Heading font: Be Vietnam Pro instead of Poppins, because Poppins has no Vietnamese glyphs (its latin-ext unicode-range skips U+1EA0-1EF1) and Google Fonts offers no vietnamese subset for it"
+  ],
+  "implementer_choices": [
+    "Kept light/dark: PHASE-00 technology direction and the Phase 01 gate require Light/Dark; the spec defines light only, so dark tokens were derived and contrast-checked",
+    "Adapted the landing-page patterns to an admin app: sticky top navbar replaces the sidebar; Overview uses hero + mockup (real scope facts) + roadmap tiles + zig-zag; no 'Đặt lịch demo' CTA; roadmap tiles say 'chưa triển khai' and use a clock badge, not a check mark",
+    "One prominent primary button per screen: the 'Tài khoản vừa mời' panel actions became secondary (class change only)",
+    "Only weights 400/600/700 (spec rule); labels use 600; spec's 500 captions/labels mapped to 600 or 400",
+    "Scroll-reveal animation omitted (optional in the spec; avoids hiding content); motion limited to hover/focus transitions with prefers-reduced-motion respected",
+    "Per-weight fontsource CSS (600.css/700.css/400.css) instead of per-subset files, because per-subset files declare no unicode-range and forced every subset to download"
+  ],
+  "contrast_check": "Computed WCAG ratios for 16 token pairs per theme before implementation: all >= 4.5 (light: muted 5.78, accent 5.75, white-on-accent 5.75, positive 5.36; dark: muted 7.63, accent 6.93, on-accent 7.83); existing E2E contrast test passes",
+  "failing_first": {
+    "test": "frontend/tests/e2e/foundation.spec.ts › design system fonts load with Vietnamese glyphs and pages fit 360–1280 px",
+    "before": "FAILED 2026-11-14T17:31:35+07:00 — no Be Vietnam Pro/Inter face loaded (logs/e2e-design-system-before.txt)",
+    "after": "PASSED in the full suite 2026-11-14T17:43:45+07:00",
+    "note": "two intermediate failures were test/config issues fixed during implementation: browsers lowercase unicode-range (test now case-insensitive) and per-subset fontsource CSS lacked unicode-range (switched to per-weight CSS)"
+  },
+  "measurements": {
+    "before": "layout-before.json: Source Sans 3 400/600; H1 38px at 1280, 28px at 390; no horizontal overflow",
+    "after": "layout-after.json: Be Vietnam Pro 600/700 + Inter 400/600; H1 60px at 1280, 36px at 360/390; one H1 per page; no horizontal overflow at 360/390/768/1280 on /, /system, /users, /missing"
+  },
+  "commands": [
+    {"id": "npm-install-fonts", "cwd": "frontend", "started_at": "2026-11-14T17:27:43+07:00", "command": "npm install --save-exact @fontsource/poppins @fontsource/inter; npm uninstall @fontsource/source-sans-3", "exit_code": 0, "result": "added 2 packages; found 0 vulnerabilities"},
+    {"id": "npm-install-be-vietnam-pro", "cwd": "frontend", "started_at": "2026-11-14T17:28:45+07:00", "command": "npm install --save-exact @fontsource/be-vietnam-pro; npm uninstall @fontsource/poppins", "exit_code": 0, "result": "found 0 vulnerabilities; final deps @fontsource/be-vietnam-pro 5.3.0, @fontsource/inter 5.3.0"},
+    {"id": "screenshots-before", "cwd": ".", "started_at": "2026-11-14T17:25:57+07:00", "command": "node .local/edu-0044/shoot.mjs .local/edu-0044/before (re-run with corrected font metric)", "exit_code": 0, "result": "14 screenshots + layout-before.json"},
+    {"id": "e2e-design-before", "cwd": "frontend", "started_at": "2026-11-14T17:31:35+07:00", "command": "PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome npx playwright test -g \"design system fonts\"", "exit_code": 1, "result": "1 failed (fonts not loaded)"},
+    {"id": "fe-typecheck", "cwd": "frontend", "started_at": "2026-11-14T17:43:31+07:00", "command": "npm run --silent typecheck", "exit_code": 0, "result": "no output"},
+    {"id": "fe-lint", "cwd": "frontend", "started_at": "2026-11-14T17:43:33+07:00", "command": "npm run --silent lint", "exit_code": 0, "result": "no output"},
+    {"id": "fe-format", "cwd": "frontend", "started_at": "2026-11-14T17:43:36+07:00", "command": "npm run --silent format:check", "exit_code": 0, "result": "All matched files use Prettier code style!"},
+    {"id": "fe-api-check", "cwd": "frontend", "started_at": "2026-11-14T17:43:38+07:00", "command": "npm run --silent api:check", "exit_code": 0, "result": "TypeScript client types match OpenAPI"},
+    {"id": "fe-unit", "cwd": "frontend", "started_at": "2026-11-14T17:43:40+07:00", "command": "npm test", "exit_code": 0, "result": "Tests 22 passed"},
+    {"id": "fe-build", "cwd": "frontend", "started_at": "2026-11-14T17:43:42+07:00", "command": "npm run build", "exit_code": 0, "result": "built; CSS 21.28 kB (gzip 4.89 kB); 20 woff2 subset files emitted, downloaded on demand by unicode-range"},
+    {"id": "fe-e2e", "cwd": "frontend", "started_at": "2026-11-14T17:43:45+07:00", "command": "PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome PLAYWRIGHT_REAL_AUTH_EMAIL/PASSWORD=<synthetic dev admin> npx playwright test", "exit_code": 0, "result": "9 passed (8 existing incl. real-auth + new design-system test)"},
+    {"id": "screenshots-after", "cwd": ".", "started_at": "2026-11-14T17:42:30+07:00 (approx; last capture after the footnote fix)", "command": "node .local/edu-0044/shoot.mjs .local/edu-0044/after", "exit_code": 0, "result": "14 screenshots + layout-after.json"},
+    {"id": "governance", "cwd": ".", "started_at": "2026-11-14T17:44:30+07:00 (approx)", "command": "python scripts/validate_blueprint.py; check_structure.py; check_text_encoding.py", "exit_code": 0, "result": "PASS; OK; 405 files, 0 errors (before evidence/spec copy; final count in journal)"}
+  ],
+  "environment": {
+    "servers": "user's own start-dev.ps1 windows: API 127.0.0.1:58080 (pid 58884) and Vite 127.0.0.1:5173 (pid 41080) against Compose project eduops360-dev (port 55440); reused, not restarted",
+    "docker": "Docker Desktop was already running when the task started (started by the user's start-dev.ps1)",
+    "browser": "Playwright channel chrome"
+  },
+  "changed_files": {
+    "frontend": ["frontend/src/main.tsx", "frontend/src/app/App.tsx", "frontend/src/app/styles.css", "frontend/src/features/user-management/UserManagementPage.tsx", "frontend/tests/e2e/foundation.spec.ts", "frontend/package.json", "frontend/package-lock.json"],
+    "docs": ["docs/requirements/UI_STYLE_MINIMALIST_SAAS_2026-11-14.md (verbatim copy of the user's spec)", "docs/progress/tasks/EDU-0044.md", "docs/progress/evidence/EDU-0044/", "docs/progress/HANDOFF.md", "docs/progress/TASK_BOARD.md"],
+    "not_changed": "backend, contracts/openapi.json, generated TS client, HealthPanel.tsx, ThemeProvider, index.html"
+  },
+  "side_effects": [
+    "npm registry downloads for @fontsource/poppins (later removed), @fontsource/inter and @fontsource/be-vietnam-pro, as approved by the user; node_modules updated",
+    "frontend/dist rebuilt; frontend/test-results overwritten by Playwright; .local/playwright-tmp used",
+    ".local/edu-0044/ (ignored): baseline snapshot, screenshot script, npm logs, raw screenshots",
+    "the running Vite dev server hot-reloaded each edit; for about 3 minutes (17:28–17:31) the open page could not load fonts because Source Sans 3 had been uninstalled before main.tsx was updated"
+  ],
+  "git": {"repository": false, "commit": "not_done", "push": "not_done", "pull_request": "none", "merge": "not_done"}
+}

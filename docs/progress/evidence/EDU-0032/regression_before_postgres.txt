@@ -1,0 +1,167 @@
+FFFFFF.                                                                  [100%]
+================================== FAILURES ===================================
+__ test_f01_reset_and_status_change_require_actor_to_cover_target_privileges __
+
+    def test_f01_reset_and_status_change_require_actor_to_cover_target_privileges() -> None:
+        full = _role("full", FULL_USER_ADMIN)
+        reset_only = _role("reset_only", ["user:password_reset"])
+        suspend_only = _role("suspend_only", ["user:suspend"])
+        activate_only = _role("activate_only", ["user:activate"])
+        superior_id, _ = _user("f01-superior")
+        _grant(superior_id, full)
+        suspended_superior_id, _ = _user("f01-suspended-superior", status="suspended")
+        _grant(suspended_superior_id, full)
+        peer_admin_id, peer_admin_email = _user("f01-peer-admin")
+        _grant(peer_admin_id, full)
+        resetter_id, resetter_email = _user("f01-reset-only")
+        _grant(resetter_id, reset_only)
+        suspender_id, suspender_email = _user("f01-suspend-only")
+        _grant(suspender_id, suspend_only)
+        activator_id, activator_email = _user("f01-activate-only")
+        _grant(activator_id, activate_only)
+        plain_id, plain_email = _user("f01-plain")
+    
+        app = _app()
+        with _client(app) as resetter:
+            assert _login(resetter, resetter_email).status_code == 200
+            denied = resetter.post(
+                f"/api/v1/admin/users/{superior_id}/password-reset",
+                json={},
+                headers=_csrf(resetter),
+            )
+>           assert denied.status_code == 403
+E           assert 201 == 403
+E            +  where 201 = <Response [201 Created]>.status_code
+
+tests\integration\test_auth_remediation.py:176: AssertionError
+______ test_f02_long_user_agent_still_locks_account_and_audits_failures _______
+
+    def test_f02_long_user_agent_still_locks_account_and_audits_failures() -> None:
+        victim_id, victim_email = _user("f02-victim")
+        survivor_id, survivor_email = _user("f02-survivor")
+        app = _app()
+        with _client(app) as client:
+            statuses = [
+                _login(client, victim_email, "wrong-password", user_agent=LONG_USER_AGENT).status_code
+                for _ in range(5)
+            ]
+>           assert statuses == [401] * 5
+E           assert [500, 500, 500, 500, 500] == [401, 401, 401, 401, 401]
+E             
+E             At index 0 diff: 500 != 401
+E             Use -v to get more diff
+
+tests\integration\test_auth_remediation.py:252: AssertionError
+__________ test_f03_pending_account_status_cannot_bypass_invitation ___________
+
+    def test_f03_pending_account_status_cannot_bypass_invitation() -> None:
+        full = _role("f03_full", FULL_USER_ADMIN)
+        admin_id, admin_email = _user("f03-admin")
+        _grant(admin_id, full)
+        invitee_email = f"f03-invitee-{uuid4().hex[:12]}@example.com"
+        invitee_password = "Synthetic-Invitee-Pass-1!"
+        app = _app()
+        with _client(app) as admin:
+            assert _login(admin, admin_email).status_code == 200
+            invitation = admin.post(
+                "/api/v1/admin/users/invitations",
+                json={"email": invitee_email, "display_name": "Synthetic Invitee"},
+                headers=_csrf(admin),
+            )
+            assert invitation.status_code == 201
+            target_id = invitation.json()["user"]["id"]
+            invitation_token = invitation.json()["one_time_token"]
+    
+            for requested in ("active", "suspended"):
+                denied = admin.patch(
+                    f"/api/v1/admin/users/{target_id}/status",
+                    json={"status": requested, "reason": "synthetic regression"},
+                    headers=_csrf(admin),
+                )
+>               assert denied.status_code == 409
+E               assert 200 == 409
+E                +  where 200 = <Response [200 OK]>.status_code
+
+tests\integration\test_auth_remediation.py:301: AssertionError
+__________ test_f04_concurrent_reset_token_consumption_is_single_use __________
+
+    def test_f04_concurrent_reset_token_consumption_is_single_use() -> None:
+        user_id, _ = _user("f04-target")
+        raw_token = generate_session_token()
+        with _migrator() as connection:
+            connection.execute(
+                "INSERT INTO account_tokens "
+                "(id, user_id, purpose, token_hash, expires_at, created_by) "
+                "VALUES (%s, %s, 'password_reset', %s, now() + interval '1 hour', %s)",
+                (uuid4(), user_id, hash_session_token(raw_token), user_id),
+            )
+        outcome = asyncio.run(_race_reset_token(raw_token), loop_factory=create_event_loop)
+        assert outcome["second_blocked_until_first_commits"] is True
+>       assert outcome["second_result"] == "ACCOUNT_TOKEN_INVALID"
+E       AssertionError: assert 'accepted' == 'ACCOUNT_TOKEN_INVALID'
+E         
+E         - ACCOUNT_TOKEN_INVALID
+E         + accepted
+
+tests\integration\test_auth_remediation.py:392: AssertionError
+__ test_f05_failed_login_lockout_keeps_existing_session_but_blocks_new_login __
+
+    def test_f05_failed_login_lockout_keeps_existing_session_but_blocks_new_login() -> None:
+        victim_id, victim_email = _user("f05-victim")
+        app = _app()
+        with _client(app) as victim, _client(app) as attacker:
+            assert _login(victim, victim_email).status_code == 200
+            assert victim.get("/api/v1/auth/me").status_code == 200
+            assert [
+                _login(attacker, victim_email, "wrong-password").status_code for _ in range(5)
+            ] == [401] * 5
+            assert _user_row(victim_id)[0] == "locked"
+    
+            still_signed_in = victim.get("/api/v1/auth/me")
+>           assert still_signed_in.status_code == 200
+E           assert 401 == 200
+E            +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests\integration\test_auth_remediation.py:407: AssertionError
+__ test_f06_delegation_denies_self_grant_caps_validity_and_audits_full_scope __
+
+    def test_f06_delegation_denies_self_grant_caps_validity_and_audits_full_scope() -> None:
+        school_id, year_id = uuid4(), uuid4()
+        scoped = _role("f06_scoped", ["user:read", "user:grant_role", "user:revoke_role"])
+        delegator_id, delegator_email = _user("f06-delegator")
+        original_grant = _grant(delegator_id, scoped, school=school_id, year=year_id)
+        with _migrator() as connection:
+            delegator_expiry = connection.execute(
+                "UPDATE user_roles SET valid_until = now() + interval '10 minutes' "
+                "WHERE id = %s RETURNING valid_until",
+                (original_grant,),
+            ).fetchone()[0]
+        first_id, _ = _user("f06-first")
+        second_id, _ = _user("f06-second")
+        later_id, _ = _user("f06-later")
+        base = {
+            "role_id": str(scoped),
+            "school_id": str(school_id),
+            "academic_year_id": str(year_id),
+        }
+        app = _app()
+        with _client(app) as delegator:
+            assert _login(delegator, delegator_email).status_code == 200
+            self_grant = delegator.post(
+                f"/api/v1/admin/users/{delegator_id}/roles",
+                json={**base, "grade_id": 1},
+                headers=_csrf(delegator),
+            )
+>           assert self_grant.status_code == 403
+E           assert 201 == 403
+E            +  where 201 = <Response [201 Created]>.status_code
+
+tests\integration\test_auth_remediation.py:442: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_auth_remediation.py::test_f01_reset_and_status_change_require_actor_to_cover_target_privileges
+FAILED tests/integration/test_auth_remediation.py::test_f02_long_user_agent_still_locks_account_and_audits_failures
+FAILED tests/integration/test_auth_remediation.py::test_f03_pending_account_status_cannot_bypass_invitation
+FAILED tests/integration/test_auth_remediation.py::test_f04_concurrent_reset_token_consumption_is_single_use
+FAILED tests/integration/test_auth_remediation.py::test_f05_failed_login_lockout_keeps_existing_session_but_blocks_new_login
+FAILED tests/integration/test_auth_remediation.py::test_f06_delegation_denies_self_grant_caps_validity_and_audits_full_scope
+6 failed, 1 passed in 6.59s

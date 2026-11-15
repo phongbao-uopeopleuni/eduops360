@@ -1,0 +1,50 @@
+{
+  "task_id": "EDU-0036",
+  "recorded_at": "2026-11-14T15:02:18+07:00",
+  "findings": ["A0102-F09", "A0102-F11", "A0102-F22"],
+  "failing_first": [
+    {
+      "scope": "blocked-key eviction and wildcard CORS",
+      "exit_code": 1,
+      "result": "2 failed, 3 passed"
+    },
+    {
+      "scope": "per-IP spray limit and session idle expiry on isolated PostgreSQL",
+      "exit_code": 1,
+      "result": "2 failed"
+    }
+  ],
+  "verification": [
+    {
+      "command": "focused host regressions",
+      "exit_code": 0,
+      "result": "5 passed"
+    },
+    {
+      "command": "focused PostgreSQL regressions",
+      "exit_code": 0,
+      "result": "2 passed"
+    },
+    {
+      "command": "backend/.venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider",
+      "exit_code": 0,
+      "result": "76 passed, 16 skipped"
+    },
+    {
+      "command": "ruff check app tests; scripts/export_openapi.py --check",
+      "exit_code": 0,
+      "result": "clean; contract matches FastAPI"
+    }
+  ],
+  "temporary_policy": {
+    "login_ip_rate_limit_attempts": 50,
+    "login_rate_limit_window_seconds": 60,
+    "session_idle_timeout_minutes": 30,
+    "approval": "NOT APPROVED — pending Security Owner"
+  },
+  "limitations": [
+    "Both rate-limit windows are per process; a shared multi-worker limiter is deferred until deployment topology is approved.",
+    "When bounded storage contains only blocked keys, a new identity is not stored; existing blocked keys remain protected and the per-IP limiter plus durable account lockout remain controls."
+  ]
+}
+

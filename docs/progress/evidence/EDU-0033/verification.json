@@ -1,0 +1,32 @@
+{
+  "task_id": "EDU-0033",
+  "recorded_at": "2026-11-14T12:31:00+07:00",
+  "actor": "Claude acting handoff planner; not an approver",
+  "request": "User asked for a prompt that brings Codex up to date and closes out Phase 01 and Phase 02 tasks",
+  "outputs": {
+    "prompt": "docs/progress/NEXT_AGENT_PROMPT.md (rewritten, CRLF kept, 251 lines)",
+    "previous_prompt_backup": "docs/progress/evidence/EDU-0033/NEXT_AGENT_PROMPT.previous.md (byte-identical copy, sha256 1e1ee14b8b9fda297dc0bbd6211e43c32cc01b60d01ff08b6685d593d398b6bc)",
+    "handoff": "docs/progress/HANDOFF.md (one bullet appended to the EDU-0032 section)"
+  },
+  "inputs_checked": [
+    "Task owners/status of all journals: Codex implemented EDU-0007..0014 and EDU-0021..0030; Claude EDU-0031/0032; Hermes EDU-0015 (co-implementer EDU-0023)",
+    "docs/phases/PHASE-01.md gate E and docs/quality/PHASE_01_AUDIT_2026-11-12.md: hosted CI and human acceptance pending (OD-001/OD-003)",
+    "scripts/check_structure.py only requires the prompt file to exist; no validator parses its content",
+    "scripts/export_openapi.py writes contracts/openapi.json without --check"
+  ],
+  "commands": [
+    {"id": "backup-prompt", "cwd": ".", "started_at": "2026-11-14T12:26+07:00 (not separately timestamped)", "command": "cp -p docs/progress/NEXT_AGENT_PROMPT.md docs/progress/evidence/EDU-0033/NEXT_AGENT_PROMPT.previous.md; cmp", "exit_code": 0, "result": "backup identical"},
+    {"id": "governance-blueprint", "cwd": ".", "started_at": "2026-11-14T12:30:53+07:00", "command": "python -B scripts/validate_blueprint.py", "exit_code": 0, "result": "PASS: all required blueprint checks"},
+    {"id": "governance-structure", "cwd": ".", "started_at": "2026-11-14T12:30:53+07:00", "command": "python -B scripts/check_structure.py", "exit_code": 0, "result": "Unified AI Agent SP governance structure: OK"},
+    {"id": "governance-encoding", "cwd": ".", "started_at": "2026-11-14T12:30:53+07:00", "command": "python -B scripts/check_text_encoding.py", "exit_code": 0, "result": "Checked text files: 322; encoding errors: 0 (before this JSON and the final journal edit; rerun at handoff recorded in the journal)"}
+  ],
+  "authority_statements_in_prompt": [
+    "Grants isolated per-task Docker Compose use (db service only, synthetic passwords, down -v only for own project) as written by the user's request; the user may remove that section before sending",
+    "Grants no Git init/commit/push, no network installs, no edits to real .env files, no phase acceptance"
+  ],
+  "side_effects": [
+    ".local/edu-0033-*.txt validator output (ignored)",
+    "no product source, test, migration or contract changed; no Docker, no servers, no Git"
+  ],
+  "git": {"repository": false, "commit": "not_done", "push": "not_done", "pull_request": "none", "merge": "not_done"}
+}

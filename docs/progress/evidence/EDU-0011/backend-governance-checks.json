@@ -1,0 +1,141 @@
+[
+  {
+    "recorded_at": "2026-11-12T13:32:32.976593+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "scripts/validate_blueprint.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.113,
+    "stdout": "Blueprint: 12 phases, 27 skills, 14 role cards\nPASS: all required blueprint checks\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:33.024275+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "scripts/check_structure.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.047,
+    "stdout": "Unified AI Agent SP governance structure: OK\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:33.113947+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "scripts/check_text_encoding.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.089,
+    "stdout": "Checked text files: 207; encoding errors: 0\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:33.413793+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.299,
+    "stdout": "",
+    "stderr": "test_csv_template_bom_and_vietnamese (encoding.test_unicode_csv.EncodingTests.test_csv_template_bom_and_vietnamese) ... ok\ntest_reject_formula_like_name (encoding.test_unicode_csv.EncodingTests.test_reject_formula_like_name) ... ok\ntest_reject_malformed_encoding (encoding.test_unicode_csv.EncodingTests.test_reject_malformed_encoding) ... ok\ntest_roundtrip_preserves_text_quotes_newline_and_leading_zero (encoding.test_unicode_csv.EncodingTests.test_roundtrip_preserves_text_quotes_newline_and_leading_zero) ... ok\ntest_unicode_normalization_equivalence (encoding.test_unicode_csv.EncodingTests.test_unicode_normalization_equivalence) ... ok\ntest_dependency_cache_is_skipped_but_project_source_is_checked (foundation.test_source_scanners.SourceScannerTests.test_dependency_cache_is_skipped_but_project_source_is_checked) ... ok\ntest_2k_and_10k_fixtures_validate_and_preserve_codes (foundation.test_synthetic_students.SyntheticStudentsTests.test_2k_and_10k_fixtures_validate_and_preserve_codes) ... ok\ntest_invalid_inputs_fail_before_creating_output (foundation.test_synthetic_students.SyntheticStudentsTests.test_invalid_inputs_fail_before_creating_output) ... ok\ntest_same_seed_produces_identical_bytes_and_protects_existing_files (foundation.test_synthetic_students.SyntheticStudentsTests.test_same_seed_produces_identical_bytes_and_protects_existing_files) ... ok\ntest_current_repo_is_valid (governance.test_blueprint.BlueprintTests.test_current_repo_is_valid) ... ok\ntest_empty_tree_is_rejected (governance.test_blueprint.BlueprintTests.test_empty_tree_is_rejected) ... ok\ntest_agent_entrypoint_points_to_master (governance.test_phase00_baseline.Phase00BaselineTests.test_agent_entrypoint_points_to_master) ... ok\ntest_confirmed_decisions_exist_in_one_canonical_file (governance.test_phase00_baseline.Phase00BaselineTests.test_confirmed_decisions_exist_in_one_canonical_file) ... ok\ntest_human_independent_review_required (governance.test_phase00_baseline.Phase00BaselineTests.test_human_independent_review_required) ... ok\ntest_open_items_not_confirmed (governance.test_phase00_baseline.Phase00BaselineTests.test_open_items_not_confirmed) ... ok\ntest_other_phase00_baselines_absent (governance.test_phase00_baseline.Phase00BaselineTests.test_other_phase00_baselines_absent) ... ok\ntest_srs_references_canonical (governance.test_phase00_baseline.Phase00BaselineTests.test_srs_references_canonical) ... ok\n\n----------------------------------------------------------------------\nRan 17 tests in 0.201s\n\nOK\n"
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:34.720545+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pytest",
+      "backend/tests",
+      "-q",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "exit_code": 0,
+    "seconds": 1.306,
+    "stdout": ".....................                                                    [100%]\n21 passed in 0.72s\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:34.864895+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "ruff",
+      "check",
+      "backend"
+    ],
+    "exit_code": 0,
+    "seconds": 0.144,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:34.999552+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "backend"
+    ],
+    "exit_code": 0,
+    "seconds": 0.134,
+    "stdout": "19 files already formatted\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:35.764654+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/export_openapi.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.765,
+    "stdout": "OpenAPI contract matches FastAPI\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:32:36.313985+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.549,
+    "stdout": "No broken requirements found.\n",
+    "stderr": ""
+  }
+]

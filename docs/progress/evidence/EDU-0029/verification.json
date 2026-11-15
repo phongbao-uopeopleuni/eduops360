@@ -1,0 +1,18 @@
+{
+  "task_id": "EDU-0029",
+  "verified_at": "2026-11-13T15:49:45+07:00",
+  "artifact": "docs/security/MFA_RECOVERY_AND_BREAK_GLASS.md",
+  "coverage": [
+    "dual control and independent identity proof",
+    "session revocation and single-use time-bound recovery",
+    "break-glass least scope, expiry and two-person custody",
+    "abort conditions, notifications, audit evidence and post-incident review"
+  ],
+  "status": "draft_not_approved",
+  "blockers": [
+    "OD-001 named human authorities",
+    "OD-008 approved emergency scope",
+    "OD-011 evidence retention",
+    "approved encrypted MFA secret custody and notification channel"
+  ]
+}

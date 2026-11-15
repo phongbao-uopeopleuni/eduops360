@@ -1,0 +1,1784 @@
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/.github/workflows/foundation-check.yml .local/edu-0042/normdiff/after/.github/workflows/foundation-check.yml
+--- .local/edu-0042/normdiff/before/.github/workflows/foundation-check.yml	2026-11-12 12:52:32.190167300 +0700
++++ .local/edu-0042/normdiff/after/.github/workflows/foundation-check.yml	2026-11-14 15:28:22.166778100 +0700
+@@ -50,14 +50,18 @@
+           python - <<'PY'
+           from pathlib import Path
+           import secrets
+-          Path('infra/.env').write_text('POSTGRES_PASSWORD=' + secrets.token_urlsafe(32) + '\n', encoding='utf-8')
++          content = (
++              'POSTGRES_MIGRATOR_PASSWORD=' + secrets.token_urlsafe(32) + '\n'
++              'POSTGRES_RUNTIME_PASSWORD=' + secrets.token_urlsafe(32) + '\n'
++              'POSTGRES_AUDIT_WORKER_PASSWORD=' + secrets.token_urlsafe(32) + '\n'
++          )
++          Path('infra/.env').write_text(content, encoding='utf-8')
+           PY
+       - name: Start Compose and test the full stack
+         run: |
+           docker compose --env-file infra/.env -f infra/compose.dev.yml config --quiet
+           docker compose --env-file infra/.env -f infra/compose.dev.yml up --build -d --wait
+-          docker compose --env-file infra/.env -f infra/compose.dev.yml exec -T backend python -m alembic upgrade head
+-          docker compose --env-file infra/.env -f infra/compose.dev.yml exec -T backend python -m alembic check
++          docker compose --env-file infra/.env -f infra/compose.dev.yml run --rm migrate python -m alembic check
+           python scripts/smoke_local.py
+           npm run test:e2e --prefix frontend
+       - name: Stop local test services
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/.env.example .local/edu-0042/normdiff/after/backend/.env.example
+--- .local/edu-0042/normdiff/before/backend/.env.example	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/backend/.env.example	2026-11-14 12:47:48.304572900 +0700
+@@ -0,0 +1,3 @@
++EDUOPS_ENVIRONMENT=local
++# Runtime app only. Run Alembic with an explicit eduops_migrator URL in the shell.
++EDUOPS_DATABASE_URL=postgresql+psycopg://eduops_runtime:REPLACE_WITH_LOCAL_RUNTIME_PASSWORD@127.0.0.1:55432/eduops360
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/Dockerfile .local/edu-0042/normdiff/after/backend/Dockerfile
+--- .local/edu-0042/normdiff/before/backend/Dockerfile	2026-11-12 12:55:41.043406900 +0700
++++ .local/edu-0042/normdiff/after/backend/Dockerfile	2026-11-14 12:47:48.305634500 +0700
+@@ -1,9 +1,9 @@
+ FROM python:3.13-slim
+ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+ WORKDIR /app
+-COPY requirements.lock pyproject.toml ./
++COPY requirements.runtime.lock pyproject.toml ./
+ COPY app ./app
+-RUN pip install --no-cache-dir -r requirements.lock && pip install --no-cache-dir --no-deps .
++RUN pip install --no-cache-dir -r requirements.runtime.lock && pip install --no-cache-dir --no-deps .
+ COPY alembic.ini ./
+ COPY migrations ./migrations
+ RUN useradd --create-home --uid 10001 eduops
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/README.md .local/edu-0042/normdiff/after/backend/README.md
+--- .local/edu-0042/normdiff/before/backend/README.md	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/backend/README.md	2026-11-14 12:47:48.307635900 +0700
+@@ -0,0 +1,33 @@
++# Backend EduOps 360
++
++FastAPI modular monolith, Python 3.13. Phase 01 cung cấp app factory, cấu hình môi trường, health và hợp đồng OpenAPI. Các module nghiệp vụ theo phase tiếp theo.
++
++Chạy từ `backend/` trong PowerShell sau khi có PostgreSQL local và `.env` cấu hình theo `.env.example`.
++
++```powershell
++python -m venv .venv
++.venv/Scripts/python -m pip install -r requirements.lock
++.venv/Scripts/python -m pip install --no-deps -e .
++.venv/Scripts/python -m app
++```
++
++Entry point `python -m app` chọn SelectorEventLoop trên Windows để psycopg async hoạt động. `--host` mặc định `127.0.0.1`, `--port` mặc định `8000`. Dừng bằng Ctrl+C.
++
++- Liveness tại `http://127.0.0.1:8000/api/v1/health/live` trả 200 khi API hoạt động.
++- Readiness tại `/api/v1/health/ready` trả 200 khi PostgreSQL kết nối được, 503 khi cấu hình hoặc kết nối chưa sẵn sàng.
++- Swagger tại `/api/docs`, OpenAPI tại `/api/openapi.json`.
++
++Alembic baseline `0001_foundation` tạo bảng quản lý revision. Schema học vụ thuộc Phase 03. Chạy với database local giả lập đã được cấu hình.
++
++```powershell
++.venv/Scripts/python -m alembic upgrade head
++.venv/Scripts/python -m alembic current
++.venv/Scripts/python -m alembic check
++.venv/Scripts/python -m pytest tests -q
++.venv/Scripts/python -m ruff check .
++.venv/Scripts/python -m ruff format --check .
++```
++
++`requirements.lock` khóa dependencies phát triển và công cụ kiểm thử; `requirements.runtime.lock` là tập con dùng trong image runtime. `pyproject.toml` khai báo dependencies trực tiếp. Hai lock hiện khóa phiên bản nhưng chưa có hash; bổ sung hash cần một lượt tạo lock có truy cập package index được phê duyệt. Khi thay dependencies, cài trong môi trường sạch, xuất lại cả hai lock và kiểm tra Windows/Linux.
++
++Ứng dụng host có thể nạp secrets từ biến `EDUOPS_` hoặc `.env` local bị ignore. Riêng Alembic chỉ nhận `EDUOPS_DATABASE_URL` được truyền rõ trong process hiện tại và phải dùng role `eduops_migrator`; nó không đọc fallback từ `backend/.env`. Không dùng URL migrator để chạy API.
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/core/config.py .local/edu-0042/normdiff/after/backend/app/core/config.py
+--- .local/edu-0042/normdiff/before/backend/app/core/config.py	2026-11-13 09:17:15.920098100 +0700
++++ .local/edu-0042/normdiff/after/backend/app/core/config.py	2026-11-14 15:01:34.048548000 +0700
+@@ -18,7 +18,18 @@
+     csrf_cookie_name: str = "eduops_csrf"
+     session_cookie_secure: bool = True
+     login_rate_limit_attempts: int = 10
++    # TẠM pending Security Owner: failed attempts across all identities from one peer.
++    login_ip_rate_limit_attempts: int = 50
+     login_rate_limit_window_seconds: int = 60
++    # TẠM pending Security Owner: authenticated inactivity before session expiry.
++    session_idle_timeout_minutes: int = 30
++
++    @field_validator("cors_origins")
++    @classmethod
++    def reject_wildcard_cors(cls, value: list[str]) -> list[str]:
++        if any(origin.strip() == "*" for origin in value):
++            raise ValueError("Wildcard CORS is not allowed with credentialed sessions")
++        return value
+ 
+     @field_validator("database_url")
+     @classmethod
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/main.py .local/edu-0042/normdiff/after/backend/app/main.py
+--- .local/edu-0042/normdiff/before/backend/app/main.py	2026-11-13 09:30:03.381712300 +0700
++++ .local/edu-0042/normdiff/after/backend/app/main.py	2026-11-14 15:01:34.048548000 +0700
+@@ -44,6 +44,10 @@
+         limit=config.login_rate_limit_attempts,
+         window_seconds=config.login_rate_limit_window_seconds,
+     )
++    app.state.login_ip_rate_limiter = LoginRateLimiter(
++        limit=config.login_ip_rate_limit_attempts,
++        window_seconds=config.login_rate_limit_window_seconds,
++    )
+     app.add_middleware(
+         CORSMiddleware,
+         allow_origins=config.cors_origins,
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/admin_router.py .local/edu-0042/normdiff/after/backend/app/modules/auth/admin_router.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/admin_router.py	2026-11-14 15:51:52.382415200 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/admin_router.py	2026-11-14 15:19:55.060551200 +0700
+@@ -33,6 +33,7 @@
+ from app.modules.auth.permissions import Scope
+ from app.modules.auth.schemas import (
+     AccountTokenIssue,
++    InvitationReissue,
+     PasswordResetIssue,
+     RoleRead,
+     UserInvitationCreate,
+@@ -312,6 +313,100 @@
+     )
+ 
+ 
++@router.post("/{user_id}/invitation", response_model=AccountTokenIssue, status_code=201)
++async def reissue_user_invitation(
++    user_id: UUID,
++    payload: InvitationReissue,
++    request: Request,
++    context: CreateUserGuard,
++    db: DatabaseSession,
++) -> AccountTokenIssue:
++    """Replace every outstanding invitation token for a pending account."""
++    user = await _get_user(db, user_id, for_update=True)
++    if user.status != UserStatus.PENDING:
++        raise AppError(409, "INVITATION_NOT_PENDING", "Tài khoản không còn chờ lời mời.")
++    await _require_actor_covers_target(db, context, user.id)
++    now = datetime.now(UTC)
++    await db.execute(
++        update(AccountToken)
++        .where(
++            AccountToken.user_id == user.id,
++            AccountToken.purpose == "invitation",
++            AccountToken.used_at.is_(None),
++        )
++        .values(used_at=now)
++    )
++    invitation, raw_token = _new_account_token(
++        user_id=user.id,
++        purpose="invitation",
++        valid_hours=payload.valid_hours,
++        created_by=context.auth.user.id,
++    )
++    db.add(invitation)
++    await write_audit_in_transaction(
++        db,
++        action="user:invitation_reissue",
++        resource_type="user",
++        resource_id=str(user.id),
++        actor_id=context.auth.user.id,
++        actor_email=context.auth.user.email,
++        request_id=request.state.request_id,
++        ip_address=client_ip(request),
++        user_agent=request.headers.get("user-agent"),
++        after_state={"status": str(user.status), "expires_at": invitation.expires_at.isoformat()},
++        create_outbox=True,
++    )
++    await db.commit()
++    return AccountTokenIssue(
++        user=UserRead.model_validate(user),
++        one_time_token=raw_token,
++        expires_at=invitation.expires_at,
++    )
++
++
++@router.post("/{user_id}/invitation/cancel", status_code=204)
++async def cancel_user_invitation(
++    user_id: UUID,
++    request: Request,
++    context: AuthzContext,
++    db: DatabaseSession,
++) -> None:
++    """Invalidate invitation capabilities while leaving the account pending."""
++    enforce_permission(
++        context,
++        resource_type=ResourceType.USER,
++        action=ActionType.SUSPEND,
++        scope=Scope(),
++    )
++    user = await _get_user(db, user_id, for_update=True)
++    if user.status != UserStatus.PENDING:
++        raise AppError(409, "INVITATION_NOT_PENDING", "Tài khoản không còn chờ lời mời.")
++    await _require_actor_covers_target(db, context, user.id)
++    await db.execute(
++        update(AccountToken)
++        .where(
++            AccountToken.user_id == user.id,
++            AccountToken.purpose == "invitation",
++            AccountToken.used_at.is_(None),
++        )
++        .values(used_at=datetime.now(UTC))
++    )
++    await write_audit_in_transaction(
++        db,
++        action="user:invitation_cancel",
++        resource_type="user",
++        resource_id=str(user.id),
++        actor_id=context.auth.user.id,
++        actor_email=context.auth.user.email,
++        request_id=request.state.request_id,
++        ip_address=client_ip(request),
++        user_agent=request.headers.get("user-agent"),
++        after_state={"status": str(user.status), "active_invitation": False},
++        create_outbox=True,
++    )
++    await db.commit()
++
++
+ @router.get("/{user_id}", response_model=UserRead)
+ async def read_user(
+     user_id: UUID,
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/models.py .local/edu-0042/normdiff/after/backend/app/modules/auth/models.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/models.py	2026-11-14 15:51:52.382415200 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/models.py	2026-11-14 15:19:55.060551200 +0700
+@@ -8,6 +8,7 @@
+ from uuid import UUID, uuid4
+ 
+ from sqlalchemy import (
++    BigInteger,
+     Boolean,
+     CheckConstraint,
+     DateTime,
+@@ -49,6 +50,7 @@
+     # Security
+     mfa_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+     mfa_secret: Mapped[str | None] = mapped_column(String(255), nullable=True)
++    mfa_last_used_step: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+     failed_login_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+     password_changed_at: Mapped[datetime | None] = mapped_column(
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/rate_limit.py .local/edu-0042/normdiff/after/backend/app/modules/auth/rate_limit.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/rate_limit.py	2026-11-13 09:17:30.207361200 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/rate_limit.py	2026-11-14 15:19:55.058183000 +0700
+@@ -58,13 +58,30 @@
+         now = self._clock()
+         cutoff = now - self.window_seconds
+         with self._lock:
+-            window = self._windows.setdefault(key, _AttemptWindow())
++            window = self._windows.get(key)
++            if window is None:
++                if len(self._windows) >= self.max_keys:
++                    evicted = False
++                    for candidate, candidate_window in list(self._windows.items()):
++                        while candidate_window.attempts and candidate_window.attempts[0] <= cutoff:
++                            candidate_window.attempts.popleft()
++                        if (
++                            not candidate_window.attempts
++                            or len(candidate_window.attempts) < self.limit
++                        ):
++                            del self._windows[candidate]
++                            evicted = True
++                            break
++                    if not evicted:
++                        # Preserve existing blocked identities. Durable account lockout remains
++                        # the fallback when every bounded slot is already blocked.
++                        return
++                window = _AttemptWindow()
++                self._windows[key] = window
+             while window.attempts and window.attempts[0] <= cutoff:
+                 window.attempts.popleft()
+             window.attempts.append(now)
+             self._windows.move_to_end(key)
+-            while len(self._windows) > self.max_keys:
+-                self._windows.popitem(last=False)
+ 
+     def reset(self, key: str) -> None:
+         with self._lock:
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/router.py .local/edu-0042/normdiff/after/backend/app/modules/auth/router.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/router.py	2026-11-14 15:51:52.382415200 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/router.py	2026-11-14 15:19:55.058183000 +0700
+@@ -36,9 +36,10 @@
+     AuthContext,
+     client_ip,
+     get_auth_context,
++    login_ip_rate_key,
+     login_rate_key,
++    matching_totp_step,
+     require_csrf,
+-    verify_totp,
+ )
+ 
+ router = APIRouter(prefix="/auth", tags=["Authentication"])
+@@ -138,8 +139,11 @@
+ ) -> LoginResponse:
+     email = str(payload.email).strip().lower()
+     limiter = request.app.state.login_rate_limiter
++    ip_limiter = request.app.state.login_ip_rate_limiter
+     rate_key = login_rate_key(request, email)
+-    retry_after = limiter.check(rate_key)
++    ip_rate_key = login_ip_rate_key(request)
++    retry_after_values = [limiter.check(rate_key), ip_limiter.check(ip_rate_key)]
++    retry_after = max((value for value in retry_after_values if value is not None), default=None)
+     if retry_after is not None:
+         raise AppError(
+             429,
+@@ -169,13 +173,17 @@
+             user.failed_login_count = 0
+ 
+     mfa_ok = True
++    mfa_step: int | None = None
+     if user is not None and user.mfa_enabled:
+-        mfa_ok = bool(
+-            user.mfa_secret and payload.mfa_code and verify_totp(user.mfa_secret, payload.mfa_code)
++        if user.mfa_secret and payload.mfa_code:
++            mfa_step = matching_totp_step(user.mfa_secret, payload.mfa_code)
++        mfa_ok = mfa_step is not None and (
++            user.mfa_last_used_step is None or mfa_step > user.mfa_last_used_step
+         )
+ 
+     if user is None or locked or not password_ok or not mfa_ok:
+         limiter.record_failure(rate_key)
++        ip_limiter.record_failure(ip_rate_key)
+         if user is not None and not locked:
+             user.failed_login_count += 1
+             if should_lock_account(user.failed_login_count):
+@@ -198,6 +206,8 @@
+         user.password_hash = await hash_password_async(payload.password.get_secret_value())
+     user.failed_login_count = 0
+     user.locked_until = None
++    if mfa_step is not None:
++        user.mfa_last_used_step = mfa_step
+ 
+     session_token = generate_session_token()
+     csrf_token = secrets.token_urlsafe(32)
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/schemas.py .local/edu-0042/normdiff/after/backend/app/modules/auth/schemas.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/schemas.py	2026-11-13 16:02:41.770921100 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/schemas.py	2026-11-14 15:08:11.849673200 +0700
+@@ -77,6 +77,10 @@
+     password: SecretStr = Field(min_length=8, max_length=128)
+ 
+ 
++class InvitationReissue(BaseModel):
++    valid_hours: int = Field(default=24, ge=1, le=168)
++
++
+ class PasswordResetIssue(BaseModel):
+     valid_hours: int = Field(default=1, ge=1, le=24)
+ 
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/services.py .local/edu-0042/normdiff/after/backend/app/modules/auth/services.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/services.py	2026-11-14 11:51:05.558225100 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/services.py	2026-11-14 15:01:34.049553400 +0700
+@@ -24,7 +24,6 @@
+ MAX_FAILED_ATTEMPTS = 5
+ LOCKOUT_DURATION_MINUTES = 30
+ SESSION_DURATION_HOURS = 24
+-SESSION_REFRESH_THRESHOLD_HOURS = 1
+ 
+ # A0102-F07 — TẠM, chờ đo tải theo OD-004: số phép Argon2id chạy đồng thời tối đa trên
+ # một event loop. Mỗi phép dùng 64 MB (memory_cost), nên 4 luồng giới hạn khoảng 256 MB.
+@@ -137,23 +136,6 @@
+     return datetime.now(tz) + timedelta(hours=SESSION_DURATION_HOURS)
+ 
+ 
+-def session_needs_refresh(last_activity: datetime) -> bool:
+-    """Check if session should be refreshed.
+-
+-    Args:
+-        last_activity: Last activity timestamp
+-
+-    Returns:
+-        True if session should be refreshed
+-    """
+-    from zoneinfo import ZoneInfo
+-
+-    tz = ZoneInfo("Asia/Ho_Chi_Minh")
+-    now = datetime.now(tz)
+-    threshold = timedelta(hours=SESSION_REFRESH_THRESHOLD_HOURS)
+-    return (now - last_activity) > threshold
+-
+-
+ def generate_session_token() -> str:
+     """Generate a cryptographically secure session token.
+ 
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/app/modules/auth/session.py .local/edu-0042/normdiff/after/backend/app/modules/auth/session.py
+--- .local/edu-0042/normdiff/before/backend/app/modules/auth/session.py	2026-11-14 11:52:36.009918000 +0700
++++ .local/edu-0042/normdiff/after/backend/app/modules/auth/session.py	2026-11-14 15:04:01.338817300 +0700
+@@ -6,7 +6,7 @@
+ import struct
+ import time
+ from dataclasses import dataclass
+-from datetime import UTC, datetime
++from datetime import UTC, datetime, timedelta
+ from typing import Annotated
+ 
+ from fastapi import Depends, Request
+@@ -17,7 +17,7 @@
+ from app.db.dependencies import get_db_session
+ from app.modules.auth.constants import SessionStatus, UserStatus
+ from app.modules.auth.models import Session, User
+-from app.modules.auth.services import hash_session_token, session_needs_refresh
++from app.modules.auth.services import hash_session_token
+ 
+ 
+ @dataclass(frozen=True)
+@@ -36,16 +36,21 @@
+     return hashlib.sha256(identity.encode()).hexdigest()
+ 
+ 
+-def verify_totp(secret: str, code: str, *, now: int | None = None) -> bool:
+-    """Verify a six-digit RFC 6238 SHA-1 TOTP with one-step clock tolerance."""
++def login_ip_rate_key(request: Request) -> str:
++    identity = f"ip\0{client_ip(request) or 'unknown'}"
++    return hashlib.sha256(identity.encode()).hexdigest()
++
++
++def matching_totp_step(secret: str, code: str, *, now: int | None = None) -> int | None:
++    """Return the matching RFC 6238 step, or None, with one-step clock tolerance."""
+     if len(code) != 6 or not code.isdigit():
+-        return False
++        return None
+     try:
+         normalized = secret.strip().replace(" ", "").upper()
+         padding = "=" * ((8 - len(normalized) % 8) % 8)
+         key = base64.b32decode(normalized + padding, casefold=True)
+     except (ValueError, base64.binascii.Error):
+-        return False
++        return None
+     current = int(time.time() if now is None else now) // 30
+     for counter in range(current - 1, current + 2):
+         digest = hmac.new(key, struct.pack(">Q", counter), hashlib.sha1).digest()
+@@ -53,8 +58,13 @@
+         value = struct.unpack(">I", digest[offset : offset + 4])[0] & 0x7FFFFFFF
+         expected = f"{value % 1_000_000:06d}"
+         if hmac.compare_digest(expected, code):
+-            return True
+-    return False
++            return counter
++    return None
++
++
++def verify_totp(secret: str, code: str, *, now: int | None = None) -> bool:
++    """Verify a six-digit RFC 6238 SHA-1 TOTP with one-step clock tolerance."""
++    return matching_totp_step(secret, code, now=now) is not None
+ 
+ 
+ async def get_auth_context(
+@@ -76,7 +86,12 @@
+         raise AppError(401, "INVALID_SESSION", "Phiên đăng nhập không hợp lệ.")
+     session, user = row
+     now = datetime.now(UTC)
+-    if session.status != SessionStatus.ACTIVE or session.expires_at <= now:
++    idle_cutoff = now - timedelta(minutes=settings.session_idle_timeout_minutes)
++    if (
++        session.status != SessionStatus.ACTIVE
++        or session.expires_at <= now
++        or session.last_activity_at <= idle_cutoff
++    ):
+         if session.status == SessionStatus.ACTIVE:
+             session.status = SessionStatus.EXPIRED
+             await db.commit()
+@@ -87,9 +102,8 @@
+     if user.status not in {UserStatus.ACTIVE, UserStatus.LOCKED}:
+         raise AppError(401, "ACCOUNT_UNAVAILABLE", "Tài khoản không khả dụng.")
+ 
+-    if session_needs_refresh(session.last_activity_at):
+-        session.last_activity_at = now
+-        await db.commit()
++    session.last_activity_at = now
++    await db.commit()
+     return AuthContext(user=user, session=session)
+ 
+ 
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/migrations/env.py .local/edu-0042/normdiff/after/backend/migrations/env.py
+--- .local/edu-0042/normdiff/before/backend/migrations/env.py	2026-11-12 17:27:19.246624000 +0700
++++ .local/edu-0042/normdiff/after/backend/migrations/env.py	2026-11-14 12:47:48.304572900 +0700
+@@ -1,4 +1,5 @@
+ import asyncio
++import os
+ 
+ from alembic import context
+ from sqlalchemy import pool
+@@ -13,9 +14,11 @@
+ from app.modules.auth import models as auth_models  # noqa: F401
+ 
+ config = context.config
+-settings = Settings()
+-if settings.database_url is None:
+-    raise RuntimeError("Set EDUOPS_DATABASE_URL before running local migrations")
++if not os.environ.get("EDUOPS_DATABASE_URL"):
++    raise RuntimeError("Set an explicit EDUOPS_DATABASE_URL before running migrations")
++settings = Settings(_env_file=None)
++if settings.database_url is None:  # defensive: the explicit value must also validate
++    raise RuntimeError("Set an explicit EDUOPS_DATABASE_URL before running migrations")
+ database_url = settings.database_url.get_secret_value()
+ target_metadata = Base.metadata
+ 
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/migrations/versions/0008_mfa_replay_counter.py .local/edu-0042/normdiff/after/backend/migrations/versions/0008_mfa_replay_counter.py
+--- .local/edu-0042/normdiff/before/backend/migrations/versions/0008_mfa_replay_counter.py	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/backend/migrations/versions/0008_mfa_replay_counter.py	2026-11-14 15:04:01.338817300 +0700
+@@ -0,0 +1,25 @@
++"""Add the last accepted TOTP step for replay prevention.
++
++Revision ID: 0008_mfa_replay_counter
++Revises: 0007_account_tokens
++Create Date: 2026-11-14
++"""
++
++import sqlalchemy as sa
++from alembic import op
++
++revision = "0008_mfa_replay_counter"
++down_revision = "0007_account_tokens"
++branch_labels = None
++depends_on = None
++
++
++def upgrade():
++    op.add_column(
++        "users",
++        sa.Column("mfa_last_used_step", sa.BigInteger(), nullable=True),
++    )
++
++
++def downgrade():
++    op.drop_column("users", "mfa_last_used_step")
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/requirements.runtime.lock .local/edu-0042/normdiff/after/backend/requirements.runtime.lock
+--- .local/edu-0042/normdiff/before/backend/requirements.runtime.lock	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/backend/requirements.runtime.lock	2026-11-14 12:47:48.306633900 +0700
+@@ -0,0 +1,30 @@
++alembic==1.20.1
++annotated-doc==0.0.6
++annotated-types==0.8.0
++anyio==4.16.0
++argon2-cffi==25.1.0
++argon2-cffi-bindings==26.1.0
++cffi==2.1.1
++click==8.5.1
++dnspython==2.9.2
++email_validator==2.2.0
++fastapi==0.162.5
++greenlet==3.5.6
++h11==0.16.0
++idna==3.20
++Mako==1.4.3
++MarkupSafe==3.0.4
++opentelemetry-api==1.45.2
++psycopg==3.3.8
++psycopg-binary==3.3.8
++pycparser==3.12
++pydantic==2.14.3
++pydantic-settings==2.16.2
++pydantic_core==2.50.4
++python-dotenv==1.2.4
++SQLAlchemy==2.1.8
++starlette==1.10.0
++typing-inspection==0.4.5
++typing_extensions==4.16.0
++tzdata==2026.6
++uvicorn==0.54.0
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/tests/auth/test_schema_alignment.py .local/edu-0042/normdiff/after/backend/tests/auth/test_schema_alignment.py
+--- .local/edu-0042/normdiff/before/backend/tests/auth/test_schema_alignment.py	2026-11-14 15:51:52.363401100 +0700
++++ .local/edu-0042/normdiff/after/backend/tests/auth/test_schema_alignment.py	2026-11-14 15:19:55.060551200 +0700
+@@ -176,3 +176,9 @@
+         r"GRANT .*\b(?:UPDATE|DELETE|TRUNCATE)\b.* ON audit_logs",
+         security_sql,
+     )
++
++
++def test_mfa_replay_counter_model_and_migration_align() -> None:
++    assert User.__table__.c.mfa_last_used_step.nullable
++    module = _load_migration("0008_mfa_replay_counter.py")
++    assert module.down_revision == "0007_account_tokens"
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/tests/auth/test_session_security.py .local/edu-0042/normdiff/after/backend/tests/auth/test_session_security.py
+--- .local/edu-0042/normdiff/before/backend/tests/auth/test_session_security.py	2026-11-13 09:20:54.842502200 +0700
++++ .local/edu-0042/normdiff/after/backend/tests/auth/test_session_security.py	2026-11-14 15:00:02.613812100 +0700
+@@ -35,3 +35,13 @@
+     assert len(limiter._windows) == 2
+     limiter.reset("middle")
+     assert "middle" not in limiter._windows
++
++
++def test_login_rate_limiter_does_not_evict_an_already_blocked_key() -> None:
++    limiter = LoginRateLimiter(limit=2, window_seconds=60, max_keys=2, clock=lambda: 1.0)
++    limiter.record_failure("blocked-victim")
++    limiter.record_failure("blocked-victim")
++    limiter.record_failure("flood-1")
++    limiter.record_failure("flood-2")
++    assert limiter.check("blocked-victim") is not None
++    assert len(limiter._windows) <= 2
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/tests/integration/test_auth_api.py .local/edu-0042/normdiff/after/backend/tests/integration/test_auth_api.py
+--- .local/edu-0042/normdiff/before/backend/tests/integration/test_auth_api.py	2026-11-14 15:51:52.363401100 +0700
++++ .local/edu-0042/normdiff/after/backend/tests/integration/test_auth_api.py	2026-11-14 15:19:55.060551200 +0700
+@@ -2,7 +2,12 @@
+ 
+ from __future__ import annotations
+ 
++import base64
++import hashlib
++import hmac
+ import os
++import struct
++import time
+ from contextlib import closing
+ from uuid import UUID, uuid4
+ 
+@@ -41,6 +46,22 @@
+     return user_id
+ 
+ 
++def _insert_role(connection, *, code: str, name: str, permission_codes: tuple[str, ...]) -> UUID:
++    role_id = uuid4()
++    connection.execute(
++        "INSERT INTO roles (id, code, name_vi) VALUES (%s, %s, %s)",
++        (role_id, code, name),
++    )
++    connection.execute(
++        """
++        INSERT INTO role_permissions (role_id, permission_id)
++        SELECT %s, id FROM permissions WHERE code = ANY(%s)
++        """,
++        (role_id, list(permission_codes)),
++    )
++    return role_id
++
++
+ def _csrf_headers(client: TestClient) -> dict[str, str]:
+     token = client.cookies.get("eduops_csrf")
+     assert token
+@@ -55,6 +76,15 @@
+     )
+ 
+ 
++def _totp_code(secret: str, timestamp: int) -> tuple[str, int]:
++    step = timestamp // 30
++    key = base64.b32decode(secret)
++    digest = hmac.new(key, struct.pack(">Q", step), hashlib.sha1).digest()
++    offset = digest[-1] & 0x0F
++    value = struct.unpack(">I", digest[offset : offset + 4])[0] & 0x7FFFFFFF
++    return f"{value % 1_000_000:06d}", step
++
++
+ def test_login_cookie_csrf_expiry_logout_and_rate_limit() -> None:
+     suffix = uuid4().hex
+     email = f"login-{suffix}@example.com"
+@@ -149,6 +179,201 @@
+         assert client.get("/api/v1/auth/me").status_code == 401
+ 
+ 
++def test_login_rate_limit_blocks_password_spray_from_one_ip() -> None:
++    suffix = uuid4().hex
++    app = create_app(
++        Settings(
++            database_url=_app_database_url(),
++            environment="test",
++            login_rate_limit_attempts=10,
++            login_ip_rate_limit_attempts=2,
++            login_rate_limit_window_seconds=60,
++            _env_file=None,
++        )
++    )
++    with _client(app) as client:
++        statuses = [
++            client.post(
++                "/api/v1/auth/login",
++                json={"email": f"spray-{index}-{suffix}@example.com", "password": "wrong"},
++            ).status_code
++            for index in range(3)
++        ]
++    assert statuses == [401, 401, 429]
++
++
++def test_idle_session_is_expired() -> None:
++    suffix = uuid4().hex
++    email = f"idle-{suffix}@example.com"
++    password = "Synthetic-Password-123!"
++    with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++        user_id = _insert_user(migrator, email=email, password=password)
++
++    app = create_app(
++        Settings(
++            database_url=_app_database_url(),
++            environment="test",
++            session_idle_timeout_minutes=30,
++            _env_file=None,
++        )
++    )
++    with _client(app) as client:
++        assert (
++            client.post(
++                "/api/v1/auth/login", json={"email": email, "password": password}
++            ).status_code
++            == 200
++        )
++        with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++            migrator.execute(
++                "UPDATE sessions SET last_activity_at = now() - interval '31 minutes' "
++                "WHERE user_id = %s AND status = 'active'",
++                (user_id,),
++            )
++        assert client.get("/api/v1/auth/me").status_code == 401
++
++    with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++        assert migrator.execute(
++            "SELECT count(*) FROM sessions WHERE user_id = %s AND status = 'expired'",
++            (user_id,),
++        ).fetchone() == (1,)
++
++
++def test_totp_step_cannot_be_replayed() -> None:
++    suffix = uuid4().hex
++    email = f"mfa-replay-{suffix}@example.com"
++    password = "Synthetic-Password-123!"
++    secret = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
++    code, step = _totp_code(secret, int(time.time()))
++    with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++        user_id = _insert_user(migrator, email=email, password=password)
++        migrator.execute(
++            "UPDATE users SET mfa_enabled = TRUE, mfa_secret = %s WHERE id = %s",
++            (secret, user_id),
++        )
++
++    app = create_app(Settings(database_url=_app_database_url(), environment="test", _env_file=None))
++    payload = {"email": email, "password": password, "mfa_code": code}
++    with _client(app) as first, _client(app) as replay:
++        assert first.post("/api/v1/auth/login", json=payload).status_code == 200
++        assert replay.post("/api/v1/auth/login", json=payload).status_code == 401
++
++    with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++        assert migrator.execute(
++            "SELECT mfa_last_used_step FROM users WHERE id = %s", (user_id,)
++        ).fetchone() == (step,)
++
++
++def test_pending_invitation_can_be_reissued_cancelled_and_privilege_bounded() -> None:
++    suffix = uuid4().hex
++    admin_email = f"invite-admin-{suffix}@example.com"
++    password = "Synthetic-Password-123!"
++    with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++        admin_id = _insert_user(migrator, email=admin_email, password=password)
++        admin_role_id = _insert_role(
++            migrator,
++            code=f"test_invite_{suffix[:12]}",
++            name="Synthetic Invitation Admin",
++            permission_codes=("user:create", "user:suspend"),
++        )
++        migrator.execute(
++            "INSERT INTO user_roles (id, user_id, role_id) VALUES (%s, %s, %s)",
++            (uuid4(), admin_id, admin_role_id),
++        )
++
++    app = create_app(Settings(database_url=_app_database_url(), environment="test", _env_file=None))
++    with _client(app) as admin:
++        assert (
++            admin.post(
++                "/api/v1/auth/login", json={"email": admin_email, "password": password}
++            ).status_code
++            == 200
++        )
++
++        first = admin.post(
++            "/api/v1/admin/users/invitations",
++            json={"email": f"reissue-{suffix}@example.com", "display_name": "Reissue"},
++            headers=_csrf_headers(admin),
++        ).json()
++        reissued = admin.post(
++            f"/api/v1/admin/users/{first['user']['id']}/invitation",
++            json={"valid_hours": 48},
++            headers=_csrf_headers(admin),
++        )
++        assert reissued.status_code == 201
++        second_token = reissued.json()["one_time_token"]
++        assert second_token != first["one_time_token"]
++        assert (
++            admin.post(
++                "/api/v1/auth/invitations/accept",
++                json={"token": first["one_time_token"], "password": password},
++            ).status_code
++            == 400
++        )
++        assert (
++            admin.post(
++                "/api/v1/auth/invitations/accept",
++                json={"token": second_token, "password": password},
++            ).status_code
++            == 204
++        )
++
++        cancelled = admin.post(
++            "/api/v1/admin/users/invitations",
++            json={"email": f"cancel-{suffix}@example.com", "display_name": "Cancel"},
++            headers=_csrf_headers(admin),
++        ).json()
++        assert (
++            admin.post(
++                f"/api/v1/admin/users/{cancelled['user']['id']}/invitation/cancel",
++                headers=_csrf_headers(admin),
++            ).status_code
++            == 204
++        )
++        assert (
++            admin.post(
++                "/api/v1/auth/invitations/accept",
++                json={"token": cancelled["one_time_token"], "password": password},
++            ).status_code
++            == 400
++        )
++
++        bounded = admin.post(
++            "/api/v1/admin/users/invitations",
++            json={"email": f"bounded-{suffix}@example.com", "display_name": "Bounded"},
++            headers=_csrf_headers(admin),
++        ).json()
++        with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++            privileged_role = _insert_role(
++                migrator,
++                code=f"test_privileged_{suffix[:12]}",
++                name="Synthetic Privileged Invitee",
++                permission_codes=("audit:read",),
++            )
++            migrator.execute(
++                "INSERT INTO user_roles (id, user_id, role_id) VALUES (%s, %s, %s)",
++                (uuid4(), bounded["user"]["id"], privileged_role),
++            )
++        denied = admin.post(
++            f"/api/v1/admin/users/{bounded['user']['id']}/invitation",
++            json={},
++            headers=_csrf_headers(admin),
++        )
++        assert denied.status_code == 403
++        assert denied.json()["error"]["code"] == "TARGET_PRIVILEGE_EXCEEDS_ACTOR"
++
++    with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
++        actions = dict(
++            migrator.execute(
++                "SELECT action, count(*) FROM audit_logs "
++                "WHERE action IN ('user:invitation_reissue', 'user:invitation_cancel') "
++                "AND actor_id = %s GROUP BY action",
++                (admin_id,),
++            ).fetchall()
++        )
++        assert actions == {"user:invitation_cancel": 1, "user:invitation_reissue": 1}
++
++
+ def test_admin_guards_deny_csrf_idor_escalation_and_stale_grants() -> None:
+     suffix = uuid4().hex
+     admin_email = f"admin-{suffix}@example.com"
+@@ -160,12 +385,6 @@
+     with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
+         admin_id = _insert_user(migrator, email=admin_email, password=password)
+         scoped_id = _insert_user(migrator, email=scoped_email, password=password)
+-        system_role_id = migrator.execute(
+-            "SELECT id FROM roles WHERE code = 'system_admin'"
+-        ).fetchone()[0]
+-        auditor_role_id = migrator.execute(
+-            "SELECT id FROM roles WHERE code = 'auditor'"
+-        ).fetchone()[0]
+         permission_codes = (
+             "user:create",
+             "user:read",
+@@ -175,34 +394,23 @@
+             "user:revoke_role",
+             "audit:read",
+         )
+-        migrator.execute(
+-            """
+-            INSERT INTO role_permissions (role_id, permission_id)
+-            SELECT %s, id FROM permissions WHERE code = ANY(%s)
+-            ON CONFLICT DO NOTHING
+-            """,
+-            (system_role_id, list(permission_codes)),
+-        )
+-        migrator.execute(
+-            """
+-            INSERT INTO role_permissions (role_id, permission_id)
+-            SELECT %s, id FROM permissions WHERE code = 'audit:read'
+-            ON CONFLICT DO NOTHING
+-            """,
+-            (auditor_role_id,),
++        admin_role_id = _insert_role(
++            migrator,
++            code=f"test_admin_{suffix}",
++            name="Synthetic Test Admin",
++            permission_codes=permission_codes,
+         )
+-        scoped_role_id = uuid4()
+-        migrator.execute(
+-            "INSERT INTO roles (id, code, name_vi) VALUES (%s, %s, 'Synthetic Scoped Admin')",
+-            (scoped_role_id, f"test_scoped_{suffix}"),
++        auditor_role_id = _insert_role(
++            migrator,
++            code=f"test_audit_{suffix}",
++            name="Synthetic Test Auditor",
++            permission_codes=("audit:read",),
+         )
+-        migrator.execute(
+-            """
+-            INSERT INTO role_permissions (role_id, permission_id)
+-            SELECT %s, id FROM permissions
+-            WHERE code IN ('user:read', 'user:grant_role', 'user:revoke_role')
+-            """,
+-            (scoped_role_id,),
++        scoped_role_id = _insert_role(
++            migrator,
++            code=f"test_scoped_{suffix}",
++            name="Synthetic Scoped Admin",
++            permission_codes=("user:read", "user:grant_role", "user:revoke_role"),
+         )
+         admin_grant_id = uuid4()
+         scoped_grant_id = uuid4()
+@@ -211,7 +419,7 @@
+             INSERT INTO user_roles (id, user_id, role_id)
+             VALUES (%s, %s, %s)
+             """,
+-            (admin_grant_id, admin_id, system_role_id),
++            (admin_grant_id, admin_id, admin_role_id),
+         )
+         migrator.execute(
+             """
+@@ -303,21 +511,15 @@
+             email=admin_email,
+             password=admin_password,
+         )
+-        system_role_id = migrator.execute(
+-            "SELECT id FROM roles WHERE code = 'system_admin'"
+-        ).fetchone()[0]
+-        migrator.execute(
+-            """
+-            INSERT INTO role_permissions (role_id, permission_id)
+-            SELECT %s, id FROM permissions
+-            WHERE code IN ('user:create', 'user:password_reset')
+-            ON CONFLICT DO NOTHING
+-            """,
+-            (system_role_id,),
++        admin_role_id = _insert_role(
++            migrator,
++            code=f"test_token_admin_{suffix}",
++            name="Synthetic Token Admin",
++            permission_codes=("user:create", "user:password_reset"),
+         )
+         migrator.execute(
+             "INSERT INTO user_roles (id, user_id, role_id) VALUES (%s, %s, %s)",
+-            (uuid4(), admin_id, system_role_id),
++            (uuid4(), admin_id, admin_role_id),
+         )
+ 
+     app = create_app(Settings(database_url=_app_database_url(), environment="test", _env_file=None))
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/backend/tests/test_foundation.py .local/edu-0042/normdiff/after/backend/tests/test_foundation.py
+--- .local/edu-0042/normdiff/before/backend/tests/test_foundation.py	2026-11-12 13:30:17.451085100 +0700
++++ .local/edu-0042/normdiff/after/backend/tests/test_foundation.py	2026-11-14 15:00:02.613812100 +0700
+@@ -131,6 +131,11 @@
+     assert "access-control-allow-origin" not in denied.headers
+ 
+ 
++def test_credentialed_cors_rejects_wildcard_origin():
++    with pytest.raises(ValidationError):
++        Settings(cors_origins=["*"], _env_file=None)
++
++
+ def test_openapi_matches_checked_in_contract(app):
+     expected = json.loads((ROOT / "contracts/openapi.json").read_text(encoding="utf-8"))
+     assert app.openapi() == expected
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/contracts/openapi.json .local/edu-0042/normdiff/after/contracts/openapi.json
+--- .local/edu-0042/normdiff/before/contracts/openapi.json	2026-11-13 16:02:45.132807000 +0700
++++ .local/edu-0042/normdiff/after/contracts/openapi.json	2026-11-14 15:08:28.088406000 +0700
+@@ -108,6 +108,19 @@
+         "title": "InvitationAccept",
+         "type": "object"
+       },
++      "InvitationReissue": {
++        "properties": {
++          "valid_hours": {
++            "default": 24,
++            "maximum": 168.0,
++            "minimum": 1.0,
++            "title": "Valid Hours",
++            "type": "integer"
++          }
++        },
++        "title": "InvitationReissue",
++        "type": "object"
++      },
+       "LivenessResponse": {
+         "properties": {
+           "checked_at": {
+@@ -922,6 +935,137 @@
+         "tags": [
+           "User Administration"
+         ]
++      }
++    },
++    "/api/v1/admin/users/{user_id}/invitation": {
++      "post": {
++        "description": "Replace every outstanding invitation token for a pending account.",
++        "operationId": "reissue_user_invitation_api_v1_admin_users__user_id__invitation_post",
++        "parameters": [
++          {
++            "in": "path",
++            "name": "user_id",
++            "required": true,
++            "schema": {
++              "format": "uuid",
++              "title": "User Id",
++              "type": "string"
++            }
++          }
++        ],
++        "requestBody": {
++          "content": {
++            "application/json": {
++              "schema": {
++                "$ref": "#/components/schemas/InvitationReissue"
++              }
++            }
++          },
++          "required": true
++        },
++        "responses": {
++          "201": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/AccountTokenIssue"
++                }
++              }
++            },
++            "description": "Successful Response"
++          },
++          "404": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ErrorEnvelope"
++                }
++              }
++            },
++            "description": "Not Found"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/HTTPValidationError"
++                }
++              }
++            },
++            "description": "Validation Error"
++          },
++          "500": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ErrorEnvelope"
++                }
++              }
++            },
++            "description": "Internal Server Error"
++          }
++        },
++        "summary": "Reissue User Invitation",
++        "tags": [
++          "User Administration"
++        ]
++      }
++    },
++    "/api/v1/admin/users/{user_id}/invitation/cancel": {
++      "post": {
++        "description": "Invalidate invitation capabilities while leaving the account pending.",
++        "operationId": "cancel_user_invitation_api_v1_admin_users__user_id__invitation_cancel_post",
++        "parameters": [
++          {
++            "in": "path",
++            "name": "user_id",
++            "required": true,
++            "schema": {
++              "format": "uuid",
++              "title": "User Id",
++              "type": "string"
++            }
++          }
++        ],
++        "responses": {
++          "204": {
++            "description": "Successful Response"
++          },
++          "404": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ErrorEnvelope"
++                }
++              }
++            },
++            "description": "Not Found"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/HTTPValidationError"
++                }
++              }
++            },
++            "description": "Validation Error"
++          },
++          "500": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ErrorEnvelope"
++                }
++              }
++            },
++            "description": "Internal Server Error"
++          }
++        },
++        "summary": "Cancel User Invitation",
++        "tags": [
++          "User Administration"
++        ]
+       }
+     },
+     "/api/v1/admin/users/{user_id}/password-reset": {
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/frontend/playwright.config.ts .local/edu-0042/normdiff/after/frontend/playwright.config.ts
+--- .local/edu-0042/normdiff/before/frontend/playwright.config.ts	2026-11-13 15:47:47.086538500 +0700
++++ .local/edu-0042/normdiff/after/frontend/playwright.config.ts	2026-11-14 14:55:16.472173800 +0700
+@@ -19,6 +19,14 @@
+     import.meta.url,
+   ),
+ );
++const apiPort = process.env.PLAYWRIGHT_API_PORT || '58080';
++const frontendPort = process.env.PLAYWRIGHT_FRONTEND_PORT || '5173';
++const externalServer = process.env.PLAYWRIGHT_EXTERNAL_SERVER === '1';
++const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_SERVER === '1';
++
++if (!externalServer && !process.env.EDUOPS_DATABASE_URL) {
++  throw new Error('EDUOPS_DATABASE_URL is required when Playwright starts the backend');
++}
+ 
+ export default defineConfig({
+   testDir: './tests/e2e',
+@@ -26,28 +34,31 @@
+   workers: 1,
+   retries: 0,
+   use: {
+-    baseURL: 'http://127.0.0.1:5173',
++    baseURL: process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${frontendPort}`,
+     trace: 'retain-on-failure',
+     ...devices['Desktop Chrome'],
+     channel: process.env.PLAYWRIGHT_CHANNEL || 'chromium',
+   },
+   reporter: [['list'], ['json', { outputFile: 'test-results/results.json' }]],
+-  webServer:
+-    process.env.PLAYWRIGHT_EXTERNAL_SERVER === '1'
+-      ? []
+-      : [
+-          {
+-            command: `"${python}" -m app --host 127.0.0.1 --port 8000`,
+-            cwd: backendDirectory,
+-            url: 'http://127.0.0.1:8000/api/v1/health/live',
+-            reuseExistingServer: !process.env.CI,
+-            timeout: 30000,
+-          },
+-          {
+-            command: 'npm run dev',
+-            url: 'http://127.0.0.1:5173',
+-            reuseExistingServer: !process.env.CI,
+-            timeout: 30000,
++  webServer: externalServer
++    ? []
++    : [
++        {
++          command: `"${python}" -m app --host 127.0.0.1 --port ${apiPort}`,
++          cwd: backendDirectory,
++          url: `http://127.0.0.1:${apiPort}/api/v1/health/live`,
++          reuseExistingServer,
++          timeout: 30000,
++        },
++        {
++          command: `npm run dev -- --host 127.0.0.1 --port ${frontendPort}`,
++          env: {
++            ...process.env,
++            API_PROXY_TARGET: `http://127.0.0.1:${apiPort}`,
+           },
+-        ],
++          url: `http://127.0.0.1:${frontendPort}`,
++          reuseExistingServer,
++          timeout: 30000,
++        },
++      ],
+ });
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/frontend/src/features/user-management/UserManagementPage.test.tsx .local/edu-0042/normdiff/after/frontend/src/features/user-management/UserManagementPage.test.tsx
+--- .local/edu-0042/normdiff/before/frontend/src/features/user-management/UserManagementPage.test.tsx	2026-11-14 11:44:47.854948000 +0700
++++ .local/edu-0042/normdiff/after/frontend/src/features/user-management/UserManagementPage.test.tsx	2026-11-14 15:08:52.303270100 +0700
+@@ -3,10 +3,12 @@
+ import { UserManagementPage } from './UserManagementPage';
+ import {
+   changeAdminUserStatus,
++  cancelAdminInvitation,
+   createAdminInvitation,
+   listAdminRoles,
+   loginUser,
+   readCurrentUser,
++  reissueAdminInvitation,
+ } from '../../shared/api/client';
+ 
+ vi.mock('../../shared/api/client', () => ({
+@@ -18,6 +20,8 @@
+   changeAdminUserStatus: vi.fn(),
+   grantAdminRole: vi.fn(),
+   revokeAdminRole: vi.fn(),
++  reissueAdminInvitation: vi.fn(),
++  cancelAdminInvitation: vi.fn(),
+ }));
+ 
+ const admin = {
+@@ -140,4 +144,46 @@
+       expect(screen.getByRole('alert')).toHaveTextContent('Không có quyền');
+     });
+   });
++
++  it('shows a role-catalog loading error instead of an empty silent list', async () => {
++    vi.mocked(readCurrentUser).mockResolvedValue(admin);
++    vi.mocked(listAdminRoles).mockRejectedValue(new Error('Không thể tải danh sách vai trò.'));
++    render(<UserManagementPage />);
++    expect(await screen.findByText(admin.email)).toBeInTheDocument();
++    expect(await screen.findByRole('alert')).toHaveTextContent('Không thể tải danh sách vai trò.');
++  });
++
++  it('reissues and cancels a pending invitation without activating it', async () => {
++    vi.mocked(readCurrentUser).mockResolvedValue(admin);
++    vi.mocked(createAdminInvitation).mockResolvedValue({
++      user: created,
++      one_time_token: 'synthetic-first-token-1234567890123456',
++      expires_at: '2026-11-14T00:00:00Z',
++    });
++    vi.mocked(reissueAdminInvitation).mockResolvedValue({
++      user: created,
++      one_time_token: 'synthetic-reissued-token-123456789012',
++      expires_at: '2026-11-15T00:00:00Z',
++    });
++    vi.mocked(cancelAdminInvitation).mockResolvedValue(undefined);
++    render(<UserManagementPage />);
++    await screen.findByText(admin.email);
++    const createForm = screen.getByRole('heading', { name: 'Mời người dùng' }).closest('section')!;
++    fireEvent.change(within(createForm).getByLabelText('Họ tên'), {
++      target: { value: created.display_name },
++    });
++    fireEvent.change(within(createForm).getByLabelText('Email'), {
++      target: { value: created.email },
++    });
++    fireEvent.click(within(createForm).getByRole('button', { name: 'Tạo lời mời' }));
++    await screen.findByRole('heading', { name: 'Tài khoản vừa mời' });
++
++    fireEvent.click(screen.getByRole('button', { name: 'Phát hành lại lời mời' }));
++    expect(await screen.findByText('synthetic-reissued-token-123456789012')).toBeInTheDocument();
++    expect(reissueAdminInvitation).toHaveBeenCalledWith(created.id);
++    fireEvent.click(screen.getByRole('button', { name: 'Hủy mã lời mời' }));
++    await waitFor(() => expect(cancelAdminInvitation).toHaveBeenCalledWith(created.id));
++    expect(screen.queryByText('synthetic-reissued-token-123456789012')).not.toBeInTheDocument();
++    expect(changeAdminUserStatus).not.toHaveBeenCalled();
++  });
+ });
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/frontend/src/features/user-management/UserManagementPage.tsx .local/edu-0042/normdiff/after/frontend/src/features/user-management/UserManagementPage.tsx
+--- .local/edu-0042/normdiff/before/frontend/src/features/user-management/UserManagementPage.tsx	2026-11-14 11:54:25.065315900 +0700
++++ .local/edu-0042/normdiff/after/frontend/src/features/user-management/UserManagementPage.tsx	2026-11-14 15:08:11.850672900 +0700
+@@ -8,6 +8,8 @@
+   loginUser,
+   logoutUser,
+   readCurrentUser,
++  reissueAdminInvitation,
++  cancelAdminInvitation,
+   revokeAdminRole,
+ } from '../../shared/api/client';
+ import type {
+@@ -66,7 +68,10 @@
+     if (session.status !== 'signed-in') return;
+     listAdminRoles()
+       .then(setRoles)
+-      .catch(() => setRoles([]));
++      .catch((caught) => {
++        setRoles([]);
++        setError(message(caught));
++      });
+   }, [session.status]);
+ 
+   async function run(action: () => Promise<void>) {
+@@ -273,7 +278,37 @@
+             </div>
+           </div>
+           {STATUS_CHANGE_OPTIONS[createdUser.status].length === 0 ? (
+-            <p>Tài khoản đang chờ phải hoàn tất lời mời trước khi đổi trạng thái.</p>
++            <div>
++              <p>Tài khoản đang chờ phải hoàn tất lời mời trước khi đổi trạng thái.</p>
++              <div className="button-row">
++                <button
++                  className="button"
++                  disabled={busy}
++                  onClick={() =>
++                    void run(async () => {
++                      const issued = await reissueAdminInvitation(createdUser.id);
++                      setInvitation(issued);
++                      setNotice('Đã phát hành lại lời mời; mã cũ không còn hiệu lực.');
++                    })
++                  }
++                >
++                  Phát hành lại lời mời
++                </button>
++                <button
++                  className="button button-secondary"
++                  disabled={busy}
++                  onClick={() =>
++                    void run(async () => {
++                      await cancelAdminInvitation(createdUser.id);
++                      setInvitation(null);
++                      setNotice('Đã hủy mã lời mời đang còn hiệu lực.');
++                    })
++                  }
++                >
++                  Hủy mã lời mời
++                </button>
++              </div>
++            </div>
+           ) : (
+             <form
+               key={createdUser.status}
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/frontend/src/shared/api/client.ts .local/edu-0042/normdiff/after/frontend/src/shared/api/client.ts
+--- .local/edu-0042/normdiff/before/frontend/src/shared/api/client.ts	2026-11-13 16:02:41.771920800 +0700
++++ .local/edu-0042/normdiff/after/frontend/src/shared/api/client.ts	2026-11-14 15:08:11.851672800 +0700
+@@ -72,6 +72,24 @@
+   return data;
+ }
+ 
++export async function reissueAdminInvitation(userId: string, validHours = 24) {
++  const { data, error } = await api.POST('/api/v1/admin/users/{user_id}/invitation', {
++    params: { path: { user_id: userId } },
++    body: { valid_hours: validHours },
++    headers: csrfHeaders(),
++  });
++  if (!data) throw apiError(error, 'Không thể phát hành lại lời mời.');
++  return data;
++}
++
++export async function cancelAdminInvitation(userId: string) {
++  const { response, error } = await api.POST('/api/v1/admin/users/{user_id}/invitation/cancel', {
++    params: { path: { user_id: userId } },
++    headers: csrfHeaders(),
++  });
++  if (!response.ok) throw apiError(error, 'Không thể hủy lời mời.');
++}
++
+ export async function changeAdminUserStatus(
+   userId: string,
+   status: 'active' | 'suspended',
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/frontend/src/shared/api/generated/schema.d.ts .local/edu-0042/normdiff/after/frontend/src/shared/api/generated/schema.d.ts
+--- .local/edu-0042/normdiff/before/frontend/src/shared/api/generated/schema.d.ts	2026-11-13 16:02:46.162296700 +0700
++++ .local/edu-0042/normdiff/after/frontend/src/shared/api/generated/schema.d.ts	2026-11-14 15:08:38.483180800 +0700
+@@ -58,6 +58,46 @@
+         patch?: never;
+         trace?: never;
+     };
++    "/api/v1/admin/users/{user_id}/invitation": {
++        parameters: {
++            query?: never;
++            header?: never;
++            path?: never;
++            cookie?: never;
++        };
++        get?: never;
++        put?: never;
++        /**
++         * Reissue User Invitation
++         * @description Replace every outstanding invitation token for a pending account.
++         */
++        post: operations["reissue_user_invitation_api_v1_admin_users__user_id__invitation_post"];
++        delete?: never;
++        options?: never;
++        head?: never;
++        patch?: never;
++        trace?: never;
++    };
++    "/api/v1/admin/users/{user_id}/invitation/cancel": {
++        parameters: {
++            query?: never;
++            header?: never;
++            path?: never;
++            cookie?: never;
++        };
++        get?: never;
++        put?: never;
++        /**
++         * Cancel User Invitation
++         * @description Invalidate invitation capabilities while leaving the account pending.
++         */
++        post: operations["cancel_user_invitation_api_v1_admin_users__user_id__invitation_cancel_post"];
++        delete?: never;
++        options?: never;
++        head?: never;
++        patch?: never;
++        trace?: never;
++    };
+     "/api/v1/admin/users/{user_id}/password-reset": {
+         parameters: {
+             query?: never;
+@@ -298,6 +338,14 @@
+              */
+             token: string;
+         };
++        /** InvitationReissue */
++        InvitationReissue: {
++            /**
++             * Valid Hours
++             * @default 24
++             */
++            valid_hours: number;
++        };
+         /** LivenessResponse */
+         LivenessResponse: {
+             /**
+@@ -694,6 +742,106 @@
+             };
+             /** @description Not Found */
+             404: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["ErrorEnvelope"];
++                };
++            };
++            /** @description Validation Error */
++            422: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["HTTPValidationError"];
++                };
++            };
++            /** @description Internal Server Error */
++            500: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["ErrorEnvelope"];
++                };
++            };
++        };
++    };
++    reissue_user_invitation_api_v1_admin_users__user_id__invitation_post: {
++        parameters: {
++            query?: never;
++            header?: never;
++            path: {
++                user_id: string;
++            };
++            cookie?: never;
++        };
++        requestBody: {
++            content: {
++                "application/json": components["schemas"]["InvitationReissue"];
++            };
++        };
++        responses: {
++            /** @description Successful Response */
++            201: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["AccountTokenIssue"];
++                };
++            };
++            /** @description Not Found */
++            404: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["ErrorEnvelope"];
++                };
++            };
++            /** @description Validation Error */
++            422: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["HTTPValidationError"];
++                };
++            };
++            /** @description Internal Server Error */
++            500: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content: {
++                    "application/json": components["schemas"]["ErrorEnvelope"];
++                };
++            };
++        };
++    };
++    cancel_user_invitation_api_v1_admin_users__user_id__invitation_cancel_post: {
++        parameters: {
++            query?: never;
++            header?: never;
++            path: {
++                user_id: string;
++            };
++            cookie?: never;
++        };
++        requestBody?: never;
++        responses: {
++            /** @description Successful Response */
++            204: {
++                headers: {
++                    [name: string]: unknown;
++                };
++                content?: never;
++            };
++            /** @description Not Found */
++            404: {
+                 headers: {
+                     [name: string]: unknown;
+                 };
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/frontend/tests/e2e/real-auth.spec.ts .local/edu-0042/normdiff/after/frontend/tests/e2e/real-auth.spec.ts
+--- .local/edu-0042/normdiff/before/frontend/tests/e2e/real-auth.spec.ts	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/frontend/tests/e2e/real-auth.spec.ts	2026-11-14 15:08:11.852673400 +0700
+@@ -0,0 +1,21 @@
++import { expect, test } from '@playwright/test';
++
++test('real backend login uses the session CSRF token and logout revokes the session', async ({
++  page,
++}) => {
++  const email = process.env.PLAYWRIGHT_REAL_AUTH_EMAIL;
++  const password = process.env.PLAYWRIGHT_REAL_AUTH_PASSWORD;
++  test.skip(!email || !password, 'requires an isolated synthetic real-auth fixture');
++
++  await page.goto('/users');
++  await page.getByLabel('Email').fill(email!);
++  await page.getByLabel('Mật khẩu').fill(password!);
++  await page.getByRole('button', { name: 'Đăng nhập' }).click();
++  await expect(page.getByText(email!)).toBeVisible();
++  await expect(page.getByText('Đăng nhập thành công.')).toBeVisible();
++
++  await page.getByRole('button', { name: 'Đăng xuất' }).click();
++  await expect(page.getByRole('heading', { name: 'Đăng nhập quản trị' })).toBeVisible();
++  await page.reload();
++  await expect(page.getByRole('heading', { name: 'Đăng nhập quản trị' })).toBeVisible();
++});
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/infra/compose.dev.yml .local/edu-0042/normdiff/after/infra/compose.dev.yml
+--- .local/edu-0042/normdiff/before/infra/compose.dev.yml	2026-11-13 08:40:43.120031700 +0700
++++ .local/edu-0042/normdiff/after/infra/compose.dev.yml	2026-11-14 12:47:48.290708600 +0700
+@@ -17,7 +17,7 @@
+       - postgres-data:/var/lib/postgresql
+       - ./postgres/init:/docker-entrypoint-initdb.d:ro
+     healthcheck:
+-      test: ["CMD-SHELL", "pg_isready -U eduops_migrator -d eduops360"]
++      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U eduops_migrator -d eduops360"]
+       interval: 3s
+       timeout: 3s
+       retries: 20
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/scripts/benchmark_startup.py .local/edu-0042/normdiff/after/scripts/benchmark_startup.py
+--- .local/edu-0042/normdiff/before/scripts/benchmark_startup.py	2026-11-12 13:00:05.981755900 +0700
++++ .local/edu-0042/normdiff/after/scripts/benchmark_startup.py	2026-11-14 15:16:34.465721000 +0700
+@@ -84,10 +84,10 @@
+                 "--host",
+                 "127.0.0.1",
+                 "--port",
+-                "18000",
++                "58098",
+             ],
+             ROOT / "backend",
+-            18000,
++            58098,
+             "/api/v1/health/live",
+             log_directory,
+         ),
+@@ -99,11 +99,11 @@
+                 "--host",
+                 "127.0.0.1",
+                 "--port",
+-                "15173",
++                "5175",
+                 "--strictPort",
+             ],
+             ROOT / "frontend",
+-            15173,
++            5175,
+             "/",
+             log_directory,
+         ),
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/scripts/generate_synthetic_students.py .local/edu-0042/normdiff/after/scripts/generate_synthetic_students.py
+--- .local/edu-0042/normdiff/before/scripts/generate_synthetic_students.py	2026-11-12 12:50:28.748546900 +0700
++++ .local/edu-0042/normdiff/after/scripts/generate_synthetic_students.py	2026-11-14 12:47:48.291703100 +0700
+@@ -13,6 +13,10 @@
+ 
+ 
+ def generate(destination: Path, count: int, seed: int, academic_year: str) -> None:
++    local_root = (ROOT / ".local").resolve()
++    resolved_destination = destination.resolve()
++    if not resolved_destination.is_relative_to(local_root):
++        raise ValueError("Synthetic fixtures may only be written below workspace/.local")
+     if not 1 <= count <= 10_000:
+         raise ValueError("Fixture count must be between 1 and 10000")
+     match = YEAR_RE.fullmatch(academic_year)
+@@ -22,9 +26,9 @@
+     if not 1900 <= start_year <= 2100:
+         raise ValueError("Fixture academic year must be between 1900 and 2100")
+     randomizer = random.Random(seed)
+-    destination.parent.mkdir(parents=True, exist_ok=True)
++    resolved_destination.parent.mkdir(parents=True, exist_ok=True)
+     # Exclusive creation protects existing datasets, including previous fixtures.
+-    with destination.open("x", encoding="utf-8-sig", newline="") as stream:
++    with resolved_destination.open("x", encoding="utf-8-sig", newline="") as stream:
+         writer = csv.writer(stream)
+         writer.writerow(COLUMNS)
+         for index in range(1, count + 1):
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/tests/foundation/__init__.py .local/edu-0042/normdiff/after/tests/foundation/__init__.py
+--- .local/edu-0042/normdiff/before/tests/foundation/__init__.py	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/tests/foundation/__init__.py	2026-11-12 12:49:27.180614800 +0700
+@@ -0,0 +1 @@
++"""Local foundation regression checks."""
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/tests/foundation/test_infrastructure_safety.py .local/edu-0042/normdiff/after/tests/foundation/test_infrastructure_safety.py
+--- .local/edu-0042/normdiff/before/tests/foundation/test_infrastructure_safety.py	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/tests/foundation/test_infrastructure_safety.py	2026-11-14 15:51:52.674310900 +0700
+@@ -0,0 +1,63 @@
++import tempfile
++import unittest
++from pathlib import Path
++
++from scripts.generate_synthetic_students import ROOT, generate
++
++
++class InfrastructureSafetyTests(unittest.TestCase):
++    def test_compose_database_healthcheck_uses_tcp_loopback(self):
++        compose = (ROOT / "infra/compose.dev.yml").read_text(encoding="utf-8")
++        self.assertIn("pg_isready -h 127.0.0.1", compose)
++
++    def test_playwright_ports_and_reuse_are_explicit(self):
++        config = (ROOT / "frontend/playwright.config.ts").read_text(encoding="utf-8")
++        self.assertIn("PLAYWRIGHT_API_PORT", config)
++        self.assertIn("PLAYWRIGHT_FRONTEND_PORT", config)
++        self.assertNotIn("--port 8000", config)
++        self.assertIn("PLAYWRIGHT_REUSE_SERVER === '1'", config)
++        self.assertIn("EDUOPS_DATABASE_URL", config)
++
++    def test_generator_rejects_output_outside_workspace_local(self):
++        with tempfile.TemporaryDirectory() as directory:
++            destination = Path(directory) / "students.csv"
++            with self.assertRaises(ValueError):
++                generate(destination, 1, 360, "2026-2027")
++            self.assertFalse(destination.exists())
++
++    def test_runtime_image_excludes_development_dependencies(self):
++        dockerfile = (ROOT / "backend/Dockerfile").read_text(encoding="utf-8")
++        self.assertIn("requirements.runtime.lock", dockerfile)
++        runtime_lock = (ROOT / "backend/requirements.runtime.lock").read_text(encoding="utf-8")
++        development_lock = (ROOT / "backend/requirements.lock").read_text(encoding="utf-8")
++        self.assertLessEqual(set(runtime_lock.splitlines()), set(development_lock.splitlines()))
++        for package in ("httpx2==", "pytest==", "ruff=="):
++            self.assertNotIn(package, runtime_lock)
++
++    def test_examples_and_migrations_use_explicit_database_roles(self):
++        backend_example = (ROOT / "backend/.env.example").read_text(encoding="utf-8")
++        migration_env = (ROOT / "backend/migrations/env.py").read_text(encoding="utf-8")
++        self.assertIn("eduops_runtime", backend_example)
++        self.assertIn('os.environ.get("EDUOPS_DATABASE_URL")', migration_env)
++        self.assertIn("Settings(_env_file=None)", migration_env)
++
++    def test_live_integration_tests_do_not_mutate_seeded_admin_roles(self):
++        source = (ROOT / "backend/tests/integration/test_auth_api.py").read_text(encoding="utf-8")
++        self.assertNotIn("system_admin", source)
++        self.assertNotIn("WHERE code = 'auditor'", source)
++
++    def test_foundation_ci_uses_current_database_roles(self):
++        workflow = (ROOT / ".github/workflows/foundation-check.yml").read_text(encoding="utf-8")
++        for variable in (
++            "POSTGRES_MIGRATOR_PASSWORD",
++            "POSTGRES_RUNTIME_PASSWORD",
++            "POSTGRES_AUDIT_WORKER_PASSWORD",
++        ):
++            self.assertIn(f"{variable}=", workflow)
++        self.assertNotIn("'POSTGRES_PASSWORD='", workflow)
++        self.assertNotIn("exec -T backend python -m alembic", workflow)
++        self.assertIn("run --rm migrate python -m alembic check", workflow)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/tests/foundation/test_source_scanners.py .local/edu-0042/normdiff/after/tests/foundation/test_source_scanners.py
+--- .local/edu-0042/normdiff/before/tests/foundation/test_source_scanners.py	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/tests/foundation/test_source_scanners.py	2026-11-14 15:51:52.674310900 +0700
+@@ -0,0 +1,22 @@
++import tempfile
++import unittest
++from pathlib import Path
++
++from scripts.check_text_encoding import audit
++from scripts.validate_blueprint import validate
++
++
++class SourceScannerTests(unittest.TestCase):
++    def test_dependency_cache_is_skipped_but_project_source_is_checked(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            for folder in ("node_modules/package", ".venv/Lib", ".local/tmp"):
++                path = root / folder / "invalid.py"
++                path.parent.mkdir(parents=True)
++                path.write_bytes(b"\xff")
++            source = root / "source.py"
++            source.write_bytes(b"\xff")
++            self.assertEqual(audit(root), (1, [("source.py", "invalid_utf8")]))
++            _, _, errors = validate(root)
++            encoding_errors = [error for error in errors if error.startswith("invalid UTF-8")]
++            self.assertEqual(encoding_errors, ["invalid UTF-8 source.py"])
+diff -ruN --strip-trailing-cr -x .env .local/edu-0042/normdiff/before/tests/foundation/test_synthetic_students.py .local/edu-0042/normdiff/after/tests/foundation/test_synthetic_students.py
+--- .local/edu-0042/normdiff/before/tests/foundation/test_synthetic_students.py	1970-01-01 07:00:00.000000000 +0700
++++ .local/edu-0042/normdiff/after/tests/foundation/test_synthetic_students.py	2026-11-14 15:51:52.671310500 +0700
+@@ -0,0 +1,53 @@
++import csv
++import tempfile
++import unicodedata
++import unittest
++from pathlib import Path
++
++from scripts.generate_synthetic_students import ROOT, generate
++from scripts.validate_students_csv import validate
++
++
++class SyntheticStudentsTests(unittest.TestCase):
++    def test_2k_and_10k_fixtures_validate_and_preserve_codes(self):
++        for count in (2000, 10000):
++            with (
++                self.subTest(count=count),
++                tempfile.TemporaryDirectory(dir=ROOT / ".local") as directory,
++            ):
++                path = Path(directory) / "students.csv"
++                generate(path, count, 360, "2026-2027")
++                self.assertEqual(validate(path), (count, []))
++                self.assertTrue(path.read_bytes().startswith(b"\xef\xbb\xbf"))
++                with path.open(encoding="utf-8-sig", newline="") as stream:
++                    rows = list(csv.DictReader(stream))
++                self.assertEqual(rows[0]["student_code"], "000001")
++                self.assertEqual(
++                    {row["grade_level"] for row in rows}, {str(n) for n in range(1, 13)}
++                )
++                self.assertTrue(all("giả lập" in row["full_name"] for row in rows))
++                self.assertTrue(
++                    all(unicodedata.is_normalized("NFC", row["full_name"]) for row in rows)
++                )
++
++    def test_same_seed_produces_identical_bytes_and_protects_existing_files(self):
++        with tempfile.TemporaryDirectory(dir=ROOT / ".local") as directory:
++            first, second = (Path(directory) / name for name in ("first.csv", "second.csv"))
++            generate(first, 20, 360, "2026-2027")
++            generate(second, 20, 360, "2026-2027")
++            self.assertEqual(first.read_bytes(), second.read_bytes())
++            original = first.read_bytes()
++            with self.assertRaises(FileExistsError):
++                generate(first, 20, 999, "2026-2027")
++            self.assertEqual(first.read_bytes(), original)
++
++    def test_invalid_inputs_fail_before_creating_output(self):
++        for count, year in ((0, "2026-2027"), (10001, "2026-2027"), (20, "2026-2028")):
++            with (
++                self.subTest(count=count, year=year),
++                tempfile.TemporaryDirectory(dir=ROOT / ".local") as directory,
++            ):
++                path = Path(directory) / "invalid.csv"
++                with self.assertRaises(ValueError):
++                    generate(path, count, 360, year)
++                self.assertFalse(path.exists())

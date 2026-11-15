@@ -1,0 +1,21 @@
+{
+  "task_id": "EDU-0027",
+  "verified_at": "2026-11-13T15:49:45+07:00",
+  "backend": "invite/create/read, activate/suspend, password reset, role grant/revoke and role catalog APIs",
+  "frontend": "Vietnamese login and one-time invitation administration console with typed OpenAPI client",
+  "results": {
+    "frontend_unit": "19 passed",
+    "frontend_e2e": "7 passed using installed Google Chrome via PLAYWRIGHT_CHANNEL=chrome",
+    "frontend_typecheck_lint_format": "passed",
+    "frontend_build": "passed",
+    "contract_check": "passed"
+  },
+  "security": [
+    "all mutations require session-bound CSRF",
+    "self-suspension denied",
+    "suspension revokes active sessions",
+    "grant/revoke is transactional and audited",
+    "frontend guards are UX only",
+    "Admin invitation avoids an administrator-selected initial password"
+  ]
+}

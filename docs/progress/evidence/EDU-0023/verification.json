@@ -1,0 +1,50 @@
+{
+  "task_id": "EDU-0023",
+  "run_timestamp": "2026-11-12T19:09:09+07:00",
+  "environment": "backend/.venv, Python 3.13.5, SQLAlchemy 2.1.8",
+  "cwd": "D:\\eduops360\\backend",
+  "checks": [
+    {
+      "command": ".venv/Scripts/python -B -m pytest tests -q -p no:cacheprovider",
+      "exit_code": 0,
+      "output": "60 passed in 1.31s"
+    },
+    {
+      "command": ".venv/Scripts/python -B -m ruff check --no-cache app migrations tests",
+      "exit_code": 0,
+      "output": "All checks passed!"
+    },
+    {
+      "command": ".venv/Scripts/python -B -m alembic heads",
+      "exit_code": 0,
+      "output": "0003_audit_logs (head)"
+    },
+    {
+      "command": "python -B scripts/validate_blueprint.py",
+      "cwd": "D:\\eduops360",
+      "exit_code": 0,
+      "output": "Blueprint: 12 phases, 27 skills, 14 role cards\nPASS: all required blueprint checks"
+    },
+    {
+      "command": "python -B scripts/check_structure.py",
+      "cwd": "D:\\eduops360",
+      "exit_code": 0,
+      "output": "Unified AI Agent SP governance structure: OK"
+    },
+    {
+      "command": "python -B scripts/check_text_encoding.py",
+      "cwd": "D:\\eduops360",
+      "exit_code": 0,
+      "output": "Checked text files: 255; encoding errors: 0"
+    }
+  ],
+  "not_run": [
+    "alembic upgrade/downgrade on live PostgreSQL (Docker not authorized)",
+    "DB runtime role least-privilege verification",
+    "OpenAPI drift check (no route changes in EDU-0023)"
+  ],
+  "git_state": "fatal: not a git repository",
+  "side_effects": [
+    ".local/EDU-0023/source-before/ created with backup of 0002_auth_users.py"
+  ]
+}

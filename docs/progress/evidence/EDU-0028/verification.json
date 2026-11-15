@@ -1,0 +1,31 @@
+{
+  "task_id": "EDU-0028",
+  "verified_at": "2026-11-13T15:49:45+07:00",
+  "negative_matrix": {
+    "missing_or_wrong_csrf": "denied",
+    "expired_session": "denied and marked expired",
+    "database_revoked_session": "denied",
+    "role_escalation": "denied",
+    "out_of_scope_idor": "denied",
+    "stale_role_grant": "denied on next request",
+    "runtime_audit_update_delete_truncate": "denied",
+    "audit_worker_source_mutation": "denied",
+    "failed_audit_transaction": "business write rolled back",
+    "login_rate_limit": "429 with Retry-After",
+    "self_approval": "denied by existing policy tests",
+    "invitation_reset_expiry_and_reuse": "denied; reset revokes existing sessions"
+  },
+  "results": {
+    "live_postgresql_integration": "7 passed",
+    "host_backend": "72 passed, 7 environment-gated skips",
+    "browser_e2e": "7 passed"
+  },
+  "debug_findings_fixed": [
+    "non-portable editable path in requirements.lock",
+    "Windows TestClient Proactor loop mismatch",
+    "ambiguous User/UserRole ORM foreign keys",
+    "dynamic dependency annotation causing FastAPI 422",
+    "missing ORM expression index metadata",
+    "non-deterministic foundation E2E readiness dependency"
+  ]
+}

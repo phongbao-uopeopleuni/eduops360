@@ -1,0 +1,34 @@
+
+ RUN  v5.1.0 D:/eduops360/frontend
+
+ ❯ src/features/user-management/UserManagementPage.test.tsx (3 tests | 1 failed) 173ms
+   ❯ user administration (3)
+     × does not offer or default to activation for a pending invitee 37ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/features/user-management/UserManagementPage.test.tsx > user administration > does not offer or default to activation for a pending invitee
+Error: expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <option
+  selected=""
+  value="active"
+>
+  Kích hoạt
+</option> instead
+ ❯ src/features/user-management/UserManagementPage.test.tsx:116:78
+    114|     const managedHeading = await screen.findByRole('heading', { name: …
+    115|     const managed = managedHeading.closest('section')!;
+    116|     expect(within(managed).queryByRole('option', { name: 'Kích hoạt' }…
+       |                                                                              ^
+    117|     expect(within(managed).getByText(/hoàn tất lời mời/)).toBeInTheDoc…
+    118|     expect(changeAdminUserStatus).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  11:44:55
+   Duration  1.31s (environment 59%, setup 18%, tests 15%, import 4%, transform 4%)
+

@@ -1,0 +1,28 @@
+...FF                                                                    [100%]
+================================== FAILURES ===================================
+________ test_login_rate_limiter_does_not_evict_an_already_blocked_key ________
+
+    def test_login_rate_limiter_does_not_evict_an_already_blocked_key() -> None:
+        limiter = LoginRateLimiter(limit=2, window_seconds=60, max_keys=2, clock=lambda: 1.0)
+        limiter.record_failure("blocked-victim")
+        limiter.record_failure("blocked-victim")
+        limiter.record_failure("flood-1")
+        limiter.record_failure("flood-2")
+>       assert limiter.check("blocked-victim") is not None
+E       AssertionError: assert None is not None
+E        +  where None = check('blocked-victim')
+E        +    where check = <app.modules.auth.rate_limit.LoginRateLimiter object at 0x000001FC81FBFD90>.check
+
+tests\auth\test_session_security.py:46: AssertionError
+_______________ test_credentialed_cors_rejects_wildcard_origin ________________
+
+    def test_credentialed_cors_rejects_wildcard_origin():
+>       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValidationError
+
+tests\test_foundation.py:135: Failed
+=========================== short test summary info ===========================
+FAILED tests/auth/test_session_security.py::test_login_rate_limiter_does_not_evict_an_already_blocked_key
+FAILED tests/test_foundation.py::test_credentialed_cors_rejects_wildcard_origin
+2 failed, 3 passed in 0.66s

@@ -1,0 +1,18 @@
+{
+  "task_id": "EDU-0047",
+  "recorded_at": "2026-11-14T22:09:00+07:00",
+  "conclusion": "decision_required__not_approved__p2_open",
+  "finding": "R42-F02",
+  "source_changed": false,
+  "code_changed": false,
+  "decision_brief": "docs/security/R42-F02_LOGIN_RATE_LIMIT_DECISION_BRIEF.md",
+  "options": [
+    "A disable the per-IP hard block temporarily",
+    "B retain it with approved threshold or semantics",
+    "C add explicitly trusted proxy attribution plus an approved threshold",
+    "D replace hard blocking with bounded progressive delay"
+  ],
+  "mandatory_invariant": "limiter status/body and blocking path must not depend on submitted-password correctness",
+  "approval_owner": "Human Security Owner under OD-001 with deployment topology input",
+  "result": "No option chosen; no code or configuration changed; R42-F02 remains P2 open"
+}

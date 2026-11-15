@@ -1,0 +1,92 @@
+{
+  "task_id": "EDU-0054",
+  "recorded_at": "2026-11-15T09:32:30+07:00",
+  "conclusion": "p03_t01_implemented_in_review__phase_02_debt_open",
+  "authorization": "Explicit user instruction on 2026-11-15 to continue Phase 03 while carrying unfinished Phase 02 work as technical debt",
+  "authority_boundary": [
+    "Phase 02 remains IN_REVIEW / NOT ACCEPTED",
+    "No R42, OD, MFA or archive policy was approved",
+    "EDU-0054 cannot self-review or authorize P03-T02..T09"
+  ],
+  "scope": {
+    "implemented": [
+      "strict academic-year and term date windows",
+      "term containment within academic year",
+      "minimal DRAFT to ACTIVE to ARCHIVED transition tables",
+      "one-active-year activation precondition",
+      "archived-year read-only guard",
+      "exact school/year scope guard with missing context denied",
+      "optimistic revision conflict guard",
+      "explicit IANA school timezone validation"
+    ],
+    "not_implemented": [
+      "SQLAlchemy models or repositories",
+      "Alembic migration or database constraint",
+      "API, authorization wiring, audit write or OpenAPI change",
+      "frontend, seed, student/class/teacher/subject work",
+      "P03-T02 through P03-T09"
+    ]
+  },
+  "commands": [
+    {
+      "id": "pre_change_root",
+      "command": "validate_blueprint; check_structure; check_text_encoding; unittest discover",
+      "exit_code": 0,
+      "result": "blueprint/structure pass; 462 text files 0 encoding errors; 24 root tests OK"
+    },
+    {
+      "id": "pre_change_backend",
+      "command": "ruff check/format --check; pytest backend/tests without EDUOPS_TEST DSNs; export_openapi --check",
+      "exit_code": 0,
+      "result": "Ruff clean; 56 files formatted; 78 passed 20 skipped; OpenAPI synchronized"
+    },
+    {
+      "id": "fail_first",
+      "command": "pytest backend/tests/academic_years/test_domain.py -q -p no:cacheprovider",
+      "exit_code": 2,
+      "result": "Expected collection failure: ModuleNotFoundError for app.modules.academic_years"
+    },
+    {
+      "id": "targeted_final",
+      "command": "pytest backend/tests/academic_years/test_domain.py -q -p no:cacheprovider; ruff check/format --check targeted files",
+      "exit_code": 0,
+      "result": "15 passed; Ruff clean; 3 files formatted"
+    },
+    {
+      "id": "backend_host_final",
+      "command": "ruff check/format --check backend tests/foundation; pytest backend/tests without EDUOPS_TEST DSNs; export_openapi --check",
+      "exit_code": 0,
+      "result": "Ruff clean; 59 files formatted; 93 passed 20 skipped; OpenAPI synchronized"
+    },
+    {
+      "id": "final_governance",
+      "command": "json.tool; sync_task_board; validate_blueprint; check_structure; check_text_encoding; unittest discover",
+      "exit_code": 0,
+      "result": "valid JSON; board 49 tasks; blueprint/structure pass; 467 text files 0 encoding errors; 24 root tests OK"
+    }
+  ],
+  "database": {
+    "migration_created": false,
+    "database_test_run": false,
+    "dev_database_write": false,
+    "reason": "P03-T01 is pure domain validation; persistence and DB uniqueness belong to P03-T03"
+  },
+  "git": {
+    "status_exit": 128,
+    "reflog_exit": 128,
+    "result": "not a git repository",
+    "commit": "not_done",
+    "push": "not_done",
+    "pr": "none",
+    "merge": "not_done"
+  },
+  "side_effects_so_far": [
+    "Created ignored .local/edu-0054/manifest-before.json",
+    "Created Python source/tests and their __pycache__ files; cache and mtime changes may remain",
+    "Ruff mechanically reformatted backend/app/modules/academic_years/domain.py once",
+    "Documentation and generated TASK_BOARD are updated or pending final regeneration",
+    "Pre-existing UI/API processes were observed at preflight but PIDs 37416/37456 and ports 5173/58080 had disappeared by final verification without any stop command from this task; they were not restarted",
+    "The pre-existing eduops360-dev PostgreSQL container remained healthy on 55440 and was not written by this task",
+    "No package installation, lockfile change, frontend build, migration, credential read, database write, public deployment or real student data"
+  ]
+}

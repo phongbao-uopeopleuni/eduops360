@@ -1,0 +1,18 @@
+.....................................................ssssssssssssss..... [ 81%]
+................                                                         [100%]
+=========================== short test summary info ===========================
+SKIPPED [1] tests\integration\test_auth_api.py:58: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_api.py:111: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_api.py:147: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_api.py:280: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:149: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:243: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:277: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:380: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:395: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:415: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_auth_remediation.py:508: isolated PostgreSQL auth API DSNs are not configured
+SKIPPED [1] tests\integration\test_database_security.py:32: isolated PostgreSQL security DSNs are not configured
+SKIPPED [1] tests\integration\test_database_security.py:64: isolated PostgreSQL security DSNs are not configured
+SKIPPED [1] tests\integration\test_database_security.py:87: isolated PostgreSQL security DSNs are not configured
+74 passed, 14 skipped in 3.54s

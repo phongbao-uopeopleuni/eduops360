@@ -1,0 +1,286 @@
+{
+  "queries": [
+    {
+      "package": {
+        "name": "alembic",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.20.1"
+    },
+    {
+      "package": {
+        "name": "annotated-doc",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.0.6"
+    },
+    {
+      "package": {
+        "name": "annotated-types",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.8.0"
+    },
+    {
+      "package": {
+        "name": "anyio",
+        "ecosystem": "PyPI"
+      },
+      "version": "4.16.0"
+    },
+    {
+      "package": {
+        "name": "certifi",
+        "ecosystem": "PyPI"
+      },
+      "version": "2026.10.23"
+    },
+    {
+      "package": {
+        "name": "click",
+        "ecosystem": "PyPI"
+      },
+      "version": "8.5.1"
+    },
+    {
+      "package": {
+        "name": "colorama",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.4.6"
+    },
+    {
+      "package": {
+        "name": "fastapi",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.162.5"
+    },
+    {
+      "package": {
+        "name": "greenlet",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.5.6"
+    },
+    {
+      "package": {
+        "name": "h11",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.16.0"
+    },
+    {
+      "package": {
+        "name": "httpcore2",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.16.0"
+    },
+    {
+      "package": {
+        "name": "httpx2",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.16.0"
+    },
+    {
+      "package": {
+        "name": "idna",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.20"
+    },
+    {
+      "package": {
+        "name": "iniconfig",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.3.1"
+    },
+    {
+      "package": {
+        "name": "Mako",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.4.3"
+    },
+    {
+      "package": {
+        "name": "MarkupSafe",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.0.4"
+    },
+    {
+      "package": {
+        "name": "opentelemetry-api",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.45.2"
+    },
+    {
+      "package": {
+        "name": "packaging",
+        "ecosystem": "PyPI"
+      },
+      "version": "26.3"
+    },
+    {
+      "package": {
+        "name": "pluggy",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.7.0"
+    },
+    {
+      "package": {
+        "name": "psycopg",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.3.8"
+    },
+    {
+      "package": {
+        "name": "psycopg-binary",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.3.8"
+    },
+    {
+      "package": {
+        "name": "pydantic",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.14.3"
+    },
+    {
+      "package": {
+        "name": "pydantic-settings",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.16.2"
+    },
+    {
+      "package": {
+        "name": "pydantic_core",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.50.4"
+    },
+    {
+      "package": {
+        "name": "Pygments",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.21.0"
+    },
+    {
+      "package": {
+        "name": "pytest",
+        "ecosystem": "PyPI"
+      },
+      "version": "9.2.0"
+    },
+    {
+      "package": {
+        "name": "python-dotenv",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.2.4"
+    },
+    {
+      "package": {
+        "name": "ruff",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.17.4"
+    },
+    {
+      "package": {
+        "name": "SQLAlchemy",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.1.8"
+    },
+    {
+      "package": {
+        "name": "starlette",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.10.0"
+    },
+    {
+      "package": {
+        "name": "truststore",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.10.5"
+    },
+    {
+      "package": {
+        "name": "typing-inspection",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.4.5"
+    },
+    {
+      "package": {
+        "name": "typing_extensions",
+        "ecosystem": "PyPI"
+      },
+      "version": "4.16.0"
+    },
+    {
+      "package": {
+        "name": "tzdata",
+        "ecosystem": "PyPI"
+      },
+      "version": "2026.6"
+    },
+    {
+      "package": {
+        "name": "uvicorn",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.54.0"
+    }
+  ],
+  "results": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ]
+}

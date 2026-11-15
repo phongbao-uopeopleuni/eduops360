@@ -1,0 +1,71 @@
+{
+  "task_id": "EDU-0046",
+  "recorded_at": "2026-11-14T22:07:38+07:00",
+  "conclusion": "implementation_in_review__independent_re_review_required",
+  "finding": "R42-F01",
+  "actor": "Codex acting remediation implementer; not independent reviewer or Human Security Owner",
+  "changed_files": [
+    "backend/app/modules/auth/guards.py",
+    "backend/app/modules/auth/admin_router.py",
+    "backend/app/modules/auth/router.py",
+    "backend/tests/integration/test_auth_remediation.py",
+    "docs/progress/tasks/EDU-0046.md",
+    "docs/progress/evidence/EDU-0046/verification.json"
+  ],
+  "implementation": {
+    "issuer_permission": {
+      "invitation": "current global user:create",
+      "password_reset": "current global user:password_reset"
+    },
+    "target_containment": "issuer covers every active, unrevoked, unexpired target grant, including future-start grants",
+    "check_position": "after target user and account token row locks; before password/status/session/token/audit mutation",
+    "denial": "HTTP 400 ACCOUNT_TOKEN_INVALID with limiter failure; transaction rollback preserves state",
+    "token_after_denial": "not consumed; may be retried before expiry if authority is restored",
+    "unresolved": "issuer suspended/locked status semantics require Security Owner confirmation"
+  },
+  "commands": [
+    {
+      "id": "fail-first-r42-f01",
+      "command": "isolated PostgreSQL DSNs; pytest tests/integration/test_auth_remediation.py -k r42_f01 -q",
+      "exit_code": 1,
+      "result": "2 failed as expected: vulnerable reset and invitation redemptions returned 204"
+    },
+    {
+      "id": "targeted-after",
+      "command": "isolated PostgreSQL DSNs; pytest tests/integration/test_auth_remediation.py -k r42_f01 -q",
+      "exit_code": 0,
+      "result": "2 passed, 7 deselected"
+    },
+    {
+      "id": "full-live-discovery",
+      "command": "migrator/runtime DSNs; pytest tests -q",
+      "exit_code": 1,
+      "result": "93 passed, 3 skipped, 1 failed: old F04 fixture created a token by an issuer with no reset permission"
+    },
+    {
+      "id": "full-live-final",
+      "command": "migrator/runtime/audit-worker DSNs; pytest tests -q",
+      "exit_code": 0,
+      "result": "97 passed"
+    },
+    {
+      "id": "ruff",
+      "command": "ruff check and ruff format --check for four changed Python files",
+      "exit_code": 0,
+      "result": "All checks passed; 4 files already formatted"
+    }
+  ],
+  "evidence_logs": [
+    "logs/r42-f01-before.txt",
+    "logs/r42-f01-after.txt",
+    "logs/backend-live-after.txt",
+    "logs/backend-live-all-roles.txt"
+  ],
+  "side_effects_so_far": [
+    "isolated Docker project eduops360-edu0046 with PostgreSQL 18 remains active for subsequent authorized remediation tasks",
+    "ignored .local/edu-0046 contains synthetic credentials, baseline copies and raw logs; credential file must be deleted at final teardown",
+    "Python test/cache mtimes changed; backend/app/modules/auth/guards.py was mechanically formatted",
+    "no package installation, network download, public deployment, real student data or Git repository mutation"
+  ],
+  "review_boundary": "R42-F01 and Phase 02 may only be closed after re-review by an actor other than Codex"
+}

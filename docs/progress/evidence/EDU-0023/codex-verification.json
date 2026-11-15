@@ -1,0 +1,102 @@
+{
+  "task_id": "EDU-0023",
+  "actor": "Codex acting Backend/Database implementer",
+  "recorded_at": "2026-11-12T19:17:28+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "scope": "Continue EDU-0023 for deterministic F10/F11 model-migration alignment without Docker or OD-dependent semantics",
+  "before": {
+    "targeted_regression": {
+      "command": ".venv/Scripts/python -B -m pytest tests/auth/test_schema_alignment.py -q -p no:cacheprovider",
+      "exit_code": 1,
+      "result": "3 failed: migration nullability, database timestamp expressions/JSONB, and history FK delete policy"
+    },
+    "source_hashes": {
+      "backend/app/modules/auth/models.py": "D2DB1A8DDB0338E617B260451C01ACA07AA86FEFC2A145D435EB559D94DD546D",
+      "backend/app/modules/audit_logs/models.py": "27ECC971F70341BE2021972EBBFC039764FAE909DE4EC8EC735B29D261B95B21",
+      "backend/migrations/versions/0002_auth_users.py": "D95B5F2D861CAEA952E953C4C20BAFB51904D42D72A4614AFFAFE039363CBFBB",
+      "backend/migrations/versions/0003_audit_logs.py": "6FA15E27D792D1BC929FEB0090F15993F5A7587C187110F9676496AB8A633855",
+      "ai-agent-sp/PROJECT_CONTEXT.md": "AF009D75B504C0472FDBD6845C3F27673A297C79EEABB606DE4C439E694A0730"
+    },
+    "backup_root": ".local/EDU-0023/codex-1914/source-before",
+    "backup_hashes_verified": 8
+  },
+  "changes": [
+    "Required timestamp, boolean, counter and status columns are NOT NULL in migrations",
+    "Model server defaults use SQL text expressions; updated_at uses database func.now()",
+    "Audit JSON fields use JSONB in both model and migration",
+    "User/role assignment and session history foreign keys use ON DELETE RESTRICT",
+    "granted_by/revoked_by and audit_outbox.audit_log_id have explicit restrictive foreign keys",
+    "Added offline model/migration regression tests"
+  ],
+  "after": {
+    "checks": [
+      {
+        "command": ".venv/Scripts/python -B -m pytest tests -q -p no:cacheprovider",
+        "exit_code": 0,
+        "result": "63 passed in 1.18s"
+      },
+      {
+        "command": ".venv/Scripts/python -B -m ruff check --no-cache app migrations tests",
+        "exit_code": 0,
+        "result": "All checks passed!"
+      },
+      {
+        "command": ".venv/Scripts/python -B -m alembic heads",
+        "exit_code": 0,
+        "result": "0003_audit_logs (head)"
+      },
+      {
+        "command": ".venv/Scripts/python -B -m alembic upgrade 0001_foundation:head --sql",
+        "exit_code": 0,
+        "result": "205 offline SQL lines; ends at 0003_audit_logs and COMMIT"
+      }
+    ],
+    "offline_sql_summary": {
+      "0002_auth_users": {
+        "lines": 151,
+        "not_null": 37,
+        "on_delete_restrict": 6
+      },
+      "0003_audit_logs": {
+        "lines": 42,
+        "not_null": 9,
+        "on_delete_restrict": 1,
+        "jsonb": 3
+      }
+    },
+    "source_hashes": {
+      "backend/app/modules/auth/models.py": "9415B93C9CEB9F31D799A4FD28E89117D18E94DBCEE26B5A6DF71C5415327F6C",
+      "backend/app/modules/audit_logs/models.py": "0367F2DE478CA1FF2313D5F1136A85C9B85143CD5BDE2587870470389ED1CA27",
+      "backend/migrations/versions/0002_auth_users.py": "F6852E29068CB4CFBAD039837549808155F854A3DC2D2769E00FEECB069F08BA",
+      "backend/migrations/versions/0003_audit_logs.py": "AB097504CDE36331850629D9F795095C0A82C338B8F25B41752243D89C676128",
+      "backend/tests/auth/test_schema_alignment.py": "34AC8A1E4F38F639F23AF11FB1257159A6796B39E65E9094CCE55587F02AB290"
+    },
+    "documentation_checks": {
+      "sync_task_board": "exit 0; 18 tasks",
+      "validate_blueprint": "exit 0; 12 phases, 27 skills, 14 role cards",
+      "check_structure": "exit 0",
+      "check_text_encoding": "exit 0; 258 text files, 0 errors before this final evidence update",
+      "docs_governance_audit": "exit 0; local Markdown links resolve"
+    },
+    "documentation_hashes_before_final_evidence_update": {
+      "ai-agent-sp/PROJECT_CONTEXT.md": "8F754C1708C712CCC41922D9B9F1F7B01BA14821863E88115BF7BCDE0FBD15CB",
+      "docs/progress/tasks/EDU-0023.md": "0B2B55399E2C98CB0399982048D70F33E72083FF66203160B26C523056DBC289",
+      "docs/progress/HANDOFF.md": "9E9F13BDB72659CDD1C722B2E37C71C9EC3DA9770901B85BA03EC0CB1387236D",
+      "docs/phases/PHASE-02.md": "EE4B69F6E35FBE6263CE3CECF87407B9DFB8EDB2433B2817E0915467F8BD8BBF",
+      "docs/progress/TASK_BOARD.md": "653D19B6BFE71D309B3EE2B655B103793DAF22C92C78C076BAF18FB5CE1711E4"
+    }
+  },
+  "blocked_or_not_run": [
+    "Live PostgreSQL upgrade/downgrade/re-upgrade and alembic check: Docker not authorized",
+    "Runtime/migration DB role separation and audit UPDATE/DELETE denial: Docker not authorized",
+    "Scope NULL and user-role uniqueness semantics: OD-008 open",
+    "Audit retention and downgrade authority: OD-011 open"
+  ],
+  "side_effects": [
+    "Created backend/tests/auth/test_schema_alignment.py",
+    "Created exact source backups under .local/EDU-0023/codex-1914/source-before",
+    "Regenerated docs/progress/TASK_BOARD.md and updated Phase 02 context/handoff documents",
+    "No Docker, server, build, test-results or pytest cache was started/created by this continuation"
+  ],
+  "finalized_at": "2026-11-12T19:18:44+07:00"
+}

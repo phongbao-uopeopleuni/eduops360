@@ -1,0 +1,28 @@
+{
+  "task_id": "EDU-0045",
+  "recorded_at": "2026-11-14T21:52:00+07:00 (before the final journal edit)",
+  "actor": "Claude acting handoff planner; not an approver",
+  "request": "Viết lại prompt để agent có thể nắm thông tin công việc và làm việc tiếp theo",
+  "outputs": {
+    "prompt": "docs/progress/NEXT_AGENT_PROMPT.md (rewritten, CRLF kept, 270 lines, no credential values)",
+    "previous_prompt_backup": "docs/progress/evidence/EDU-0045/NEXT_AGENT_PROMPT.previous.md (byte-identical copy of the unexecuted EDU-0043 prompt, sha256 prefix 592bac12ececdd6a)",
+    "handoff": "docs/progress/HANDOFF.md (new short section after the EDU-0044 section)"
+  },
+  "prompt_design": [
+    "One consolidated queue: A R42-F01 (P1), B R42-F02 brief (P2), C R42-F03..F05 (P3), D independent review of the EDU-0044 UI restyle, E acceptance package/HANDOFF/prompt",
+    "Independence matrix: A-D by an agent other than Claude; re-review by an actor other than the fixer; explicit stop if the receiving agent is Claude",
+    "Fresh state table with measurement times; last PostgreSQL and E2E results labelled with their original times",
+    "Includes the user's local dev environment (.local/dev start/stop scripts, synthetic admin file path) and the reusable screenshot script for the UI review",
+    "Carries forward guardrails: .env exclusion, Docker state restore, no Git/network, evidence and re-verification rules"
+  ],
+  "commands": [
+    {"id": "state-check", "cwd": ".", "started_at": "2026-11-14T21:48:57+07:00", "command": "list tasks, files newer than 17:47 (.env excluded), listeners, docker desktop status", "exit_code": 0, "result": "EDU-0045/0046 free; no files changed since 17:47; no listeners; Docker Desktop running"},
+    {"id": "host-gates", "cwd": ".", "started_at": "2026-11-14T21:49:13+07:00", "command": "pytest backend/tests (no DSNs); ruff check backend tests/foundation; python -m unittest discover; npm test; npm run typecheck; check_text_encoding", "exit_code": 0, "result": "77 passed 18 skipped; ruff clean; 24 OK; 22 passed; typecheck ok; 418 files 0 errors"},
+    {"id": "backup-prompt", "cwd": ".", "started_at": "2026-11-14T21:50+07:00 (not separately timestamped)", "command": "cp -p docs/progress/NEXT_AGENT_PROMPT.md docs/progress/evidence/EDU-0045/NEXT_AGENT_PROMPT.previous.md; cmp", "exit_code": 0, "result": "backup identical"},
+    {"id": "credential-scan", "cwd": ".", "started_at": "2026-11-14T21:51+07:00 (not separately timestamped)", "command": "grep for dev passwords or DSNs with passwords in the new prompt", "exit_code": 1, "result": "no matches (no credentials in prompt)"}
+  ],
+  "side_effects": [
+    "no product source, test, migration or contract changed; no Docker, servers, network or Git"
+  ],
+  "git": {"repository": false, "commit": "not_done", "push": "not_done", "pull_request": "none", "merge": "not_done"}
+}

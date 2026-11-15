@@ -1,0 +1,70 @@
+{
+  "task_id": "EDU-0034",
+  "recorded_at": "2026-11-14T12:44:11+07:00",
+  "conclusion": "PASS_WITH_NOTES",
+  "scope": "Independent technical re-review of EDU-0032; no product-source changes",
+  "commands": [
+    {
+      "command": "backend/.venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider (host)",
+      "exit_code": 0,
+      "result": "74 passed, 14 skipped"
+    },
+    {
+      "command": "backend/.venv/Scripts/python.exe -B -m ruff check app tests",
+      "exit_code": 0,
+      "result": "All checks passed"
+    },
+    {
+      "command": "backend/.venv/Scripts/python.exe -B scripts/export_openapi.py --check",
+      "exit_code": 0,
+      "result": "OpenAPI contract matches FastAPI"
+    },
+    {
+      "command": "alembic upgrade head; alembic current; alembic check (isolated migrator role)",
+      "exit_code": 0,
+      "result": "0007_account_tokens (head); no new upgrade operations"
+    },
+    {
+      "command": "alembic current (isolated runtime role)",
+      "exit_code": 1,
+      "result": "Expected denial: permission denied for table alembic_version"
+    },
+    {
+      "command": "backend/.venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider (isolated PostgreSQL runtime/audit roles)",
+      "exit_code": 0,
+      "result": "88 passed"
+    },
+    {
+      "command": "copies of EDU-0031 probe_live.py, probe_loop.py, probe_offline.py and probe_identity_map.py under .local/EDU-0034",
+      "exit_code": 0,
+      "result": "F01-F07 fixed behavior confirmed; open P3 findings reproduced"
+    },
+    {
+      "command": "frontend typecheck; lint; format:check; api:check; test",
+      "exit_code": 0,
+      "result": "static gates passed; 20 unit tests passed"
+    },
+    {
+      "command": "validate_blueprint; check_structure; check_text_encoding; validate_students_csv; root unittest",
+      "exit_code": 0,
+      "result": "all passed; encoding 324 files/0 errors; 17 unittests OK"
+    }
+  ],
+  "probe_highlights": {
+    "target_privilege": "reset/suspend broader target denied 403",
+    "pending_transition": "activation denied 409; invitation remained usable",
+    "token_race": "second consumer rejected ACCOUNT_TOKEN_INVALID",
+    "long_user_agent": "account locked; audit rows persisted",
+    "existing_locked_session": "GET /auth/me 200",
+    "argon2_liveness_max_ms": 11.2,
+    "delegation": "self-grant denied; expiry prevents further grant"
+  },
+  "notes": [
+    "F08 real-backend browser coverage remains for a later task and was disclosed by EDU-0032.",
+    "Raw invitation token delivery remains a documented Security Owner decision.",
+    "Temporary F01/F03/F05/F06/F07 policy values are not approved decisions."
+  ],
+  "product_source_snapshot": "100 of 100 files byte-identical to pre-review baseline",
+  "git": "not a Git repository; no branch, commit, push, PR or merge"
+}
+

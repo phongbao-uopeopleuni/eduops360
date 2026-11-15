@@ -1,0 +1,74 @@
+name: Phase 01 foundation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.local/browsers
+      PLAYWRIGHT_EXTERNAL_SERVER: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.12.0'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked backend and frontend dependencies
+        run: |
+          python -m venv backend/.venv
+          backend/.venv/bin/python -m pip install -r backend/requirements.lock
+          backend/.venv/bin/python -m pip install --no-deps -e backend
+          npm ci --prefix frontend --no-fund --no-audit
+      - name: Backend tests and source checks
+        run: |
+          backend/.venv/bin/python -m ruff check backend
+          backend/.venv/bin/python -m ruff format --check backend
+          backend/.venv/bin/python -m pytest backend/tests -q
+          backend/.venv/bin/python scripts/export_openapi.py --check
+          python -m unittest discover -s tests -p 'test_*.py'
+          python scripts/check_text_encoding.py
+      - name: Frontend checks and build
+        working-directory: frontend
+        run: |
+          npm run api:check
+          npm run format:check
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
+          npx playwright install --with-deps --no-shell chromium
+      - name: Create isolated local test configuration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import secrets
+          content = (
+              'POSTGRES_MIGRATOR_PASSWORD=' + secrets.token_urlsafe(32) + '\n'
+              'POSTGRES_RUNTIME_PASSWORD=' + secrets.token_urlsafe(32) + '\n'
+              'POSTGRES_AUDIT_WORKER_PASSWORD=' + secrets.token_urlsafe(32) + '\n'
+          )
+          Path('infra/.env').write_text(content, encoding='utf-8')
+          PY
+      - name: Start Compose and test the full stack
+        run: |
+          docker compose --env-file infra/.env -f infra/compose.dev.yml config --quiet
+          docker compose --env-file infra/.env -f infra/compose.dev.yml up --build -d --wait
+          docker compose --env-file infra/.env -f infra/compose.dev.yml run --rm migrate python -m alembic check
+          python scripts/smoke_local.py
+          npm run test:e2e --prefix frontend
+      - name: Stop local test services
+        if: always()
+        run: docker compose --env-file infra/.env -f infra/compose.dev.yml down
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: foundation-browser-evidence
+          path: frontend/test-results/

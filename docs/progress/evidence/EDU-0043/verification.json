@@ -1,0 +1,34 @@
+{
+  "task_id": "EDU-0043",
+  "recorded_at": "2026-11-14T16:50:20+07:00",
+  "actor": "Claude acting handoff planner; reviewer of EDU-0042; not an approver",
+  "request": "User asked for a Codex prompt (Draft prompt for Codex) after the EDU-0042 review found R42-F01..F05",
+  "outputs": {
+    "prompt": "docs/progress/NEXT_AGENT_PROMPT.md (rewritten, CRLF kept, 243 lines)",
+    "previous_prompt_backup": "docs/progress/evidence/EDU-0043/NEXT_AGENT_PROMPT.previous.md (byte-identical copy of the EDU-0041 reviewer prompt, sha256 316b982be5d0c914bd6772153b4eb02f4e0bab2fe3faff99151da3d741047459)",
+    "handoff": "docs/progress/HANDOFF.md (one bullet appended to the EDU-0042 section)"
+  },
+  "prompt_design": [
+    "Codex is the remediation actor because Claude reviewed EDU-0042 and implemented the EDU-0032 F01 design; re-review must be by an actor other than Codex",
+    "R42-F01 (P1): re-check issuer's current permission and target coverage at token redemption; live RA/RB regressions plus positive cases",
+    "R42-F02 (P2): decision brief only (NOT APPROVED options A-D with the no-oracle constraint); code only after an explicit user choice",
+    "R42-F03..F05 (P3): bounded eviction scan; tracked real-auth seed helper with opt-in fail-instead-of-skip; append-only EDU-0040 correction listing the 14 formatted files",
+    "Package rule: Phase 02 may read READY_FOR_HUMAN_ACCEPTANCE only after R42-F01 is fixed and re-reviewed by a non-Codex actor; an undecided R42-F02 must stay listed as an open P2",
+    "Lessons carried: exclude .env* from every recursive read/copy, one app per worker in concurrency probes, confirm Docker Desktop stop via status without immediate docker CLI calls, orphaned Vite node process"
+  ],
+  "commands": [
+    {"id": "backup-prompt", "cwd": ".", "started_at": "2026-11-14T16:47+07:00 (not separately timestamped)", "command": "cp -p docs/progress/NEXT_AGENT_PROMPT.md docs/progress/evidence/EDU-0043/NEXT_AGENT_PROMPT.previous.md; cmp", "exit_code": 0, "result": "backup identical"},
+    {"id": "governance-blueprint", "cwd": ".", "started_at": "2026-11-14T16:50:20+07:00", "command": "python scripts/validate_blueprint.py", "exit_code": 0, "result": "PASS: all required blueprint checks"},
+    {"id": "governance-structure", "cwd": ".", "started_at": "2026-11-14T16:50:20+07:00", "command": "python scripts/check_structure.py", "exit_code": 0, "result": "Unified AI Agent SP governance structure: OK"},
+    {"id": "governance-encoding", "cwd": ".", "started_at": "2026-11-14T16:50:20+07:00", "command": "python scripts/check_text_encoding.py", "exit_code": 0, "result": "Checked text files: 403; encoding errors: 0 (before this JSON and the final journal edit)"}
+  ],
+  "authority_statements_in_prompt": [
+    "Grants isolated per-task Docker Compose use (db only, synthetic passwords, down -v only for own project; restore Docker Desktop to its initial state); the user may remove that section before sending",
+    "Grants no Git, network installs, .env access, OD decisions, phase acceptance or Phase 03 start"
+  ],
+  "side_effects": [
+    "no product source, test, migration, contract or package file changed; no Docker, servers or Git",
+    "validator output written to .local/edu-0042/logs/edu0043-*.txt (ignored)"
+  ],
+  "git": {"repository": false, "commit": "not_done", "push": "not_done", "pull_request": "none", "merge": "not_done"}
+}

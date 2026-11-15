@@ -1,0 +1,25 @@
+{
+  "task_id": "EDU-0025",
+  "verified_at": "2026-11-13T15:49:45+07:00",
+  "results": {
+    "host_backend_suite": "72 passed, 7 integration tests skipped without isolated DSNs",
+    "live_auth_and_database_integration": "7 passed",
+    "ruff": "All checks passed",
+    "openapi": "FastAPI contract and generated TypeScript synchronized"
+  },
+  "controls": [
+    "high-entropy session token stored only as SHA-256 hash",
+    "Secure HttpOnly SameSite=Strict session cookie",
+    "server-bound CSRF hash plus double-submit header/cookie validation",
+    "database expiry and revocation checked on every request",
+    "bounded per-process rate limiter plus durable account lockout",
+    "TOTP verification for already provisioned MFA accounts",
+    "login/logout/failure audit in the same transaction",
+    "hashed expiring single-use invitation and password-reset capabilities",
+    "password reset revokes active sessions and raw capabilities are absent from audit"
+  ],
+  "not_claimed": [
+    "MFA secret enrollment/recovery is not enabled without approved encrypted custody",
+    "production HTTPS and multi-instance distributed rate limiting are not certified"
+  ]
+}

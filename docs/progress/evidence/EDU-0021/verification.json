@@ -1,0 +1,149 @@
+{
+  "task_id": "EDU-0021",
+  "recorded_at": "2026-11-12T18:34:23+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "scope": "Documentation packaging plus read-only verification; no Docker or application server started",
+  "before_files": [
+    {
+      "path": "docs/phases/PHASE-02.md",
+      "sha256": "CA3A088F343AAAD1A2D448577F0964BFEBFF6BA918D7ACABD7DC09C56AB757F3"
+    },
+    {
+      "path": "docs/progress/README.md",
+      "sha256": "EBB8422565AE73522C6FFCCC75AA79439BA03610DB1CA85298EAA6E9E5DC450D"
+    },
+    {
+      "path": "docs/progress/HANDOFF.md",
+      "sha256": "79678B5ED323853DBD35BF0E1B802BD38C9604447A3B696C42CE75D7A91C1FB7"
+    },
+    {
+      "path": "docs/quality/TRACEABILITY_MATRIX.md",
+      "sha256": "37BCD6926E358AC77467C3F2008225CF1281C11D22C676CAD08DC0E26471262C"
+    },
+    {
+      "path": "docs/progress/TASK_BOARD.md",
+      "sha256": "5A6D3BB49445827E688B8C93BD1BFEDEEAD44EEEA4570514EB72F065F93A67A6"
+    }
+  ],
+  "checks": [
+    {
+      "name": "backend_pytest_venv",
+      "command": ".venv/Scripts/python -B -m pytest tests -q -p no:cacheprovider",
+      "cwd": "backend",
+      "exit_code": 0,
+      "result": "60 passed in 1.04s"
+    },
+    {
+      "name": "ruff_app_venv",
+      "command": ".venv/Scripts/python -B -m ruff check --no-cache app",
+      "cwd": "backend",
+      "exit_code": 0,
+      "result": "All checks passed!"
+    },
+    {
+      "name": "ruff_migrations_tests_venv",
+      "command": ".venv/Scripts/python -B -m ruff check --no-cache migrations tests",
+      "cwd": "backend",
+      "exit_code": 1,
+      "result": "7 E501 findings in migrations/versions/0002_auth_users.py"
+    },
+    {
+      "name": "sync_task_board",
+      "command": "python -B scripts/sync_task_board.py",
+      "cwd": ".",
+      "exit_code": 0,
+      "result": "Generated TASK_BOARD.md with 16 tasks before final task metadata refresh; final refresh is recorded separately"
+    },
+    {
+      "name": "validate_blueprint",
+      "command": "python -B scripts/validate_blueprint.py",
+      "cwd": ".",
+      "exit_code": 0,
+      "result": "12 phases, 27 skills, 14 role cards; PASS"
+    },
+    {
+      "name": "check_structure",
+      "command": "python -B scripts/check_structure.py",
+      "cwd": ".",
+      "exit_code": 0,
+      "result": "Unified AI Agent SP governance structure: OK"
+    },
+    {
+      "name": "check_text_encoding",
+      "command": "python -B scripts/check_text_encoding.py",
+      "cwd": ".",
+      "exit_code": 0,
+      "result": "250 text files, 0 encoding errors before verification.json and hash manifest were added"
+    },
+    {
+      "name": "docs_governance_audit",
+      "command": "python -B <docs-governance>/scripts/audit-docs.py --root D:/eduops360 --scope full",
+      "cwd": ".",
+      "exit_code": 0,
+      "result": "Deterministic audit passed; all local Markdown links resolve; progressive-adoption and possible-orphan warnings require manual review"
+    }
+  ],
+  "failed_tool_invocations": [
+    {
+      "name": "docs_governance_audit_first_attempt",
+      "exit_code": 1,
+      "cause": "Nested PowerShell command split the skill path at the space in the Windows user directory",
+      "repository_result": "No repository audit result was produced",
+      "resolution": "Reran with a literal path and argv-safe invocation; exit 0"
+    }
+  ],
+  "final_documentation_validation": {
+    "task_board_tasks": 16,
+    "validate_blueprint_exit_code": 0,
+    "check_structure_exit_code": 0,
+    "check_text_encoding_exit_code": 0,
+    "checked_text_files": 251,
+    "encoding_errors": 0,
+    "docs_governance_audit_exit_code": 0,
+    "local_markdown_links": "all_resolved",
+    "warnings": "Progressive-adoption filename roles and possible orphan documents require manual semantic review"
+  },
+  "final_state_evidence": {
+    "checked_at": "2026-11-12T18:36:52+07:00",
+    "manifest_entries": 126,
+    "docs_files_excluding_manifest": 126,
+    "manifest_missing": 0,
+    "manifest_mismatch": 0,
+    "manifest_unlisted": 0,
+    "project_runtime_processes": 0,
+    "project_owned_executables": 0,
+    "listening_ports_5173_8000_32768": 0,
+    "git_status_exit_code": 128,
+    "git_reflog_exit_code": 128,
+    "git_error": "fatal: not a git repository (or any of the parent directories): .git"
+  },
+  "not_run": [
+    "Docker Desktop startup",
+    "PostgreSQL migration upgrade/downgrade/re-upgrade",
+    "Alembic check against a live Phase 02 database",
+    "Migration/runtime DB role separation",
+    "DB-level audit UPDATE/DELETE denial",
+    "Frontend tests, because this task changed documentation only"
+  ],
+  "side_effects": {
+    "source_code_modified": false,
+    "documentation_modified": true,
+    "task_board_regenerated": true,
+    "docker_started": false,
+    "application_server_started": false,
+    "test_cache_requested": false,
+    "new_documentation_artifacts": [
+      "docs/progress/REVIEW_PACKAGE_2026-11-12.md",
+      "docs/progress/tasks/EDU-0021.md",
+      "docs/progress/evidence/EDU-0021/verification.json",
+      "docs/progress/evidence/EDU-0021/docs-tree.sha256"
+    ]
+  },
+  "git": {
+    "repository": false,
+    "commit": "not_done",
+    "push": "not_done",
+    "pull_request": "none",
+    "merge": "not_done"
+  }
+}

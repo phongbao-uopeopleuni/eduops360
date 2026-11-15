@@ -1,0 +1,65 @@
+{
+  "recorded_at": "2026-11-12T13:16:50.458760+07:00",
+  "observed_teardown_commands": [
+    {
+      "command": "docker compose --env-file infra/.env -f infra/compose.dev.yml down",
+      "observed_exit_code": 0
+    },
+    {
+      "command": "docker ps -a --filter label=com.docker.compose.project=eduops360-local --format {{.Names}}",
+      "observed_exit_code": 0,
+      "observed_stdout": ""
+    },
+    {
+      "command": "docker ps --format {{.Names}}",
+      "observed_exit_code": 0,
+      "observed_stdout": ""
+    },
+    {
+      "command": "docker desktop stop --timeout 30",
+      "observed_exit_code": 0
+    }
+  ],
+  "verification_records": [
+    {
+      "recorded_at": "2026-11-12T13:16:50.401773+07:00",
+      "command": [
+        "docker",
+        "desktop",
+        "status"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Could not retrieve status. Is Docker Desktop running?\nYou can start Docker Desktop by running 'docker desktop start'.\n"
+    },
+    {
+      "recorded_at": "2026-11-12T13:16:50.458244+07:00",
+      "command": [
+        "netstat",
+        "-ano"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "output_scope": "Only task ports retained from netstat output"
+    }
+  ],
+  "task_ports": [
+    5173,
+    8000,
+    55432,
+    15173,
+    18000
+  ],
+  "matching_netstat_lines": [],
+  "listening_count": 0,
+  "retained_volume_observed_before_engine_stop": "eduops360-local_postgres-data",
+  "note": "The first evidence writer hit Windows console encoding while printing Docker CLI output after Engine stop. This file captures fresh final status and preceding observed successful teardown results.",
+  "final_port_verification": {
+    "recorded_at": "2026-11-12T13:18:04.964896+07:00",
+    "command": "netstat -ano filtered to 5173/8000/55432/15173/18000",
+    "exit_code": 0,
+    "matching_lines": [],
+    "listening_count": 0
+  }
+}

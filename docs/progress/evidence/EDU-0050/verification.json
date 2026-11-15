@@ -1,0 +1,89 @@
+{
+  "task_id": "EDU-0050",
+  "recorded_at": "2026-11-14T22:26:28+07:00",
+  "conclusion": "handoff_ready__phases_not_accepted",
+  "current_status": {
+    "phase_01": "technical gate reproduced; UI49-F01 open; no hosted CI/human acceptance",
+    "phase_02": "R42-F01/F03-F05 implementations await independent re-review; R42-F02 P2 not approved",
+    "phase_03": "must not start"
+  },
+  "commands": [
+    {
+      "id": "governance-root",
+      "command": "validate_blueprint; check_structure; check_text_encoding; validate_students_csv; unittest discover",
+      "exit_code": 0,
+      "result": "blueprint/structure pass; 442 files 0 encoding errors; CSV 3/0; 24 tests OK"
+    },
+    {
+      "id": "backend-host",
+      "command": "ruff check/format --check; pytest backend/tests without DB DSNs; export_openapi --check",
+      "exit_code": 0,
+      "result": "Ruff clean; 57 files formatted; 78 passed 20 skipped; OpenAPI synchronized"
+    },
+    {
+      "id": "frontend",
+      "command": "typecheck; lint; format:check; api:check; unit; build",
+      "exit_code": 0,
+      "result": "22 passed; all static/contract checks and Vite build passed"
+    },
+    {
+      "id": "postgresql",
+      "command": "isolated migrator current/check; full tests with migrator/runtime/audit-worker DSNs",
+      "exit_code": 0,
+      "result": "0008_mfa_replay_counter head; no drift; 98 passed"
+    },
+    {
+      "id": "playwright",
+      "command": "PLAYWRIGHT_REQUIRE_REAL_AUTH=1, Chrome, self-started API 58096 and Vite 5177, isolated PostgreSQL",
+      "exit_code": 0,
+      "result": "9 passed; synthetic real-auth user's only session verified revoked"
+    },
+    {
+      "id": "teardown",
+      "command": "compose down -v for project eduops360-edu0046; delete exact synthetic env/fixture; docker desktop stop",
+      "exit_code": 0,
+      "result": "isolated containers/volumes/networks 0; credential files absent; Docker processes 0; task listeners 0"
+    },
+    {
+      "id": "final-docs-governance",
+      "command": "sync_task_board; validate_blueprint; check_structure; check_text_encoding; unittest discover",
+      "exit_code": 0,
+      "result": "45 tasks; blueprint/structure pass; 446 files 0 encoding errors; 24 tests OK"
+    }
+  ],
+  "prompt_backup": {
+    "path": "docs/progress/evidence/EDU-0050/NEXT_AGENT_PROMPT.previous.md",
+    "sha256_original_and_backup": "0981286CCA1DD2320552F684F9DA249AEB84B450FA98EE4202C7DD20BA27FFD5",
+    "match": true
+  },
+  "final_state": {
+    "recorded_at": "2026-11-14T22:28:35+07:00",
+    "git_status_exit": 128,
+    "git_reflog_exit": 128,
+    "git_result": "not a git repository",
+    "selected_task_listeners": 0,
+    "workspace_python_node_processes": 0,
+    "docker_desktop_processes": 0,
+    "isolated_project_resources_before_desktop_stop": "0 containers, 0 volumes, 0 networks for eduops360-edu0046",
+    "synthetic_env_exists": false,
+    "synthetic_real_auth_fixture_exists": false,
+    "next_prompt_markers": true,
+    "next_prompt_line_endings": "151 CR and 151 LF (CRLF)",
+    "task_board_count": 45
+  },
+  "side_effects": [
+    "frontend/dist was overwritten by the final Vite build; frontend/test-results was overwritten by expected-failure and final Playwright runs",
+    "Python/Node caches, test result images and file mtimes changed; ignored .local/edu-0046 keeps baseline copies and sanitized logs",
+    "Docker Desktop was started for isolated PostgreSQL, project eduops360-edu0046 created, then its container/network/volume removed and Desktop stopped",
+    "temporary API 58096, Vite 5177 and review Vite 5178 were started and stopped; final selected listener count is zero",
+    "two disposable synthetic credential files were permanently deleted after verification; they are reproducible and require no recovery",
+    "the first failed real-auth Playwright context contained a disposable synthetic password and Codex accidentally printed it to the agent transcript; final test-results/log scan found zero synthetic-password artifact files; no production/user credential was involved",
+    "backend/app/modules/auth/guards.py was mechanically formatted; no package installation, lockfile change, public deployment, real student data or Git repository mutation"
+  ],
+  "final_authority_boundaries": [
+    "Codex cannot independently close EDU-0046 or EDU-0048",
+    "R42-F02 requires Human Security Owner decision",
+    "UI49-F01 requires a fixer other than Codex and a reviewer different from that fixer",
+    "approval ledger remains blank and Phase 01/02 remain NOT ACCEPTED"
+  ]
+}

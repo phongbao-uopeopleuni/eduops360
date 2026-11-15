@@ -1,0 +1,61 @@
+{
+  "task_id": "EDU-0038",
+  "recorded_at": "2026-11-14T15:13:40+07:00",
+  "findings": ["A0102-F10", "A0102-F20", "A0102-F08 remaining browser coverage"],
+  "failing_first": [
+    {
+      "scope": "pending invitation reissue/cancel API",
+      "exit_code": 1,
+      "result": "reissue returned 404 instead of 201"
+    },
+    {
+      "scope": "role-catalog loading error",
+      "exit_code": 1,
+      "result": "UI silently rendered an empty role list; no alert"
+    }
+  ],
+  "verification": [
+    {
+      "command": "live invitation lifecycle regression on isolated PostgreSQL",
+      "exit_code": 0,
+      "result": "1 passed: old token invalidated, reissued token accepted, cancel invalidated token, privileged target denied, two audits present"
+    },
+    {
+      "command": "frontend user-management Vitest",
+      "exit_code": 0,
+      "result": "5 passed"
+    },
+    {
+      "command": "OpenAPI export/check and TypeScript client generation/check",
+      "exit_code": 0,
+      "result": "contract and generated client synchronized"
+    },
+    {
+      "command": "full backend suite with isolated PostgreSQL roles",
+      "exit_code": 0,
+      "result": "95 passed"
+    },
+    {
+      "command": "frontend typecheck, lint, format:check, api:check and unit suite",
+      "exit_code": 0,
+      "result": "all passed; 22 unit tests"
+    },
+    {
+      "command": "Playwright real-auth.spec.ts with external localhost API/Vite and isolated PostgreSQL",
+      "exit_code": 0,
+      "result": "1 passed; no route mocks; login succeeded, logout with browser CSRF succeeded, reload returned signed-out UI; DB contains one revoked session"
+    }
+  ],
+  "temporary_services": {
+    "api": "127.0.0.1:58095",
+    "frontend": "127.0.0.1:5174",
+    "after": "both stopped; no listeners"
+  },
+  "security_notes": [
+    "Cancel invalidates invitation capabilities but deliberately leaves the account pending, so it cannot be activated through the status endpoint.",
+    "Reissue and cancel both apply the target-privilege coverage rule from EDU-0032.",
+    "The real E2E uses session_cookie_secure=false only for isolated HTTP localhost; cookie Secure behavior remains covered by backend tests and defaults true."
+  ],
+  "blocked": ["approval of the channel used to deliver the raw one-time invitation token"]
+}
+

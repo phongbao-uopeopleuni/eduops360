@@ -1,0 +1,22 @@
+[
+  {
+    "concurrent_logins": 1,
+    "statuses": [
+      401
+    ],
+    "burst_wall_ms": 88.9,
+    "liveness_samples": 8,
+    "liveness_median_ms": 1.6,
+    "liveness_max_ms": 5.7
+  },
+  {
+    "concurrent_logins": 10,
+    "statuses": [
+      401
+    ],
+    "burst_wall_ms": 626.9,
+    "liveness_samples": 10,
+    "liveness_median_ms": 2.5,
+    "liveness_max_ms": 197.0
+  }
+]

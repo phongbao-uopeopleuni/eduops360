@@ -1,0 +1,54 @@
+
+> eduops360-frontend@0.1.0 test
+> vitest run ThemeProvider.test.tsx
+
+
+ RUN  v5.1.0 D:/eduops360/frontend
+
+ ❯ src/app/ThemeProvider.test.tsx (5 tests | 2 failed) 60ms
+   ❯ theme (5)
+     × uses light mode by default 41ms
+     × treats the legacy system preference as light mode 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/ThemeProvider.test.tsx > theme > uses light mode by default
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  light
+Received:
+  system
+ ❯ src/app/ThemeProvider.test.tsx:17:40
+     15|       </ThemeProvider>,
+     16|     );
+     17|     expect(screen.getByRole('button')).toHaveTextContent('light');
+       |                                        ^
+     18|     expect(document.documentElement).toHaveAttribute('data-theme', 'li…
+     19|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/app/ThemeProvider.test.tsx > theme > treats the legacy system preference as light mode
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  light
+Received:
+  system
+ ❯ src/app/ThemeProvider.test.tsx:28:40
+     26|       </ThemeProvider>,
+     27|     );
+     28|     expect(screen.getByRole('button')).toHaveTextContent('light');
+       |                                        ^
+     29|     expect(document.documentElement).toHaveAttribute('data-theme', 'li…
+     30|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  09:08:33
+   Duration  1.30s (environment 67%, setup 22%, tests 5%, import 3%, transform 2%)
+

@@ -1,0 +1,1 @@
+{"up": [200, 46, ["checked_at", "database", "status"], "ok"], "down_1": [503, 3004, ["checked_at", "database", "status"], "unavailable"], "down_2": [503, 3016, ["checked_at", "database", "status"], "unavailable"], "live_while_down": 200, "db_health_after_start": "healthy", "recovered": [200, 11, ["checked_at", "database", "status"], "ok"]}

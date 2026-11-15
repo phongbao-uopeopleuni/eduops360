@@ -1,0 +1,184 @@
+{
+  "task_id": "EDU-0032",
+  "recorded_at": "2026-11-14T12:05:00+07:00",
+  "conclusion": "remediation_in_review_phase_01_02_not_accepted",
+  "implementer": "Claude acting Backend/Security remediation implementer (separate session from EDU-0031 reviewer); not an approver",
+  "source_audit": "docs/quality/PHASE_01_02_INDEPENDENT_AUDIT_2026-11-14.md (A0102-F01..F08)",
+  "environment": {
+    "os": "Windows 11 Pro 10.0.26300",
+    "python": "3.13.5 (backend/.venv), pytest 9.2.0, SQLAlchemy 2.1.8, anyio 4.16.0, argon2-cffi 25.1.0",
+    "node": "24.12.0 (frontend tooling as locked in package-lock.json)",
+    "docker_engine": "29.9.2 (daemon already running at task start; left running)",
+    "postgresql_image": "postgres:18 (local image e3d24f6906d0, no pull, no build)",
+    "browser": "Playwright channel chrome (installed Google Chrome)"
+  },
+  "baseline": {
+    "git": "D:\\eduops360 is not a Git repository (EDU-0031 preflight; no Git command claimed)",
+    "source_snapshot": ".local/edu-0032/baseline/ (ignored): backend/app, backend/tests, frontend/src copied 2026-11-14T11:42 before any edit",
+    "host_pytest": "2026-11-14T11:42:32+07:00 exit 0 — 72 passed, 7 skipped",
+    "postgres_pytest": "2026-11-14T11:45:55+07:00 exit 0 — 79 passed (new host test file deselected)"
+  },
+  "failing_first": [
+    {
+      "finding": "A0102-F01",
+      "tests": ["backend/tests/integration/test_auth_remediation.py::test_f01_reset_and_status_change_require_actor_to_cover_target_privileges"],
+      "before": "FAILED — assert 201 == 403 (actor holding only user:password_reset issued a reset for a full user-admin)",
+      "after": "PASSED — reset/suspend/activate on a broader target → 403 TARGET_PRIVILEGE_EXCEEDS_ACTOR; peer with equal privileges → 201; accept audit extra_data.issued_by = issuing actor"
+    },
+    {
+      "finding": "A0102-F02",
+      "tests": [
+        "backend/tests/integration/test_auth_remediation.py::test_f02_long_user_agent_still_locks_account_and_audits_failures",
+        "backend/tests/auth/test_remediation_host.py::test_failed_login_audit_bounds_long_user_agent_to_column_length",
+        "backend/tests/auth/test_remediation_host.py::test_successful_login_bounds_session_and_audit_user_agent",
+        "backend/tests/auth/test_remediation_host.py::test_audit_writer_bounds_user_agent_for_every_caller"
+      ],
+      "before": "FAILED — PostgreSQL: [500, 500, 500, 500, 500] instead of 401s; host: 612-char User-Agent reached AuditLog/Session",
+      "after": "PASSED — 612-char UA: 5 wrong logins → 401, account locked, failed_login_count 5, 6 login_failed audits of 500 chars; successful login session.user_agent 500 chars"
+    },
+    {
+      "finding": "A0102-F03",
+      "tests": [
+        "backend/tests/integration/test_auth_remediation.py::test_f03_pending_account_status_cannot_bypass_invitation",
+        "frontend/src/features/user-management/UserManagementPage.test.tsx › does not offer or default to activation for a pending invitee"
+      ],
+      "before": "FAILED — PostgreSQL: assert 200 == 409 (pending → active accepted); Vitest: 'Kích hoạt' option rendered for pending user",
+      "after": "PASSED — PATCH active/suspended on pending → 409 INVITATION_REQUIRED, invitation still accepted (204) and login 200; active→active 409 INVALID_STATUS_TRANSITION; UI shows no status form for pending"
+    },
+    {
+      "finding": "A0102-F04",
+      "tests": ["backend/tests/integration/test_auth_remediation.py::test_f04_concurrent_reset_token_consumption_is_single_use"],
+      "before": "FAILED — assert 'accepted' == 'ACCOUNT_TOKEN_INVALID' (second session consumed the same reset token after the first committed)",
+      "after": "PASSED — second session blocked until first commit, then ACCOUNT_TOKEN_INVALID"
+    },
+    {
+      "finding": "A0102-F05",
+      "tests": ["backend/tests/integration/test_auth_remediation.py::test_f05_failed_login_lockout_keeps_existing_session_but_blocks_new_login"],
+      "before": "FAILED — assert 401 == 200 (victim session rejected after 5 wrong attempts from another client)",
+      "after": "PASSED — account locked, existing session /me 200 and CSRF logout 204, new login with correct password 401"
+    },
+    {
+      "finding": "A0102-F06",
+      "tests": ["backend/tests/integration/test_auth_remediation.py::test_f06_delegation_denies_self_grant_caps_validity_and_audits_full_scope"],
+      "before": "FAILED — assert 201 == 403 (self-grant accepted)",
+      "after": "PASSED — self-grant 403 SELF_GRANT_DENIED; omitted valid_until defaults to delegator expiry; longer valid_until 422 ROLE_VALIDITY_EXCEEDS_DELEGATOR; audit after_state has user/role/school/year/grade/class/subject/valid_from/valid_until; after delegator expiry grant 403"
+    },
+    {
+      "finding": "A0102-F07",
+      "tests": [
+        "backend/tests/auth/test_remediation_host.py::test_login_password_verification_runs_off_the_event_loop_thread",
+        "backend/tests/auth/test_remediation_host.py::test_password_hashing_concurrency_is_bounded"
+      ],
+      "before": "FAILED — login verified the password on the event-loop thread (assert False); the bound test failed with AttributeError because no bounded async API existed (fails by absence, not by behaviour)",
+      "after": "PASSED — verification runs in a worker thread; max concurrent Argon2 calls ≤ PASSWORD_HASH_CONCURRENCY (4)",
+      "measurement": "probe_loop_after.json (EDU-0031 probe re-run on fixed code, 2026-11-14T12:00:46+07:00): 10 concurrent failed logins → /health/live max 11.9 ms over 49 samples (EDU-0031: 197.0 ms over 10 samples); burst wall 780.8 ms because Argon2 concurrency is now capped"
+    },
+    {
+      "finding": "A0102-F08",
+      "tests": ["backend/tests/integration/test_auth_remediation.py::test_f08_router_lockout_blocks_until_expiry_then_resets"],
+      "before": "PASSED — coverage test of the existing router lockout/expiry logic (not a regression; behaviour was already correct)",
+      "after": "PASSED — F01..F06 live regressions added; unused check_account_locked (and its 3 unit tests) and HIGH_RISK_ACTIONS/is_high_risk_action removed; grep finds no remaining references in backend/app or backend/tests"
+    }
+  ],
+  "commands": [
+    {"id": "baseline-host-pytest", "cwd": "backend", "started_at": "2026-11-14T11:42:32+07:00", "command": ".venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider", "exit_code": 0, "result": "72 passed, 7 skipped"},
+    {"id": "regression-before-host", "cwd": "backend", "started_at": "2026-11-14T11:44:06+07:00", "command": ".venv/Scripts/python.exe -B -m pytest tests/auth/test_remediation_host.py -q -p no:cacheprovider", "exit_code": 1, "result": "5 failed (regression_before_host.txt)"},
+    {"id": "regression-before-frontend", "cwd": "frontend", "started_at": "2026-11-14T11:44:53+07:00", "command": "npx vitest run src/features/user-management/UserManagementPage.test.tsx", "exit_code": 1, "result": "1 failed, 2 passed (regression_before_frontend.txt)"},
+    {"id": "compose-db-up", "cwd": ".", "started_at": "2026-11-14T11:45:32+07:00", "command": "docker compose -p eduops360-edu0032 --env-file .local/edu-0032/edu0032.env -f infra/compose.dev.yml up -d db --wait", "exit_code": 0, "result": "db healthy on 127.0.0.1:55492; three random synthetic passwords, values never printed; env file deleted after teardown"},
+    {"id": "alembic-upgrade-head", "cwd": "backend", "started_at": "2026-11-14T11:45:46+07:00", "command": "EDUOPS_DATABASE_URL=<isolated migrator> .venv/Scripts/python.exe -B -m alembic upgrade head; alembic current; alembic check", "exit_code": 0, "result": "0007_account_tokens (head); No new upgrade operations detected."},
+    {"id": "baseline-postgres-pytest", "cwd": "backend", "started_at": "2026-11-14T11:45:55+07:00", "command": "EDUOPS_TEST_MIGRATOR_DSN/RUNTIME_DSN/AUDIT_WORKER_DSN=<isolated> .venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider --deselect tests/auth/test_remediation_host.py", "exit_code": 0, "result": "79 passed, 5 deselected"},
+    {"id": "regression-before-postgres", "cwd": "backend", "started_at": "2026-11-14T11:48:31+07:00", "command": "EDUOPS_TEST_*_DSN=<isolated> .venv/Scripts/python.exe -B -m pytest tests/integration/test_auth_remediation.py -q -p no:cacheprovider", "exit_code": 1, "result": "6 failed (F01..F06), 1 passed (F08 coverage) (regression_before_postgres.txt)"},
+    {"id": "regression-after-backend", "cwd": "backend", "started_at": "2026-11-14T11:54:33+07:00", "command": "EDUOPS_TEST_*_DSN=<isolated> .venv/Scripts/python.exe -B -m pytest tests/auth/test_remediation_host.py tests/integration/test_auth_remediation.py -q -p no:cacheprovider", "exit_code": 0, "result": "12 passed (regression_after_backend.txt)"},
+    {"id": "regression-after-frontend", "cwd": "frontend", "started_at": "2026-11-14T11:54:54+07:00", "command": "npx vitest run src/features/user-management/UserManagementPage.test.tsx", "exit_code": 0, "result": "3 passed"},
+    {"id": "backend-pytest-host", "cwd": "backend", "started_at": "2026-11-14T11:57:42+07:00", "command": "env -u EDUOPS_TEST_MIGRATOR_DSN -u EDUOPS_TEST_RUNTIME_DSN -u EDUOPS_TEST_AUDIT_WORKER_DSN .venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider", "exit_code": 0, "result": "74 passed, 14 skipped (backend_host.txt)"},
+    {"id": "backend-pytest-postgres", "cwd": "backend", "started_at": "2026-11-14T11:57:47+07:00", "command": "EDUOPS_TEST_MIGRATOR_DSN/RUNTIME_DSN/AUDIT_WORKER_DSN=<isolated> .venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider", "exit_code": 0, "result": "88 passed (backend_postgres.txt)"},
+    {"id": "backend-ruff", "cwd": "backend", "started_at": "same command block as backend-pytest-postgres, after it finished (≈2026-11-14T11:58:05+07:00)", "command": ".venv/Scripts/python.exe -B -m ruff check --no-cache app migrations tests", "exit_code": 0, "result": "All checks passed!"},
+    {"id": "alembic-check-after", "cwd": "backend", "started_at": "2026-11-14T11:58:17+07:00", "command": "EDUOPS_DATABASE_URL=<isolated migrator> .venv/Scripts/python.exe -B -m alembic current; alembic check", "exit_code": 0, "result": "0007_account_tokens (head); No new upgrade operations detected. (no migration added)"},
+    {"id": "openapi-drift", "cwd": "backend", "started_at": "2026-11-14T11:58:17+07:00", "command": ".venv/Scripts/python.exe -B ../scripts/export_openapi.py --check", "exit_code": 0, "result": "OpenAPI contract matches FastAPI (no contract change; TS types not regenerated)"},
+    {"id": "governance-blueprint", "cwd": ".", "started_at": "2026-11-14T11:58:17+07:00", "command": "python -B scripts/validate_blueprint.py", "exit_code": 0, "result": "PASS: all required blueprint checks"},
+    {"id": "governance-structure", "cwd": ".", "started_at": "2026-11-14T11:58:17+07:00", "command": "python -B scripts/check_structure.py", "exit_code": 0, "result": "Unified AI Agent SP governance structure: OK"},
+    {"id": "governance-encoding-midway", "cwd": ".", "started_at": "2026-11-14T11:58:17+07:00", "command": "python -B scripts/check_text_encoding.py", "exit_code": 0, "result": "Checked text files: 311; encoding errors: 0 (before evidence files were added; final count in final_verification)"},
+    {"id": "governance-students-csv", "cwd": ".", "started_at": "2026-11-14T11:58:17+07:00", "command": "python -B scripts/validate_students_csv.py samples/templates/students_import_template.csv", "exit_code": 0, "result": "Rows examined: 3; errors: 0"},
+    {"id": "root-unittest", "cwd": ".", "started_at": "2026-11-14T11:58:17+07:00", "command": "python -B -m unittest discover -s tests -p test_*.py", "exit_code": 0, "result": "Ran 17 tests OK"},
+    {"id": "frontend-static-unit-build", "cwd": "frontend", "started_at": "2026-11-14T11:58:43+07:00", "command": "npm run --silent typecheck; lint; format:check; api:check; test; build", "exit_code": 0, "result": "each exit 0 — Prettier clean; TypeScript client types match OpenAPI; Test Files 4 passed, Tests 20 passed; vite build ok"},
+    {"id": "e2e-servers", "cwd": "backend + frontend", "started_at": "between 2026-11-14T11:58:43+07:00 and 11:59:37+07:00 (not separately timestamped)", "command": "EDUOPS_DATABASE_URL=<isolated runtime> .venv/Scripts/python.exe -B -m app --host 127.0.0.1 --port 58094; API_PROXY_TARGET=http://127.0.0.1:58094 npm run dev", "exit_code": null, "result": "live 200, ready 200, Vite proxy ready 200; both stopped after E2E (orphaned Vite node PID verified by command line then stopped); no listener on 5173/58094 afterwards"},
+    {"id": "frontend-e2e", "cwd": "frontend", "started_at": "2026-11-14T11:59:37+07:00", "command": "PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome npx playwright test", "exit_code": 0, "result": "7 passed (frontend_e2e.txt)"},
+    {"id": "probe-loop-after", "cwd": "backend", "started_at": "2026-11-14T12:00:46+07:00", "command": "EDUOPS_TEST_RUNTIME_DSN=<isolated> PYTHONPATH=. .venv/Scripts/python.exe -B ../.local/edu-0032/probes/probe_loop.py (copy of EDU-0031 probe)", "exit_code": 0, "result": "probe_loop_after.json"},
+    {"id": "compose-down", "cwd": ".", "started_at": "2026-11-14T12:01:06+07:00", "command": "docker compose -p eduops360-edu0032 --env-file .local/edu-0032/edu0032.env -f infra/compose.dev.yml down -v", "exit_code": 0, "result": "container, volume eduops360-edu0032_postgres-data and network removed"}
+  ],
+  "final_verification": {
+    "at": "2026-11-14T12:06:47+07:00 .. 12:07:16+07:00 (after journal, HANDOFF and board edits)",
+    "source_scope": "diff -rq --strip-trailing-cr against .local/edu-0032/baseline: exactly the modified/added files listed in changed_files (pyproject.toml not in snapshot, one added line shown in changes.diff); find -newer backend_postgres log: no source file modified after the PostgreSQL gate run",
+    "backend_host_pytest": "exit 0 — 74 passed, 14 skipped",
+    "backend_ruff": "exit 0 — All checks passed!",
+    "openapi_drift": "exit 0 — OpenAPI contract matches FastAPI",
+    "governance": "validate_blueprint 0, check_structure 0, check_text_encoding 0 (320 files, 0 errors), root unittest 17 OK",
+    "frontend": "typecheck 0, lint 0, format:check 0, api:check 0, test 0 (20 passed)",
+    "docker_and_listeners": "no eduops360-edu0032 container/volume/network; no listener on 5173/58094/55492; synthetic credential files absent",
+    "not_rerun": "PostgreSQL suite and E2E were not re-run after teardown; their results stand on the 11:57:47 / 11:59:37 runs with no source change since (checked above)"
+  },
+  "policy_values_tam": [
+    "F01 (OD-008 / Security Owner): reset, suspend and activate require the actor to hold every permission of every unexpired grant of the target (including grants not yet started) in a covering scope (can_delegate_role per permission).",
+    "F03: a pending account cannot change status through PATCH /admin/users/{id}/status (409 INVITATION_REQUIRED); activation is only from suspended/locked and resets failed_login_count/locked_until.",
+    "F05 (Security Owner lockout policy): a failed-login lockout blocks new logins only; sessions of a locked account stay valid; suspended/pending accounts remain rejected.",
+    "F06 (OD-007/OD-008): self-grant denied (403 SELF_GRANT_DENIED); delegated valid_until may not exceed the latest expiry of the delegator's covering grants for every role permission plus user:grant_role; omitted valid_until defaults to that cap; larger value → 422.",
+    "F07 (OD-004 measurement): PASSWORD_HASH_CONCURRENCY = 4 Argon2id operations per event loop (64 MB each)."
+  ],
+  "behavior_changes_for_reviewer": [
+    "Pending accounts can no longer be suspended via the status endpoint; this closes the pending → suspended → active → admin-chosen-password path. Cancelling an invitation now has no API path (A0102-F10, P3, out of scope).",
+    "GET /auth/me returns status 'locked' for a locked account that still holds a valid session.",
+    "Grant responses may carry a non-null valid_until even when the request omitted it (delegator's cap).",
+    "invitation_accept and password_reset_accept audits gain extra_data.issued_by.",
+    "New error codes: TARGET_PRIVILEGE_EXCEEDS_ACTOR (403), INVALID_STATUS_TRANSITION (409), SELF_GRANT_DENIED (403), ROLE_VALIDITY_EXCEEDS_DELEGATOR (422); INVITATION_REQUIRED (409) reused for status changes. OpenAPI schema unchanged.",
+    "backend/pyproject.toml declares anyio==4.16.0 (already pinned in requirements.lock) because services.py imports it directly."
+  ],
+  "changed_files": {
+    "modified": [
+      "backend/app/modules/auth/admin_router.py",
+      "backend/app/modules/auth/router.py",
+      "backend/app/modules/auth/session.py",
+      "backend/app/modules/auth/services.py",
+      "backend/app/modules/audit_logs/service.py",
+      "backend/tests/auth/test_services.py",
+      "backend/pyproject.toml",
+      "frontend/src/features/user-management/UserManagementPage.tsx",
+      "frontend/src/features/user-management/UserManagementPage.test.tsx",
+      "docs/progress/HANDOFF.md",
+      "docs/progress/TASK_BOARD.md"
+    ],
+    "added": [
+      "backend/tests/auth/test_remediation_host.py",
+      "backend/tests/integration/test_auth_remediation.py",
+      "docs/progress/tasks/EDU-0032.md",
+      "docs/progress/evidence/EDU-0032/"
+    ],
+    "diff": "changes.diff (unified diff of every modified source/test file against the pre-edit snapshot; new files are listed above)",
+    "not_changed": "migrations, contracts/openapi.json, frontend generated API types, infra/"
+  },
+  "docker": {
+    "project": "eduops360-edu0032",
+    "services_started": ["db"],
+    "images_built": [],
+    "resources_after_teardown": "container/volume/network/image name lists identical to the pre-task snapshot (.local/edu-0032/docker/baseline.txt vs after.txt)"
+  },
+  "side_effects": [
+    "frontend/dist regenerated by npm run build; frontend/test-results regenerated by Playwright; .local/playwright-tmp used",
+    ".local/edu-0032/ (ignored): baseline snapshot, logs, docker snapshots, probe copy; synthetic env/DSN files deleted after teardown",
+    "temporary API 127.0.0.1:58094 and Vite 127.0.0.1:5173 for E2E; both stopped",
+    "Docker Desktop was already running at task start and was left running",
+    "no real student data; no public deployment; no Git operation"
+  ],
+  "out_of_scope_open": [
+    "A0102-F09..F22 (P3) not remediated; F10 (re-invite/cancel pending) becomes more relevant because pending accounts can no longer be suspended",
+    "Audit F08 suggestion of a real-backend E2E for login/CSRF/logout was not part of this task's scope; existing Admin E2E remains route-mocked",
+    "Two-HTTP-request race for F04 still exercised at function level with two DB sessions (same limitation as the audit probe)"
+  ],
+  "git": {
+    "repository": false,
+    "branch": "not_created",
+    "commit": "not_done",
+    "push": "not_done",
+    "pull_request": "none",
+    "merge": "not_done"
+  }
+}

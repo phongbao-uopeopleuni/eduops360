@@ -1,0 +1,54 @@
+{
+  "started_at": "2026-11-14T15:58:47+0700",
+  "run": "4f184eaa4f",
+  "results": {
+    "RA_reset_token_issued_before_target_promotion": {
+      "issue_reset_while_target_unprivileged_http": 201,
+      "issue_reset_after_promotion_http": 403,
+      "redeem_old_token_after_promotion_http": 204,
+      "login_as_promoted_target_http": 200,
+      "as_target_read_other_user_http": 200,
+      "resetter_own_read_other_user_http": 403
+    },
+    "RB_invitation_token_kept_while_pending_account_is_granted": {
+      "invite_http": 201,
+      "inviter_grants_scoped_role_http": 403,
+      "admin_grants_role_to_pending_invitee_http": 201,
+      "inviter_redeems_kept_invitation_http": 204,
+      "login_as_invitee_with_inviter_password_http": 200,
+      "as_invitee_grant_scoped_role_http": 201
+    },
+    "RC_per_ip_window_blocks_other_accounts_behind_same_peer": {
+      "fifty_failed_logins_distinct_unknown_emails": {
+        "401": 50
+      },
+      "other_account_correct_password_same_peer_http": 429,
+      "other_account_correct_password_same_peer_code": "LOGIN_RATE_LIMITED",
+      "retry_after_seconds": "56",
+      "victim_account_status_after": [
+        "active",
+        0
+      ]
+    },
+    "RD_concurrent_totp_same_code": {
+      "statuses_per_attempt": [
+        [
+          200
+        ],
+        [
+          200
+        ],
+        [
+          200,
+          401
+        ]
+      ],
+      "max_successes_in_any_attempt": 1
+    },
+    "RE_limiter_new_key_when_table_full_of_blocked_keys": {
+      "max_keys": 10000,
+      "new_keys_recorded": 0,
+      "avg_ms_per_new_key": 3.869
+    }
+  }
+}

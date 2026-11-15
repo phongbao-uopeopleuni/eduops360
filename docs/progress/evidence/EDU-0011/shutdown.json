@@ -1,0 +1,145 @@
+{
+  "recorded_at": "2026-11-12T13:51:26.340927+07:00",
+  "records": [
+    {
+      "recorded_at": "2026-11-12T13:51:10.664126+07:00",
+      "command": [
+        "docker",
+        "compose",
+        "--env-file",
+        "D:\\eduops360\\.local\\audit-0011\\compose.env",
+        "-p",
+        "eduops360-audit-0011",
+        "-f",
+        "infra/compose.dev.yml",
+        "port",
+        "db",
+        "5432"
+      ],
+      "exit_code": 0,
+      "stdout": "127.0.0.1:32768\n",
+      "stderr": ""
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:10.747167+07:00",
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "--format",
+        "{{json .Id}}",
+        "eduops360-audit-0011-backend:latest"
+      ],
+      "exit_code": 0,
+      "stdout": "\"sha256:c47a32028d9e089755bd7be71c5d663e9a5e39aa9afadddd72482f07d97c1e33\"\n",
+      "stderr": ""
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:10.828836+07:00",
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "--format",
+        "{{json .Id}}",
+        "eduops360-audit-0011-frontend:latest"
+      ],
+      "exit_code": 0,
+      "stdout": "\"sha256:c51cec9065ab9241230ec30edd5122048275996d11335ebccd786c85702e6f21\"\n",
+      "stderr": ""
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:13.238538+07:00",
+      "command": [
+        "docker",
+        "compose",
+        "--env-file",
+        "D:\\eduops360\\.local\\audit-0011\\compose.env",
+        "-p",
+        "eduops360-audit-0011",
+        "-f",
+        "infra/compose.dev.yml",
+        "down"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": " Container eduops360-audit-0011-frontend-1 Stopping \n Container eduops360-audit-0011-frontend-1 Stopped \n Container eduops360-audit-0011-frontend-1 Removing \n Container eduops360-audit-0011-frontend-1 Removed \n Container eduops360-audit-0011-backend-1 Stopping \n Container eduops360-audit-0011-backend-1 Stopped \n Container eduops360-audit-0011-backend-1 Removing \n Container eduops360-audit-0011-backend-1 Removed \n Container eduops360-audit-0011-db-1 Stopping \n Container eduops360-audit-0011-db-1 Stopped \n Container eduops360-audit-0011-db-1 Removing \n Container eduops360-audit-0011-db-1 Removed \n Network eduops360-audit-0011_default Removing \n Network eduops360-audit-0011_default Removed \n"
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:13.296874+07:00",
+      "command": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "name=eduops360-audit-0011",
+        "--format",
+        "{{.Names}}"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:13.359507+07:00",
+      "command": [
+        "docker",
+        "volume",
+        "ls",
+        "--filter",
+        "label=com.docker.compose.project=eduops360-audit-0011",
+        "--format",
+        "{{.Name}}"
+      ],
+      "exit_code": 0,
+      "stdout": "eduops360-audit-0011_postgres-data\n",
+      "stderr": ""
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:13.420540+07:00",
+      "command": [
+        "docker",
+        "ps",
+        "--format",
+        "{{.Names}}"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "recorded_at": "2026-11-12T13:51:26.283767+07:00",
+      "command": [
+        "docker",
+        "desktop",
+        "stop",
+        "--timeout",
+        "30"
+      ],
+      "exit_code": 0,
+      "stdout": "✓ Stopping Docker Desktop\n",
+      "stderr": ""
+    }
+  ],
+  "netstat": {
+    "command": "netstat -ano filtered to audit ports",
+    "exit_code": 0,
+    "ports": [
+      5173,
+      8000,
+      32768
+    ],
+    "matching_lines": [],
+    "listening_count": 0
+  },
+  "retained_volume": "eduops360-audit-0011_postgres-data",
+  "retained_images": [
+    "eduops360-audit-0011-backend:latest",
+    "eduops360-audit-0011-frontend:latest"
+  ],
+  "process_verification": {
+    "recorded_at": "2026-11-12T13:53:53+07:00",
+    "command": "Get-Process -Name Docker Desktop,com.docker.backend",
+    "observed_matching_processes": 0
+  }
+}

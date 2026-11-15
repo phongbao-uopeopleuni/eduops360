@@ -1,0 +1,45 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___ test_pending_invitation_can_be_reissued_cancelled_and_privilege_bounded ___
+
+    def test_pending_invitation_can_be_reissued_cancelled_and_privilege_bounded() -> None:
+        suffix = uuid4().hex
+        admin_email = f"invite-admin-{suffix}@example.com"
+        password = "Synthetic-Password-123!"
+        with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
+            admin_id = _insert_user(migrator, email=admin_email, password=password)
+            admin_role_id = _insert_role(
+                migrator,
+                code=f"test_invite_{suffix[:12]}",
+                name="Synthetic Invitation Admin",
+                permission_codes=("user:create", "user:suspend"),
+            )
+            migrator.execute(
+                "INSERT INTO user_roles (id, user_id, role_id) VALUES (%s, %s, %s)",
+                (uuid4(), admin_id, admin_role_id),
+            )
+    
+        app = create_app(Settings(database_url=_app_database_url(), environment="test", _env_file=None))
+        with _client(app) as admin:
+            assert admin.post(
+                "/api/v1/auth/login", json={"email": admin_email, "password": password}
+            ).status_code == 200
+    
+            first = admin.post(
+                "/api/v1/admin/users/invitations",
+                json={"email": f"reissue-{suffix}@example.com", "display_name": "Reissue"},
+                headers=_csrf_headers(admin),
+            ).json()
+            reissued = admin.post(
+                f"/api/v1/admin/users/{first['user']['id']}/invitation",
+                json={"valid_hours": 48},
+                headers=_csrf_headers(admin),
+            )
+>           assert reissued.status_code == 201
+E           assert 404 == 201
+E            +  where 404 = <Response [404 Not Found]>.status_code
+
+tests\integration\test_auth_api.py:292: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_auth_api.py::test_pending_invitation_can_be_reissued_cancelled_and_privilege_bounded
+1 failed in 1.03s

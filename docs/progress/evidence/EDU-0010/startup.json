@@ -1,0 +1,38 @@
+{
+  "measured_at": "2026-11-12T12:57:04.038006+07:00",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "node": "v24.12.0",
+  "method": "Warm dependency caches; one independent process per service; monotonic clock to first HTTP 200",
+  "results": [
+    {
+      "service": "backend",
+      "command": [
+        "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-m",
+        "app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18000"
+      ],
+      "port": 18000,
+      "seconds_to_http_200": 1.165
+    },
+    {
+      "service": "frontend",
+      "command": [
+        "node",
+        "node_modules/vite/bin/vite.js",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "15173",
+        "--strictPort"
+      ],
+      "port": 15173,
+      "seconds_to_http_200": 0.534
+    }
+  ]
+}

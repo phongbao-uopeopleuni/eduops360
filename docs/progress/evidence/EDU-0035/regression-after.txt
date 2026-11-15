@@ -1,0 +1,14 @@
+test_compose_database_healthcheck_uses_tcp_loopback (tests.foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_compose_database_healthcheck_uses_tcp_loopback) ... ok
+test_examples_and_migrations_use_explicit_database_roles (tests.foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_examples_and_migrations_use_explicit_database_roles) ... ok
+test_generator_rejects_output_outside_workspace_local (tests.foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_generator_rejects_output_outside_workspace_local) ... ok
+test_live_integration_tests_do_not_mutate_seeded_admin_roles (tests.foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_live_integration_tests_do_not_mutate_seeded_admin_roles) ... ok
+test_playwright_ports_and_reuse_are_explicit (tests.foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_playwright_ports_and_reuse_are_explicit) ... ok
+test_runtime_image_excludes_development_dependencies (tests.foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_runtime_image_excludes_development_dependencies) ... ok
+test_2k_and_10k_fixtures_validate_and_preserve_codes (tests.foundation.test_synthetic_students.SyntheticStudentsTests.test_2k_and_10k_fixtures_validate_and_preserve_codes) ... ok
+test_invalid_inputs_fail_before_creating_output (tests.foundation.test_synthetic_students.SyntheticStudentsTests.test_invalid_inputs_fail_before_creating_output) ... ok
+test_same_seed_produces_identical_bytes_and_protects_existing_files (tests.foundation.test_synthetic_students.SyntheticStudentsTests.test_same_seed_produces_identical_bytes_and_protects_existing_files) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.151s
+
+OK

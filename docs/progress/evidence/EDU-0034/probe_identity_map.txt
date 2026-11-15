@@ -1,0 +1,5 @@
+B first read used_at = None
+row value now in DB = 2026-11-14
+B with_for_update re-read used_at = None | same object: True
+B populate_existing re-read used_at = 2026-11-14
+sqlalchemy 2.1.8

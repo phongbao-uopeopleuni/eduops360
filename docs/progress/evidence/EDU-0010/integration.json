@@ -1,0 +1,152 @@
+[
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--env-file",
+      "infra/.env",
+      "-f",
+      "infra/compose.dev.yml",
+      "exec",
+      "-T",
+      "backend",
+      "python",
+      "-m",
+      "alembic",
+      "current"
+    ],
+    "exit_code": 0,
+    "stdout": "0001_foundation (head)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--env-file",
+      "infra/.env",
+      "-f",
+      "infra/compose.dev.yml",
+      "exec",
+      "-T",
+      "backend",
+      "python",
+      "-m",
+      "alembic",
+      "check"
+    ],
+    "exit_code": 0,
+    "stdout": "No new upgrade operations detected.\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--env-file",
+      "infra/.env",
+      "-f",
+      "infra/compose.dev.yml",
+      "exec",
+      "-T",
+      "db",
+      "psql",
+      "-U",
+      "eduops",
+      "-d",
+      "eduops360",
+      "-c",
+      "SHOW server_encoding;",
+      "-c",
+      "SHOW client_encoding;"
+    ],
+    "exit_code": 0,
+    "stdout": " server_encoding \n-----------------\n UTF8\n(1 row)\n\n client_encoding \n-----------------\n UTF8\n(1 row)\n\n",
+    "stderr": ""
+  },
+  {
+    "path": "/api/v1/health/ready",
+    "status": 200,
+    "body": {
+      "status": "ready",
+      "database": "ok",
+      "checked_at": "2026-11-12T05:58:31.542366Z"
+    },
+    "seconds": 0.041
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--env-file",
+      "infra/.env",
+      "-f",
+      "infra/compose.dev.yml",
+      "stop",
+      "db"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": " Container eduops360-local-db-1 Stopping \n Container eduops360-local-db-1 Stopped \n"
+  },
+  {
+    "path": "/api/v1/health/live",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "service": "eduops360-api",
+      "version": "0.1.0",
+      "checked_at": "2026-11-12T05:58:32.058565Z"
+    },
+    "seconds": 0.004
+  },
+  {
+    "path": "/api/v1/health/ready",
+    "status": 503,
+    "body": {
+      "status": "unavailable",
+      "database": "unavailable",
+      "checked_at": "2026-11-12T05:58:36.054736Z"
+    },
+    "seconds": 3.998
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--env-file",
+      "infra/.env",
+      "-f",
+      "infra/compose.dev.yml",
+      "up",
+      "-d",
+      "db",
+      "--wait",
+      "--wait-timeout",
+      "60"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": " Container eduops360-local-db-1 Starting \n Container eduops360-local-db-1 Started \n Container eduops360-local-db-1 Waiting \n Container eduops360-local-db-1 Healthy \n"
+  },
+  {
+    "path": "/api/v1/health/ready",
+    "status": 200,
+    "body": {
+      "status": "ready",
+      "database": "ok",
+      "checked_at": "2026-11-12T05:58:41.545942Z"
+    },
+    "seconds": 0.03
+  },
+  {
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/smoke_local.py"
+    ],
+    "exit_code": 0,
+    "stdout": "PASS live: HTTP 200, status=ok\nPASS ready: HTTP 200, status=ready\nPASS local frontend -> API -> PostgreSQL\n",
+    "stderr": ""
+  }
+]

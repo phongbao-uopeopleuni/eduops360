@@ -1,0 +1,18 @@
+
+Running 10 tests using 1 worker
+
+(node:9316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\foundation.spec.ts:5:1 › test-worker temporary storage is inside the workspace (4ms)
+  ok  2 tests\e2e\foundation.spec.ts:14:1 › light and dark text palettes meet normal-text contrast (697ms)
+  ok  3 tests\e2e\foundation.spec.ts:57:1 › light is the default and the icon toggle persists dark mode (692ms)
+  ok  4 tests\e2e\foundation.spec.ts:69:1 › Vietnamese navigation, keyboard, theme persistence and mobile layout (1.6s)
+  ok  5 tests\e2e\foundation.spec.ts:106:1 › database unavailable, network error and retry recovery (846ms)
+  ok  6 tests\e2e\foundation.spec.ts:129:1 › design system fonts load with Vietnamese glyphs and pages fit 360–1280 px (4.7s)
+  ok  7 tests\e2e\foundation.spec.ts:166:1 › unknown route provides a working return link (487ms)
+  ok  8 tests\e2e\foundation.spec.ts:173:1 › malformed health timestamp stays recoverable (516ms)
+  -   9 tests\e2e\real-auth.spec.ts:12:1 › real backend login uses the session CSRF token and logout revokes the session
+  ok 10 tests\e2e\user-management.spec.ts:12:1 › Vietnamese admin login and invitation issuance send the session CSRF token (676ms)
+
+  1 skipped
+  9 passed (11.4s)

@@ -1,0 +1,282 @@
+[
+  {
+    "recorded_at": "2026-11-12T13:01:43.882599+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "scripts/validate_blueprint.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.168,
+    "stdout": "Blueprint: 12 phases, 27 skills, 14 role cards\nPASS: all required blueprint checks\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:43.933986+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "scripts/check_structure.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.05,
+    "stdout": "Unified AI Agent SP governance structure: OK\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:44.086222+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "scripts/check_text_encoding.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.152,
+    "stdout": "Checked text files: 192; encoding errors: 0\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:44.349267+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.263,
+    "stdout": "",
+    "stderr": "test_csv_template_bom_and_vietnamese (encoding.test_unicode_csv.EncodingTests.test_csv_template_bom_and_vietnamese) ... ok\ntest_reject_formula_like_name (encoding.test_unicode_csv.EncodingTests.test_reject_formula_like_name) ... ok\ntest_reject_malformed_encoding (encoding.test_unicode_csv.EncodingTests.test_reject_malformed_encoding) ... ok\ntest_roundtrip_preserves_text_quotes_newline_and_leading_zero (encoding.test_unicode_csv.EncodingTests.test_roundtrip_preserves_text_quotes_newline_and_leading_zero) ... ok\ntest_unicode_normalization_equivalence (encoding.test_unicode_csv.EncodingTests.test_unicode_normalization_equivalence) ... ok\ntest_dependency_cache_is_skipped_but_project_source_is_checked (foundation.test_source_scanners.SourceScannerTests.test_dependency_cache_is_skipped_but_project_source_is_checked) ... ok\ntest_2k_and_10k_fixtures_validate_and_preserve_codes (foundation.test_synthetic_students.SyntheticStudentsTests.test_2k_and_10k_fixtures_validate_and_preserve_codes) ... ok\ntest_invalid_inputs_fail_before_creating_output (foundation.test_synthetic_students.SyntheticStudentsTests.test_invalid_inputs_fail_before_creating_output) ... ok\ntest_same_seed_produces_identical_bytes_and_protects_existing_files (foundation.test_synthetic_students.SyntheticStudentsTests.test_same_seed_produces_identical_bytes_and_protects_existing_files) ... ok\ntest_current_repo_is_valid (governance.test_blueprint.BlueprintTests.test_current_repo_is_valid) ... ok\ntest_empty_tree_is_rejected (governance.test_blueprint.BlueprintTests.test_empty_tree_is_rejected) ... ok\ntest_agent_entrypoint_points_to_master (governance.test_phase00_baseline.Phase00BaselineTests.test_agent_entrypoint_points_to_master) ... ok\ntest_confirmed_decisions_exist_in_one_canonical_file (governance.test_phase00_baseline.Phase00BaselineTests.test_confirmed_decisions_exist_in_one_canonical_file) ... ok\ntest_human_independent_review_required (governance.test_phase00_baseline.Phase00BaselineTests.test_human_independent_review_required) ... ok\ntest_open_items_not_confirmed (governance.test_phase00_baseline.Phase00BaselineTests.test_open_items_not_confirmed) ... ok\ntest_other_phase00_baselines_absent (governance.test_phase00_baseline.Phase00BaselineTests.test_other_phase00_baselines_absent) ... ok\ntest_srs_references_canonical (governance.test_phase00_baseline.Phase00BaselineTests.test_srs_references_canonical) ... ok\n\n----------------------------------------------------------------------\nRan 17 tests in 0.176s\n\nOK\n"
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:45.483050+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pytest",
+      "backend/tests",
+      "-q",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "exit_code": 0,
+    "seconds": 1.133,
+    "stdout": "..................                                                       [100%]\n18 passed in 0.59s\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:45.605920+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "ruff",
+      "check",
+      "backend"
+    ],
+    "exit_code": 0,
+    "seconds": 0.122,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:45.727984+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "backend"
+    ],
+    "exit_code": 0,
+    "seconds": 0.122,
+    "stdout": "19 files already formatted\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:45.846027+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "ruff",
+      "check",
+      "--config",
+      "backend/pyproject.toml",
+      "scripts/export_openapi.py",
+      "scripts/generate_synthetic_students.py",
+      "scripts/smoke_local.py",
+      "scripts/benchmark_startup.py",
+      "tests/foundation"
+    ],
+    "exit_code": 0,
+    "seconds": 0.118,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:46.007819+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "--config",
+      "backend/pyproject.toml",
+      "scripts/export_openapi.py",
+      "scripts/generate_synthetic_students.py",
+      "scripts/smoke_local.py",
+      "scripts/benchmark_startup.py",
+      "tests/foundation"
+    ],
+    "exit_code": 0,
+    "seconds": 0.161,
+    "stdout": "7 files already formatted\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:46.730536+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/export_openapi.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.722,
+    "stdout": "OpenAPI contract matches FastAPI\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:47.219220+07:00",
+    "cwd": "D:\\eduops360",
+    "command": [
+      "D:\\eduops360\\backend\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.488,
+    "stdout": "No broken requirements found.\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:48.210333+07:00",
+    "cwd": "D:\\eduops360\\frontend",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "api:check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.99,
+    "stdout": "\n> eduops360-frontend@0.1.0 api:check\n> node scripts/check-contract.mjs\n\nTypeScript client types match OpenAPI\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:49.268604+07:00",
+    "cwd": "D:\\eduops360\\frontend",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "format:check"
+    ],
+    "exit_code": 0,
+    "seconds": 1.058,
+    "stdout": "\n> eduops360-frontend@0.1.0 format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:52.274903+07:00",
+    "cwd": "D:\\eduops360\\frontend",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "lint"
+    ],
+    "exit_code": 0,
+    "seconds": 3.005,
+    "stdout": "\n> eduops360-frontend@0.1.0 lint\n> eslint .\n\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:55.385993+07:00",
+    "cwd": "D:\\eduops360\\frontend",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit_code": 0,
+    "seconds": 3.11,
+    "stdout": "\n> eduops360-frontend@0.1.0 typecheck\n> tsc --noEmit\n\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:57.520805+07:00",
+    "cwd": "D:\\eduops360\\frontend",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "test"
+    ],
+    "exit_code": 0,
+    "seconds": 2.134,
+    "stdout": "\n> eduops360-frontend@0.1.0 test\n> vitest run\n\n\n RUN  v5.1.0 D:/eduops360/frontend\n\n\n Test Files  3 passed (3)\n      Tests  12 passed (12)\n   Start at  13:01:56\n   Duration  1.49s (environment 69%, setup 22%, tests 5%, transform 2%, import 2%)\n\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:01:59.598532+07:00",
+    "cwd": "D:\\eduops360\\frontend",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit_code": 0,
+    "seconds": 2.077,
+    "stdout": "\n> eduops360-frontend@0.1.0 build\n> npm run typecheck && vite build\n\n\n> eduops360-frontend@0.1.0 typecheck\n> tsc --noEmit\n\nvite v8.3.8 building client environment for production...\ntransforming...\n✓ 32 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                                   1.01 kB │ gzip:  0.51 kB\ndist/assets/source-sans-3-vietnamese-400-normal-CwtaIDr2.woff2    6.21 kB\ndist/assets/source-sans-3-vietnamese-600-normal-B2sTNYey.woff2    6.22 kB\ndist/assets/source-sans-3-vietnamese-600-normal-BzH4Q14_.woff     8.26 kB\ndist/assets/source-sans-3-vietnamese-400-normal-eMQk7hmk.woff     8.28 kB\ndist/assets/source-sans-3-latin-600-normal-DeckBYAU.woff2        15.66 kB\ndist/assets/source-sans-3-latin-400-normal-DQi5PRDE.woff2        15.69 kB\ndist/assets/source-sans-3-latin-400-normal-RR2C27NP.woff         19.99 kB\ndist/assets/source-sans-3-latin-600-normal-Ck0n4g8U.woff         19.99 kB\ndist/assets/index-CJWV709O.css                                    8.25 kB │ gzip:  2.39 kB\ndist/assets/index-CQEqUezW.js                                   272.12 kB │ gzip: 86.54 kB\n\n✓ built in 144ms\n",
+    "stderr": ""
+  }
+]

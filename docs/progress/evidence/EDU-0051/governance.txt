@@ -1,0 +1,34 @@
+Generated docs\progress\TASK_BOARD.md with 46 task(s)
+Blueprint: 12 phases, 27 skills, 14 role cards
+PASS: all required blueprint checks
+Unified AI Agent SP governance structure: OK
+Checked text files: 456; encoding errors: 0
+test_csv_template_bom_and_vietnamese (encoding.test_unicode_csv.EncodingTests.test_csv_template_bom_and_vietnamese) ... ok
+test_reject_formula_like_name (encoding.test_unicode_csv.EncodingTests.test_reject_formula_like_name) ... ok
+test_reject_malformed_encoding (encoding.test_unicode_csv.EncodingTests.test_reject_malformed_encoding) ... ok
+test_roundtrip_preserves_text_quotes_newline_and_leading_zero (encoding.test_unicode_csv.EncodingTests.test_roundtrip_preserves_text_quotes_newline_and_leading_zero) ... ok
+test_unicode_normalization_equivalence (encoding.test_unicode_csv.EncodingTests.test_unicode_normalization_equivalence) ... ok
+test_compose_database_healthcheck_uses_tcp_loopback (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_compose_database_healthcheck_uses_tcp_loopback) ... ok
+test_examples_and_migrations_use_explicit_database_roles (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_examples_and_migrations_use_explicit_database_roles) ... ok
+test_foundation_ci_uses_current_database_roles (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_foundation_ci_uses_current_database_roles) ... ok
+test_generator_rejects_output_outside_workspace_local (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_generator_rejects_output_outside_workspace_local) ... ok
+test_live_integration_tests_do_not_mutate_seeded_admin_roles (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_live_integration_tests_do_not_mutate_seeded_admin_roles) ... ok
+test_playwright_ports_and_reuse_are_explicit (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_playwright_ports_and_reuse_are_explicit) ... ok
+test_runtime_image_excludes_development_dependencies (foundation.test_infrastructure_safety.InfrastructureSafetyTests.test_runtime_image_excludes_development_dependencies) ... ok
+test_dependency_cache_is_skipped_but_project_source_is_checked (foundation.test_source_scanners.SourceScannerTests.test_dependency_cache_is_skipped_but_project_source_is_checked) ... ok
+test_2k_and_10k_fixtures_validate_and_preserve_codes (foundation.test_synthetic_students.SyntheticStudentsTests.test_2k_and_10k_fixtures_validate_and_preserve_codes) ... ok
+test_invalid_inputs_fail_before_creating_output (foundation.test_synthetic_students.SyntheticStudentsTests.test_invalid_inputs_fail_before_creating_output) ... ok
+test_same_seed_produces_identical_bytes_and_protects_existing_files (foundation.test_synthetic_students.SyntheticStudentsTests.test_same_seed_produces_identical_bytes_and_protects_existing_files) ... ok
+test_current_repo_is_valid (governance.test_blueprint.BlueprintTests.test_current_repo_is_valid) ... ok
+test_empty_tree_is_rejected (governance.test_blueprint.BlueprintTests.test_empty_tree_is_rejected) ... ok
+test_agent_entrypoint_points_to_master (governance.test_phase00_baseline.Phase00BaselineTests.test_agent_entrypoint_points_to_master) ... ok
+test_confirmed_decisions_exist_in_one_canonical_file (governance.test_phase00_baseline.Phase00BaselineTests.test_confirmed_decisions_exist_in_one_canonical_file) ... ok
+test_human_independent_review_required (governance.test_phase00_baseline.Phase00BaselineTests.test_human_independent_review_required) ... ok
+test_open_items_not_confirmed (governance.test_phase00_baseline.Phase00BaselineTests.test_open_items_not_confirmed) ... ok
+test_other_phase00_baselines_absent (governance.test_phase00_baseline.Phase00BaselineTests.test_other_phase00_baselines_absent) ... ok
+test_srs_references_canonical (governance.test_phase00_baseline.Phase00BaselineTests.test_srs_references_canonical) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.182s
+
+OK

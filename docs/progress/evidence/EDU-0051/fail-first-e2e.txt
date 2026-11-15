@@ -1,0 +1,43 @@
+
+Running 1 test using 1 worker
+
+(node:13948) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\foundation.spec.ts:58:1 › light is the default and the icon toggle persists dark mode (5.8s)
+
+
+  1) tests\e2e\foundation.spec.ts:58:1 › light is the default and the icon toggle persists dark mode 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Chuyển sang giao diện tối' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Chuyển sang giao diện tối' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Chuyển sang giao diện tối' })
+
+
+      61 |   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+      62 |   const darkToggle = page.getByRole('button', { name: 'Chuyển sang giao diện tối' });
+    > 63 |   await expect(darkToggle).toBeVisible();
+         |                            ^
+      64 |   await darkToggle.click();
+      65 |   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+      66 |   await page.reload();
+        at D:\eduops360\frontend\tests\e2e\foundation.spec.ts:63:28
+
+    Error Context: test-results\foundation-light-is-the-de-ba9c0-n-toggle-persists-dark-mode\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\foundation-light-is-the-de-ba9c0-n-toggle-persists-dark-mode\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\foundation-light-is-the-de-ba9c0-n-toggle-persists-dark-mode\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\foundation.spec.ts:58:1 › light is the default and the icon toggle persists dark mode 

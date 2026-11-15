@@ -1,0 +1,47 @@
+[
+  {
+    "recorded_at": "2026-11-12T13:38:29.958998+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "ci",
+      "--dry-run",
+      "--ignore-scripts",
+      "--no-fund",
+      "--no-audit"
+    ],
+    "exit_code": 0,
+    "stdout": "\nup to date in 443ms\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:38:30.724580+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "format:check"
+    ],
+    "exit_code": 0,
+    "stdout": "\n> eduops360-frontend@0.1.0 format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:38:31.791022+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "audit",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {},\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"dependencies\": {\n      \"prod\": 9,\n      \"dev\": 287,\n      \"optional\": 32,\n      \"peer\": 19,\n      \"peerOptional\": 0,\n      \"total\": 297\n    }\n  }\n}\n",
+    "stderr": ""
+  }
+]

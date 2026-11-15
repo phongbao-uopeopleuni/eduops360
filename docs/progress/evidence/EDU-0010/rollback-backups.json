@@ -1,0 +1,18 @@
+{
+  "backup_root": ".local/before-source",
+  "sha256_verified_originals": [
+    "backend/README.md",
+    "frontend/README.md",
+    "infra/README.md",
+    "contracts/README.md",
+    ".gitignore",
+    "scripts/validate_blueprint.py",
+    "scripts/check_text_encoding.py",
+    "docs/phases/PHASE-01.md",
+    "docs/quality/TRACEABILITY_MATRIX.md",
+    "ai-agent-sp/PROJECT_CONTEXT.md",
+    "README.md",
+    "docs/progress/TASK_BOARD.md",
+    "docs/progress/HANDOFF.md"
+  ]
+}

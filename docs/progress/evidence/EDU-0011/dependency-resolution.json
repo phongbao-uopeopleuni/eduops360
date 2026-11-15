@@ -1,0 +1,35 @@
+{
+  "direct_dependencies": {
+    "@fontsource/source-sans-3": "5.3.1",
+    "openapi-fetch": "0.17.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.5"
+  },
+  "direct_dev_dependencies": {
+    "@playwright/test": "1.65.0",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.10",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "eslint": "10.14.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.7",
+    "globals": "17.14.0",
+    "jsdom": "26.1.0",
+    "openapi-typescript": "7.13.0",
+    "prettier": "3.10.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  },
+  "minimatch_packages": {
+    "node_modules/@redocly/openapi-core/node_modules/minimatch": "5.1.9",
+    "node_modules/minimatch": "11.0.8"
+  },
+  "lockfile_sha256": "fc4a96ebbb67af3848f9171591dcf638befaa9473548dc60b3480dfd0f1cf1df"
+}

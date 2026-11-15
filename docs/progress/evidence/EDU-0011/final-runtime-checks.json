@@ -1,0 +1,35 @@
+[
+  {
+    "recorded_at": "2026-11-12T13:44:39.548955+07:00",
+    "command": [
+      "docker",
+      "compose",
+      "--env-file",
+      "D:\\eduops360\\.local\\audit-0011\\compose.env",
+      "-p",
+      "eduops360-audit-0011",
+      "-f",
+      "infra/compose.dev.yml",
+      "exec",
+      "-T",
+      "frontend",
+      "node",
+      "-p",
+      "JSON.parse(require(\"fs\").readFileSync(\"package.json\", \"utf8\")).engines.node"
+    ],
+    "exit_code": 0,
+    "stdout": "^22.13.0 || ^24.0.0 || ^26.0.0\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:44:39.677482+07:00",
+    "command": [
+      "python",
+      "-B",
+      "scripts/smoke_local.py"
+    ],
+    "exit_code": 0,
+    "stdout": "PASS live: HTTP 200, status=ok\nPASS ready: HTTP 200, status=ready\nPASS local frontend -> API -> PostgreSQL\n",
+    "stderr": ""
+  }
+]

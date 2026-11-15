@@ -1,0 +1,735 @@
+{
+  "recorded_at": "2026-11-12T13:18:40.072859+07:00",
+  "scope": "D:\\eduops360",
+  "new_source_and_evidence_files": [
+    {
+      "path": ".github/workflows/foundation-check.yml",
+      "sha256": "f247399920e1ce9912a16fd2d61dc5e31bbd0b28d51be8bf582f42ddf615d2d5",
+      "mtime_ns": 1794462752190167300,
+      "bytes": 2741
+    },
+    {
+      "path": "backend/.dockerignore",
+      "sha256": "9eeafbcdff4b8689bb192a0b36586223d3ac1ba549675934c6a7e1f143710b1f",
+      "mtime_ns": 1794462567199725600,
+      "bytes": 79
+    },
+    {
+      "path": "backend/.env.example",
+      "sha256": "8f686bcffc61544cfbf598e6b51125deb86c816d2bcea9eafd7c6042967babde",
+      "mtime_ns": 1794462350948388200,
+      "bytes": 206
+    },
+    {
+      "path": "backend/alembic.ini",
+      "sha256": "4be35c86b24192bde1327811488c4fcbc1f446b8c1e688fbbcba8f27640a252b",
+      "mtime_ns": 1794462567182608000,
+      "bytes": 96
+    },
+    {
+      "path": "backend/Dockerfile",
+      "sha256": "07d9c11a48e86856c235d6d7047681af1fb2d5bee95b2e06b157cc68352caefb",
+      "mtime_ns": 1794462941043406900,
+      "bytes": 419
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "sha256": "b5a701e1a167361fc2b6ef6655a7789b102ffb21c29f872483158991ed2a2167",
+      "mtime_ns": 1794462752177162800,
+      "bytes": 736
+    },
+    {
+      "path": "backend/requirements.lock",
+      "sha256": "c628a3d9b22b73ecc1e82b7c3882d91eb32ab7f70c3f588b8e5574305022af1e",
+      "mtime_ns": 1794462800106088100,
+      "bytes": 723
+    },
+    {
+      "path": "backend/app/main.py",
+      "sha256": "8318599d3a01bd4bbc0d24dd1eb0177138e14a0689bd295e7845a74c83cb29bf",
+      "mtime_ns": 1794462350934824700,
+      "bytes": 2635
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "sha256": "31b32f21eb66f84cb2ad0d8a08f22d46ceff4c130068df28451c978cd7ce2a0d",
+      "mtime_ns": 1794462229531507400,
+      "bytes": 34
+    },
+    {
+      "path": "backend/app/__main__.py",
+      "sha256": "bd5191c724adbbe9357c0cc272804cb71f8d99437ad45813b27a03a05cac41ba",
+      "mtime_ns": 1794462941035408300,
+      "bytes": 489
+    },
+    {
+      "path": "backend/app/common/temporal.py",
+      "sha256": "5f7ae4793dcbaf1b1fc66e95cab9f686ba27697e37f32706d9a3710b18d0eb54",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 517
+    },
+    {
+      "path": "backend/app/common/__init__.py",
+      "sha256": "9f00506506d216a6929252b5326fd759346a73c7e8bc37e3aba5ae3e34837399",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 44
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "sha256": "4d49fdacda56308a381433783b3e56eea89032f95c34287a3b82e42fa6592df5",
+      "mtime_ns": 1794462628597879100,
+      "bytes": 1137
+    },
+    {
+      "path": "backend/app/core/errors.py",
+      "sha256": "9da5489af480d5e6e1d09d2e85ad384752d589a89bf34decb67e6b9124ee5fd1",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 763
+    },
+    {
+      "path": "backend/app/core/event_loop.py",
+      "sha256": "86e6de90e1fb3a96c59167fe23b053315ae9b85167a4330057649538a35619ec",
+      "mtime_ns": 1794462941034408400,
+      "bytes": 261
+    },
+    {
+      "path": "backend/app/core/__init__.py",
+      "sha256": "3994e54dc33d16c04eb513aa46944b9a5abc9578f85022b14e3ae64f2ed3633e",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 52
+    },
+    {
+      "path": "backend/app/db/base.py",
+      "sha256": "3fd612f4d424f6895ca1e38437d79a93ca964c752fa71b1eb8377c1f5b7f028c",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 151
+    },
+    {
+      "path": "backend/app/db/connection.py",
+      "sha256": "0eb23281dc252659a9773594675da5f8e3f9046c684c11e66739eeddee3d9878",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 1015
+    },
+    {
+      "path": "backend/app/db/__init__.py",
+      "sha256": "e9db6fdfe7fe2149fe0b35f1fe242501276883111a30992303a8214909bbb87a",
+      "mtime_ns": 1794462350922458100,
+      "bytes": 33
+    },
+    {
+      "path": "backend/app/modules/__init__.py",
+      "sha256": "13a7d9d8150994b1229364158eb788621c3c77aab90e9440c0a7ecb752873963",
+      "mtime_ns": 1794462350933159800,
+      "bytes": 32
+    },
+    {
+      "path": "backend/app/modules/health/router.py",
+      "sha256": "08d40e9c9816e17d26dc562737bef46c6280501761246ec818c7c248dfc5e17e",
+      "mtime_ns": 1794462628597879100,
+      "bytes": 1504
+    },
+    {
+      "path": "backend/app/modules/health/__init__.py",
+      "sha256": "26e1132e2b8baa6d45bcc8f7bb9c5cdea3bd94c27b7ad7711196076e01ff0708",
+      "mtime_ns": 1794462350933159800,
+      "bytes": 41
+    },
+    {
+      "path": "backend/migrations/env.py",
+      "sha256": "381f237185a2092df632b42351b7245a2588061d9d21422a02594c39be421474",
+      "mtime_ns": 1794462941042407700,
+      "bytes": 1362
+    },
+    {
+      "path": "backend/migrations/script.py.mako",
+      "sha256": "116d035db5d6b4abe2f7e00e60d547bf8396983c741d09af902b184ccc6e0a35",
+      "mtime_ns": 1794462567188607200,
+      "bytes": 424
+    },
+    {
+      "path": "backend/migrations/versions/0001_foundation.py",
+      "sha256": "8a0fdaff66bf4639fdb1cffce50f779d3fe0243165d613a75e6dee76f9732b2d",
+      "mtime_ns": 1794462567191210000,
+      "bytes": 261
+    },
+    {
+      "path": "backend/tests/test_foundation.py",
+      "sha256": "88ba22e7a919395f858734b37f66a4dc77b2ae2fec9e7eab0549fe91395cd7cf",
+      "mtime_ns": 1794462941056615900,
+      "bytes": 4924
+    },
+    {
+      "path": "contracts/openapi.json",
+      "sha256": "bb8a3e20ab65df29b8d35edea778d970e3ac783c00dfd486cf96122ccc8e1743",
+      "mtime_ns": 1794462501572055200,
+      "bytes": 5382
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/before.json",
+      "sha256": "92f77606317c502a08b305752b8840224c784b54ec5c3f8e9500497c70b01daf",
+      "mtime_ns": 1794462122893036000,
+      "bytes": 26920
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/browser-results.json",
+      "sha256": "6cef33aebd09cb5bebdb1c731887416626d43f64036f20b1be0dfa74b64bc823",
+      "mtime_ns": 1794463442364280200,
+      "bytes": 7190
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/checks.json",
+      "sha256": "54155b77438ab9c51c3829900715579ede58c26031aab4782e86ed0e63785fe3",
+      "mtime_ns": 1794463319598046300,
+      "bytes": 10614
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/dark.png",
+      "sha256": "6334e5dc482b1894616a2e9fadbdf0cd9f41a2c3daec71409de3c8e3b0811e45",
+      "mtime_ns": 1794463442362500500,
+      "bytes": 68577
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/docker-images.json",
+      "sha256": "78d57c5711e156e90701d7fa66e35b5a7fb5e8fbff9641228872fcd11bec4914",
+      "mtime_ns": 1794463442598348600,
+      "bytes": 650
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/git-state.json",
+      "sha256": "d7ddae1b2ad7db6d2710358b63ae5db5d629669556db614caaf23387a11807d5",
+      "mtime_ns": 1794464320201695500,
+      "bytes": 788
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/integration.json",
+      "sha256": "2249c710751e486718b7bedc954301c857fcd81d82a82914afe4a7f9ab849afe",
+      "mtime_ns": 1794463121776717600,
+      "bytes": 3283
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/light.png",
+      "sha256": "3ce74c506d4eb6824816187deedd37c3615209f5a660aa5a24ff83ddf2d97b11",
+      "mtime_ns": 1794463442362500500,
+      "bytes": 68385
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/mobile.png",
+      "sha256": "79f0cce54e436d2bf16fe8745da2396086c3b2d4c6037bc139718e43957cccda",
+      "mtime_ns": 1794463442364280200,
+      "bytes": 53016
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/native-api.json",
+      "sha256": "4ee6761e58fff436a30d331562a27cf0e46e445047eccc67d60e48f02fbb4174",
+      "mtime_ns": 1794463120956775400,
+      "bytes": 207
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/rollback-backups.json",
+      "sha256": "63867f17c7c32603acacf7f91e09f99b1139d300ee3911ce06357d73eee61933",
+      "mtime_ns": 1794463422764132700,
+      "bytes": 489
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/shutdown.json",
+      "sha256": "280d654a15894c3d39cb030e5bca2af5acb9a7047c57ecaa06fa7dbc79a14501",
+      "mtime_ns": 1794464284964760400,
+      "bytes": 1974
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0010/startup.json",
+      "sha256": "0b4397dcd300babb778186ea3c17bcb2ca997f0d74c05010d5469ebdeaacc260",
+      "mtime_ns": 1794463024230976600,
+      "bytes": 967
+    },
+    {
+      "path": "docs/progress/tasks/EDU-0007.md",
+      "sha256": "cbf0047c11e1c23907689bcdbcd771ec5e6733bbcac098f1021fcc59918ac2d9",
+      "mtime_ns": 1794464284965751400,
+      "bytes": 5306
+    },
+    {
+      "path": "docs/progress/tasks/EDU-0008.md",
+      "sha256": "a469ef017d0a828ea1fb3578e0f61cf05a234008dddbf1f64c0525b4a9815308",
+      "mtime_ns": 1794464284965751400,
+      "bytes": 4962
+    },
+    {
+      "path": "docs/progress/tasks/EDU-0009.md",
+      "sha256": "58929899b3912ff0c395a0d8da0f94626947c51efe6ef135b25b321da9fa4766",
+      "mtime_ns": 1794464284965751400,
+      "bytes": 4836
+    },
+    {
+      "path": "docs/progress/tasks/EDU-0010.md",
+      "sha256": "40c71ed101024e2b3e6427ae011a77ada0504ee3f72a1201fc2b6d71c92a56a1",
+      "mtime_ns": 1794463589891533700,
+      "bytes": 6140
+    },
+    {
+      "path": "frontend/.dockerignore",
+      "sha256": "00e6250adf1813fd526cb4cc33bc639781d088945b6c0bb1e76d40d78c97ce53",
+      "mtime_ns": 1794462567204264200,
+      "bytes": 70
+    },
+    {
+      "path": "frontend/.prettierignore",
+      "sha256": "5fe38c3734433688750dada55a7b6921175cfad476bf54fcbec0835bc424106b",
+      "mtime_ns": 1794462492640824300,
+      "bytes": 92
+    },
+    {
+      "path": "frontend/.prettierrc.json",
+      "sha256": "85378d4d734cb7d35641c44ffdf322fe0bc76a3b12841927f20aa5f0eba12695",
+      "mtime_ns": 1794462492639830400,
+      "bytes": 73
+    },
+    {
+      "path": "frontend/Dockerfile",
+      "sha256": "6de6f31cc803e53747d9f40b3ee00ef06d22071807d1add061c19a4b3fd294cf",
+      "mtime_ns": 1794462941044406600,
+      "bytes": 261
+    },
+    {
+      "path": "frontend/eslint.config.js",
+      "sha256": "6c3b56aaed7143b2d462e7c980a8a09d5f1e17cbd9fb92c4fc59b1adccfafed6",
+      "mtime_ns": 1794462629705321000,
+      "bytes": 765
+    },
+    {
+      "path": "frontend/index.html",
+      "sha256": "95f8d8f64e0cfda49cbe9082413e51aaf2f69d86f3e6ad689c021d73c8e8844a",
+      "mtime_ns": 1794462629730311500,
+      "bytes": 917
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "sha256": "30c7df542c39dcd7fb8172bad2ddc10c43dbc10e34235f5c811b1016d172e81d",
+      "mtime_ns": 1794462829879027200,
+      "bytes": 148805
+    },
+    {
+      "path": "frontend/package.json",
+      "sha256": "8040eea2b0c2e8321e4703ade104f77ab7a4b2ad0546220607afffc3573dbd0d",
+      "mtime_ns": 1794462752180167700,
+      "bytes": 1521
+    },
+    {
+      "path": "frontend/playwright.config.ts",
+      "sha256": "563e52134a4685ff0dd00c145ad1c319520bc452f58d1d550428eb5a12dd12e5",
+      "mtime_ns": 1794463274031715200,
+      "bytes": 1253
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "sha256": "c1a376effb1c06ab0bab55ca7b78f8ed39c62c40af555a8d449ec2ecd5e5feae",
+      "mtime_ns": 1794462219666663600,
+      "bytes": 679
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "sha256": "44b51bf7e54d3d8438574c3703a151333949773d891a13e05afb5ba8f260d811",
+      "mtime_ns": 1794462219667663000,
+      "bytes": 491
+    },
+    {
+      "path": "frontend/public/source-sans-3-OFL.txt",
+      "sha256": "1efbdc9cb2d98aaa844574b5123f8d5233532c214ba259e1536e1d5702d058a1",
+      "mtime_ns": 1794463156765954900,
+      "bytes": 4407
+    },
+    {
+      "path": "frontend/scripts/check-contract.mjs",
+      "sha256": "6013436ff4b9dcbcb5df2856a0668e9cef2ee4c698cbd3681529ccafb5eb62fc",
+      "mtime_ns": 1794462492643071800,
+      "bytes": 764
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "sha256": "9d660954e0d08a5429fa8a68e0c4993cb5017e0a893155e52adf7ba26ca5d8b2",
+      "mtime_ns": 1794462492629452700,
+      "bytes": 653
+    },
+    {
+      "path": "frontend/src/app/App.tsx",
+      "sha256": "b4b5d596db94a2d4ab7fe59fbf1f3065fe8dac61c29e0789869322fe2c458e7e",
+      "mtime_ns": 1794462629833930100,
+      "bytes": 4605
+    },
+    {
+      "path": "frontend/src/app/styles.css",
+      "sha256": "728ffa54e765ba634c13fde5e7f3c10ea6c5999b4b416adc39c589c27252bc4f",
+      "mtime_ns": 1794462629885929400,
+      "bytes": 9139
+    },
+    {
+      "path": "frontend/src/app/ThemeProvider.test.tsx",
+      "sha256": "a1975bf8148c9567039d051234bdfc6062d364c5788c3eb621aee0fb1769f9c0",
+      "mtime_ns": 1794462629892940000,
+      "bytes": 1479
+    },
+    {
+      "path": "frontend/src/app/ThemeProvider.tsx",
+      "sha256": "67ae98a274d54162da3da26ced9dafd53f5dd95a3902ae84826fa3dd95d7bafc",
+      "mtime_ns": 1794462492631831200,
+      "bytes": 1775
+    },
+    {
+      "path": "frontend/src/features/system/HealthPanel.test.tsx",
+      "sha256": "69e8459ef17dae0403421ac1b4cced9da3bd2580b677117d4472dca796a17298",
+      "mtime_ns": 1794462629913929800,
+      "bytes": 1773
+    },
+    {
+      "path": "frontend/src/features/system/HealthPanel.tsx",
+      "sha256": "a7ca095caa2146c807bf3c28e980b07d478392fc75c7f49832efe69c00f4ba55",
+      "mtime_ns": 1794462629922930800,
+      "bytes": 3374
+    },
+    {
+      "path": "frontend/src/shared/api/client.ts",
+      "sha256": "25af9fbfc1442df6ce20f0ece3e6a14c6e2a152bfbc3b0ad48c6d3e1c3128d3c",
+      "mtime_ns": 1794462492635830300,
+      "bytes": 806
+    },
+    {
+      "path": "frontend/src/shared/api/generated/schema.d.ts",
+      "sha256": "3cd3a87f58666713d5c45f4c3229c127d73d777bd40d47e040de041e28bf585b",
+      "mtime_ns": 1794462561945868100,
+      "bytes": 5320
+    },
+    {
+      "path": "frontend/src/shared/lib/dates.test.ts",
+      "sha256": "0dcfa03802e8418d3a2dbaec2b20e085bc0cd28ce2bf819889733dca0e2101d3",
+      "mtime_ns": 1794462699405204200,
+      "bytes": 632
+    },
+    {
+      "path": "frontend/src/shared/lib/dates.ts",
+      "sha256": "d9bd57a9e5790324dc3d2b62ad215f2e5661f0f3abc86102f712335bcbbbc753",
+      "mtime_ns": 1794462699404168900,
+      "bytes": 914
+    },
+    {
+      "path": "frontend/tests/setup.ts",
+      "sha256": "5c12ae87c0ea19317d37e7e84da2e83762b0bd6e0a94bc4029fc3c16a9fded78",
+      "mtime_ns": 1794462219669167100,
+      "bytes": 495
+    },
+    {
+      "path": "frontend/tests/e2e/foundation.spec.ts",
+      "sha256": "4169f56587083598b462818dff8b3aee870cd781b392e9223a37e320698b32dd",
+      "mtime_ns": 1794463257538892900,
+      "bytes": 4633
+    },
+    {
+      "path": "infra/.env.example",
+      "sha256": "e7920102d7a829c860ec8d6763aebaace593068bc02f61a5bed750b0b5e3f653",
+      "mtime_ns": 1794462567195860900,
+      "bytes": 192
+    },
+    {
+      "path": "infra/compose.dev.yml",
+      "sha256": "2c1aeaf75af003b3e697ab46cd6ef3921c42ebe362af604387e273b4b984dfcc",
+      "mtime_ns": 1794462567192932900,
+      "bytes": 1611
+    },
+    {
+      "path": "scripts/benchmark_startup.py",
+      "sha256": "a54b36dfec64d2e3df64a8dcf76c728809f0ec7145a554eae6e2758339a4eaf9",
+      "mtime_ns": 1794463205981755900,
+      "bytes": 4353
+    },
+    {
+      "path": "scripts/export_openapi.py",
+      "sha256": "e1314567b11a986b2af26f3b96473ac6a317fc5270bd62d2be1bc5e371e8d415",
+      "mtime_ns": 1794462628748546900,
+      "bytes": 1123
+    },
+    {
+      "path": "scripts/generate_synthetic_students.py",
+      "sha256": "eb6d6b3abc089cece071a98faf00fc585e13021749447fda4adaed6fff0c7d19",
+      "mtime_ns": 1794462628748546900,
+      "bytes": 2504
+    },
+    {
+      "path": "scripts/smoke_local.py",
+      "sha256": "8b607bb67514f43ccb92191ee6e2e83388ad947e69706d1529c15e25d76e23e8",
+      "mtime_ns": 1794462858770432400,
+      "bytes": 1081
+    },
+    {
+      "path": "tests/foundation/test_source_scanners.py",
+      "sha256": "99b2d300d7bd511c58ca2f9cf44cbdea7f181f4cf85139a840c5f526550d98b5",
+      "mtime_ns": 1794462628748546900,
+      "bytes": 962
+    },
+    {
+      "path": "tests/foundation/test_synthetic_students.py",
+      "sha256": "35b098b52d6a05e615391d41b287d0f51c3156e1902c7412b4bab8d60148f809",
+      "mtime_ns": 1794462628882106500,
+      "bytes": 2336
+    },
+    {
+      "path": "tests/foundation/__init__.py",
+      "sha256": "1c9a61cbeb86a8498e7034fef4ddd06405ea9c565a8cd3bc861731a51753d0c5",
+      "mtime_ns": 1794462567180614800,
+      "bytes": 42
+    }
+  ],
+  "modified_existing_source_files": [
+    {
+      "before": {
+        "sha256": "0d28b3a18b2e0ffb148eaf77dd55c559245c85b20664da8083c38f07c908bdc7",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 384
+      },
+      "after": {
+        "path": ".gitignore",
+        "sha256": "4d73f27474a1244eb715d76ea025677d9853ba116da894fcec3fb69776cf5047",
+        "mtime_ns": 1794462219662663200,
+        "bytes": 532
+      }
+    },
+    {
+      "before": {
+        "sha256": "f5185dcb244ffd104e0ea82abd02f5959135b9fb3d63482e67da17f1a3f3f797",
+        "mtime_ns": 1794433032000000000,
+        "bytes": 3088
+      },
+      "after": {
+        "path": "README.md",
+        "sha256": "38e785f8303dac097886f371dc8e0b8a70f475e5794115cb41459c7917365485",
+        "mtime_ns": 1794463072208012700,
+        "bytes": 4156
+      }
+    },
+    {
+      "before": {
+        "sha256": "fd836434975d32131a2eddcb9d3f44215d19b5d54736550c7c256349abf114c2",
+        "mtime_ns": 1794432966000000000,
+        "bytes": 1628
+      },
+      "after": {
+        "path": "ai-agent-sp/PROJECT_CONTEXT.md",
+        "sha256": "af009d75b504c0472fdbd6845c3f27673a297c79eeabb606de4c439e694a0730",
+        "mtime_ns": 1794463072214010700,
+        "bytes": 1886
+      }
+    },
+    {
+      "before": {
+        "sha256": "ba6653c1e7d09b2814a83ac436aa8946bee0394c0cde4ee4704479c28d11f8b5",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 202
+      },
+      "after": {
+        "path": "backend/README.md",
+        "sha256": "9b485bbf00deb5f7b4685b24e6e3352c8b9e794f6e05c957ba83038365587e46",
+        "mtime_ns": 1794463072195010100,
+        "bytes": 1758
+      }
+    },
+    {
+      "before": {
+        "sha256": "694bf20e7e499a99458c9eabe4c99f87aba00f3b6e5f2c6a264544e7ee0284e3",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 376
+      },
+      "after": {
+        "path": "contracts/README.md",
+        "sha256": "d9247dc4538f8bf8ccc54260b778e58c384dfeb15307760e4272f0a3b7ba72fa",
+        "mtime_ns": 1794463072203011400,
+        "bytes": 754
+      }
+    },
+    {
+      "before": {
+        "sha256": "8bbb745e695de4f00ff7aefae93830f2e562df89ea1d0458d9038c49065f7e7f",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 3068
+      },
+      "after": {
+        "path": "docs/phases/PHASE-01.md",
+        "sha256": "9cb1b7e70ffdcf3cf06efdc77f4ef68a18215d5c4aa2eb4413f0fe87c23424fe",
+        "mtime_ns": 1794463205984788600,
+        "bytes": 4351
+      }
+    },
+    {
+      "before": {
+        "sha256": "396755e9c205c07e5a96197164a48d79dbdf068bcef46229e7b512a119126bd8",
+        "mtime_ns": 1794432966000000000,
+        "bytes": 1251
+      },
+      "after": {
+        "path": "docs/progress/HANDOFF.md",
+        "sha256": "f5eb4949d7d1fba7ad43a41a49e490da262fa7d571b723a39ee865509bc4fb74",
+        "mtime_ns": 1794463589493226000,
+        "bytes": 4028
+      }
+    },
+    {
+      "before": {
+        "sha256": "dbb5e6deab469bcc60ba08de26cc397e01fa9c83834d6d4ff9abffa672b31787",
+        "mtime_ns": 1794433038000000000,
+        "bytes": 3476
+      },
+      "after": {
+        "path": "docs/progress/TASK_BOARD.md",
+        "sha256": "9195aa9e4d152c142f43bab946d22c4b7d9f74e93cf56b9af631a8af9a937d87",
+        "mtime_ns": 1794464285055111600,
+        "bytes": 5618
+      }
+    },
+    {
+      "before": {
+        "sha256": "bbcc6fbe72da8e1828f67c9bffbc385ab43ee15a54be301bcdd2eb1b6d3f2763",
+        "mtime_ns": 1794432522000000000,
+        "bytes": 2981
+      },
+      "after": {
+        "path": "docs/quality/TRACEABILITY_MATRIX.md",
+        "sha256": "37bcd6926e358ac77467c3f2008225cf1281c11d22c676cad08dc0e26471262c",
+        "mtime_ns": 1794463205988784700,
+        "bytes": 4104
+      }
+    },
+    {
+      "before": {
+        "sha256": "cc8c183b2382a7442464529ad28ecd7baea98b24d34abfca47fab3733403519a",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 272
+      },
+      "after": {
+        "path": "frontend/README.md",
+        "sha256": "5611b235fc529c595d3ebf3541d93706555ad791dafceeedd8c60d68c7fc866d",
+        "mtime_ns": 1794463257542409500,
+        "bytes": 1970
+      }
+    },
+    {
+      "before": {
+        "sha256": "187b1d1426dabddc83a54608b8b576469f4478ff2f9b0735c5acfbe4c67e599b",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 197
+      },
+      "after": {
+        "path": "infra/README.md",
+        "sha256": "39e6a588e166efef89de392f808b27a15bf35df4bce367634d595661b91f1ce4",
+        "mtime_ns": 1794463072201012600,
+        "bytes": 1812
+      }
+    },
+    {
+      "before": {
+        "sha256": "63b497d7e8b6c3a0069fae7a72e0a4b8cd1431362eccb19deaf8beb039e5eb70",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 2037
+      },
+      "after": {
+        "path": "scripts/check_text_encoding.py",
+        "sha256": "81f8d2a0deb61db84ae9249cda3d3ed099c2f72d2483cea13b5d6ce267d64ede",
+        "mtime_ns": 1794462292257470400,
+        "bytes": 2227
+      }
+    },
+    {
+      "before": {
+        "sha256": "b292638c5ee546b6e8eea3fc550da9befad44b0dc71ae2d510107974b993fa30",
+        "mtime_ns": 1794432966000000000,
+        "bytes": 3272
+      },
+      "after": {
+        "path": "scripts/validate_blueprint.py",
+        "sha256": "240fcec5b6d4e692822f22b8e97760386794629acf76cc7eeb3ca9de650e0901",
+        "mtime_ns": 1794462292257470400,
+        "bytes": 3671
+      }
+    }
+  ],
+  "same_content_with_changed_mtime": [],
+  "retained_ignored_artifacts": [
+    {
+      "path": "frontend/node_modules",
+      "files": 11155,
+      "bytes": 193569102,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "frontend/dist",
+      "files": 12,
+      "bytes": 386122,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "frontend/test-results",
+      "files": 5,
+      "bytes": 197213,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "backend/.venv",
+      "files": 4770,
+      "bytes": 113941142,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "backend/eduops360_backend.egg-info",
+      "files": 5,
+      "bytes": 1229,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "backend/.ruff_cache",
+      "files": 7,
+      "bytes": 1586,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": ".ruff_cache",
+      "files": 5,
+      "bytes": 898,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": ".local",
+      "files": 3079,
+      "bytes": 962877285,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "infra/.env",
+      "files": 1,
+      "bytes": 119,
+      "state": "created during this session; retained"
+    },
+    {
+      "path": "backend/.env",
+      "files": 1,
+      "bytes": 145,
+      "state": "created during this session; retained"
+    }
+  ],
+  "additional_new_manifest": "docs/progress/evidence/EDU-0010/side-effects.json",
+  "build_rewrites": [
+    "frontend/dist was created initially, then Vite removed/recreated its contents on subsequent builds",
+    "frontend/test-results was created and replaced by subsequent Playwright runs",
+    "backend/requirements.lock, contracts/openapi.json and generated frontend types were created and regenerated during implementation"
+  ],
+  "docker_effects": [
+    "Started Docker Desktop Engine for task verification",
+    "Built/rebuilt eduops360-local-backend:latest and eduops360-local-frontend:latest, pulled postgres:18 and base image layers, retained images and build cache",
+    "Created and retained volume eduops360-local_postgres-data with initialized UTF8 database and alembic_version at 0001_foundation",
+    "Created/recreated project containers/network, stopped/removed them with compose down; engine shutdown evidence is in shutdown.json"
+  ],
+  "rollback_backups": ".local/before-source; SHA-256 verified originals listed in rollback-backups.json",
+  "verified_original_backups": 13,
+  "final_shutdown": {
+    "compose_containers_removed": true,
+    "docker_desktop_stop_observed_exit_code": 0,
+    "task_docker_processes_observed": 0,
+    "listening_on_task_ports_observed": 0,
+    "evidence": "shutdown.json and final shell process/netstat verification"
+  }
+}

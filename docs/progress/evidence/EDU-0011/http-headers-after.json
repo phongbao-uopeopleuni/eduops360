@@ -1,0 +1,12 @@
+{
+  "status": 405,
+  "allow": "GET",
+  "body": {
+    "error": {
+      "code": "HTTP_ERROR",
+      "message": "Yêu cầu không hợp lệ.",
+      "request_id": "f84c8595-c207-4d46-b5e0-182750e9b405",
+      "details": []
+    }
+  }
+}

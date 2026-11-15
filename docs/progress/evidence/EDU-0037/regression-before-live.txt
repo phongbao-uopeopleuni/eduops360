@@ -1,0 +1,31 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______________________ test_totp_step_cannot_be_replayed ______________________
+
+    def test_totp_step_cannot_be_replayed() -> None:
+        suffix = uuid4().hex
+        email = f"mfa-replay-{suffix}@example.com"
+        password = "Synthetic-Password-123!"
+        secret = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
+        code, step = _totp_code(secret, int(time.time()))
+        with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
+            user_id = _insert_user(migrator, email=email, password=password)
+            migrator.execute(
+                "UPDATE users SET mfa_enabled = TRUE, mfa_secret = %s WHERE id = %s",
+                (secret, user_id),
+            )
+    
+        app = create_app(Settings(database_url=_app_database_url(), environment="test", _env_file=None))
+        payload = {"email": email, "password": password, "mfa_code": code}
+        with _client(app) as first, _client(app) as replay:
+            assert first.post("/api/v1/auth/login", json=payload).status_code == 200
+>           assert replay.post("/api/v1/auth/login", json=payload).status_code == 401
+E           AssertionError: assert 200 == 401
+E            +  where 200 = <Response [200 OK]>.status_code
+E            +    where <Response [200 OK]> = post('/api/v1/auth/login', json={'email': 'mfa-replay-7af5f4b090ee4d3188fd46181dea7d05@example.com', 'password': 'Synthetic-Password-123!', 'mfa_code': '951097'})
+E            +      where post = <starlette.testclient.TestClient object at 0x000001D379E451D0>.post
+
+tests\integration\test_auth_api.py:251: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_auth_api.py::test_totp_step_cannot_be_replayed
+1 failed in 0.92s

@@ -1,0 +1,52 @@
+{
+  "task_id": "EDU-0030",
+  "verified_at": "2026-11-14T09:40:21+07:00",
+  "conclusion": "ready_for_independent_review_not_accepted",
+  "implementation": {
+    "migration_head": "0007_account_tokens",
+    "account_tokens": "SHA-256 stored, high-entropy raw value disclosed once, expiry and reuse enforced",
+    "password_reset": "Argon2id password replacement plus active-session revocation",
+    "admin_ui": "invitation issuance via generated OpenAPI client; no Admin-selected initial password"
+  },
+  "verification": {
+    "backend_host": "72 passed, 7 isolated-DSN tests skipped",
+    "backend_ruff": "passed",
+    "postgresql_live": "7 passed",
+    "migration_roundtrip": "base to 0007 successful",
+    "alembic_check": "No new upgrade operations detected",
+    "runtime_alembic": "denied with insufficient privilege on alembic_version",
+    "frontend_unit": "19 passed",
+    "frontend_e2e": "7 passed with installed Google Chrome",
+    "frontend_static_and_build": "typecheck, ESLint, Prettier, API drift and Vite build passed",
+    "docs": "blueprint, structure, UTF-8, JSON and task-board generation passed",
+    "environment_cleanup": "no listeners on 8000/5173/59080/55439/58009/55179/4173; no Uvicorn/Vite test server remains; Docker Desktop stopped"
+  },
+  "open_gates": [
+    "Phase 01 prerequisite acceptance",
+    "OD-001 named Human Security Owner, independent reviewer and Git maintainer",
+    "OD-007 approved two-person actions",
+    "OD-008 authoritative role and scope matrix",
+    "OD-011 audit retention/archive and production migration authority",
+    "approved encrypted MFA custody, recovery and notification operation"
+  ],
+  "side_effects": [
+    "contracts/openapi.json, generated TypeScript and task board overwritten by canonical generators",
+    "frontend/dist and frontend/test-results overwritten by build/E2E",
+    "Python/Node caches and source mtimes may have changed",
+    "ignored exact backups remain in .local/EDU-0023 and .local/EDU-0024",
+    "ignored Playwright temporary data remains in .local/playwright-tmp",
+    "disposable Docker containers/network/volume/project image removed; shared build cache may remain",
+    "the first final E2E attempt failed because Docker temporarily excluded Windows port 8000; after Docker teardown, 7 E2E passed using explicit local servers and those servers were stopped",
+    "frontend/dist contains 12 generated files and frontend/test-results contains 5 generated result/trace files after the final runs",
+    "14 ignored backup files remain under .local/EDU-0023 and .local/EDU-0024",
+    "a failed root-level npm invocation wrote a debug log under the user npm cache outside the project",
+    "no real student data or public deployment used"
+  ],
+  "git": {
+    "repository": false,
+    "commit": "not_done",
+    "push": "not_done",
+    "pull_request": "none",
+    "merge": "not_done"
+  }
+}

@@ -1,0 +1,36 @@
+name: Governance checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate repository structure
+        run: python scripts/check_structure.py
+      - name: Rebuild task board and check it was committed
+        run: |
+          python scripts/sync_task_board.py
+          git diff --exit-code -- docs/progress/TASK_BOARD.md
+
+      - name: Strict UTF-8 text checks
+        run: python scripts/check_text_encoding.py
+      - name: CSV and Unicode regression tests
+        run: python -m unittest discover -s tests/encoding -p "test_*.py"
+
+  blueprint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate phase specs, skills and roles
+        run: python scripts/validate_blueprint.py
+      - name: Run governance regression tests
+        run: python -m unittest discover -s tests/governance -p 'test_*.py'

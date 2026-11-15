@@ -1,0 +1,9 @@
+{
+  "command": "backend/.venv/Scripts/python -B -m app --port 18000",
+  "status": 200,
+  "body": {
+    "status": "ready",
+    "database": "ok",
+    "checked_at": "2026-11-12T05:58:40.956050Z"
+  }
+}

@@ -1,0 +1,739 @@
+=== app/modules/auth/admin_router.py
+--- ../.local/edu-0032/baseline/app/modules/auth/admin_router.py	2026-11-13 16:03:06.295242600 +0700
++++ app/modules/auth/admin_router.py	2026-11-14 11:53:57.862077300 +0700
+@@ -6,7 +6,7 @@
+ from uuid import UUID
+ 
+ from fastapi import APIRouter, Depends, Request
+-from sqlalchemy import func, select, update
++from sqlalchemy import func, or_, select, update
+ from sqlalchemy.exc import IntegrityError
+ from sqlalchemy.ext.asyncio import AsyncSession
+ 
+@@ -42,7 +42,11 @@
+     UserRoleRevoke,
+     UserStatusUpdate,
+ )
+-from app.modules.auth.services import generate_session_token, hash_password, hash_session_token
++from app.modules.auth.services import (
++    generate_session_token,
++    hash_password_async,
++    hash_session_token,
++)
+ from app.modules.auth.session import client_ip
+ 
+ router = APIRouter(prefix="/admin/users", tags=["User Administration"])
+@@ -128,6 +132,106 @@
+     return [(row.resource_type, row.action) for row in rows]
+ 
+ 
++# A0102-F03: activation never replaces the invitation. A pending account can neither be
++# activated nor parked in "suspended" and activated later.
++_STATUS_CHANGE_SOURCES: dict[UserStatus, frozenset[UserStatus]] = {
++    UserStatus.ACTIVE: frozenset({UserStatus.SUSPENDED, UserStatus.LOCKED}),
++    UserStatus.SUSPENDED: frozenset({UserStatus.ACTIVE, UserStatus.LOCKED}),
++}
++
++
++async def _unexpired_grant_permissions(db: AsyncSession, user_id: UUID, *, started_only: bool):
++    """Permission rows of a user's active, unrevoked and unexpired grants."""
++    now = datetime.now(UTC)
++    conditions = [
++        UserRole.user_id == user_id,
++        UserRole.is_active.is_(True),
++        UserRole.revoked_at.is_(None),
++        or_(UserRole.valid_until.is_(None), UserRole.valid_until > now),
++    ]
++    if started_only:
++        conditions.append(UserRole.valid_from <= now)
++    return (
++        await db.execute(
++            select(
++                Permission.resource_type,
++                Permission.action,
++                UserRole.school_id,
++                UserRole.academic_year_id,
++                UserRole.grade_id,
++                UserRole.class_id,
++                UserRole.subject_id,
++                UserRole.valid_until,
++            )
++            .join(RolePermission, RolePermission.permission_id == Permission.id)
++            .join(UserRole, UserRole.role_id == RolePermission.role_id)
++            .where(*conditions)
++        )
++    ).all()
++
++
++def _row_scope(row) -> Scope:
++    return Scope(
++        school_id=row.school_id,
++        academic_year_id=row.academic_year_id,
++        grade_id=row.grade_id,
++        class_id=row.class_id,
++        subject_id=row.subject_id,
++    )
++
++
++async def _require_actor_covers_target(
++    db: AsyncSession, context: AuthorizationContext, target_id: UUID
++) -> None:
++    """A0102-F01 — TẠM, chờ OD-008 / Security Owner xác nhận quy tắc.
++
++    Reset, suspend and activate require the actor to hold every permission of every
++    unexpired grant of the target (including grants not yet started) in a covering scope.
++    """
++    for row in await _unexpired_grant_permissions(db, target_id, started_only=False):
++        if not can_delegate_role(
++            context.principal, [(row.resource_type, row.action)], _row_scope(row)
++        ):
++            raise AppError(
++                403,
++                "TARGET_PRIVILEGE_EXCEEDS_ACTOR",
++                "Không thể thao tác trên tài khoản có quyền vượt quá quyền hiện có.",
++            )
++
++
++async def _delegation_expiry(
++    db: AsyncSession,
++    actor_id: UUID,
++    required: list[tuple[str, str]],
++    scope: Scope,
++) -> datetime | None:
++    """A0102-F06 — TẠM, chờ OD-008: a delegated grant may not outlive the delegator.
++
++    Returns the last instant at which the actor still holds every required permission in
++    a covering scope, or None when each is held through at least one non-expiring grant.
++    """
++    rows = await _unexpired_grant_permissions(db, actor_id, started_only=True)
++    cap: datetime | None = None
++    for resource_type, action in required:
++        expiries = [
++            row.valid_until
++            for row in rows
++            if row.resource_type == resource_type
++            and row.action == action
++            and _row_scope(row).covers(scope)
++        ]
++        if not expiries:
++            raise AppError(
++                403,
++                "ROLE_ESCALATION_DENIED",
++                "Không thể cấp vai trò chứa quyền vượt quá quyền hiện có.",
++            )
++        if None not in expiries:
++            latest = max(expiries)
++            cap = latest if cap is None else min(cap, latest)
++    return cap
++
++
+ def _new_account_token(
+     *,
+     user_id: UUID,
+@@ -167,7 +271,7 @@
+     user = User(
+         email=email,
+         display_name=payload.display_name.strip(),
+-        password_hash=hash_password(secrets.token_urlsafe(48)),
++        password_hash=await hash_password_async(secrets.token_urlsafe(48)),
+         status=UserStatus.PENDING,
+     )
+     db.add(user)
+@@ -233,6 +337,7 @@
+             "INVITATION_REQUIRED",
+             "Tài khoản đang chờ phải hoàn tất lời mời thay vì đặt lại mật khẩu.",
+         )
++    await _require_actor_covers_target(db, context, user.id)
+     now = datetime.now(UTC)
+     await db.execute(
+         update(AccountToken)
+@@ -295,7 +400,23 @@
+ 
+     user = await _get_user(db, user_id, for_update=True)
+     before_status = user.status
++    if before_status == UserStatus.PENDING:
++        raise AppError(
++            409,
++            "INVITATION_REQUIRED",
++            "Tài khoản đang chờ phải hoàn tất lời mời trước khi đổi trạng thái.",
++        )
++    if before_status not in _STATUS_CHANGE_SOURCES[payload.status]:
++        raise AppError(
++            409,
++            "INVALID_STATUS_TRANSITION",
++            "Không thể chuyển sang trạng thái này từ trạng thái hiện tại.",
++        )
++    await _require_actor_covers_target(db, context, user.id)
+     user.status = payload.status
++    if payload.status == UserStatus.ACTIVE:
++        user.failed_login_count = 0
++        user.locked_until = None
+     if payload.status == UserStatus.SUSPENDED:
+         await db.execute(
+             update(Session)
+@@ -337,6 +458,9 @@
+         action=ActionType.GRANT_ROLE,
+         scope=scope,
+     )
++    # A0102-F06 — TẠM, chờ OD-007/OD-008: no self-grant until a two-person flow exists.
++    if user_id == context.auth.user.id:
++        raise AppError(403, "SELF_GRANT_DENIED", "Không thể tự cấp vai trò cho chính mình.")
+     await _get_user(db, user_id, for_update=True)
+     role = (
+         await db.execute(select(Role).where(Role.id == payload.role_id))
+@@ -356,7 +480,23 @@
+         payload.valid_until is not None and payload.valid_until.tzinfo is None
+     ):
+         raise AppError(422, "TIMEZONE_REQUIRED", "Thời điểm phân quyền phải có múi giờ.")
+-    if payload.valid_until is not None and payload.valid_until <= valid_from:
++    valid_until = payload.valid_until
++    delegation_expiry = await _delegation_expiry(
++        db,
++        context.auth.user.id,
++        [*permission_pairs, (ResourceType.USER, ActionType.GRANT_ROLE)],
++        scope,
++    )
++    if delegation_expiry is not None:
++        if valid_until is None:
++            valid_until = delegation_expiry
++        elif valid_until > delegation_expiry:
++            raise AppError(
++                422,
++                "ROLE_VALIDITY_EXCEEDS_DELEGATOR",
++                "valid_until không được vượt quá hiệu lực quyền của người cấp.",
++            )
++    if valid_until is not None and valid_until <= valid_from:
+         raise AppError(422, "INVALID_ROLE_VALIDITY", "valid_until phải sau valid_from.")
+ 
+     duplicate = (
+@@ -386,7 +526,7 @@
+         class_id=payload.class_id,
+         subject_id=payload.subject_id,
+         valid_from=valid_from,
+-        valid_until=payload.valid_until,
++        valid_until=valid_until,
+         granted_by=context.auth.user.id,
+     )
+     db.add(assignment)
+@@ -406,6 +546,11 @@
+             "role_id": str(role.id),
+             "school_id": str(payload.school_id),
+             "academic_year_id": str(payload.academic_year_id),
++            "grade_id": payload.grade_id,
++            "class_id": str(payload.class_id) if payload.class_id else None,
++            "subject_id": str(payload.subject_id) if payload.subject_id else None,
++            "valid_from": valid_from.isoformat(),
++            "valid_until": valid_until.isoformat() if valid_until else None,
+         },
+         create_outbox=True,
+     )
+=== app/modules/auth/router.py
+--- ../.local/edu-0032/baseline/app/modules/auth/router.py	2026-11-13 16:03:00.516746200 +0700
++++ app/modules/auth/router.py	2026-11-14 11:52:20.266601500 +0700
+@@ -11,7 +11,7 @@
+ 
+ from app.core.errors import AppError
+ from app.db.dependencies import get_db_session
+-from app.modules.audit_logs.service import write_audit_in_transaction
++from app.modules.audit_logs.service import bound_user_agent, write_audit_in_transaction
+ from app.modules.auth.constants import SessionStatus, UserStatus
+ from app.modules.auth.models import AccountToken, Session, User
+ from app.modules.auth.schemas import (
+@@ -26,10 +26,11 @@
+     calculate_session_expiry,
+     generate_session_token,
+     hash_password,
++    hash_password_async,
+     hash_session_token,
+     needs_rehash,
+     should_lock_account,
+-    verify_password,
++    verify_password_async,
+ )
+ from app.modules.auth.session import (
+     AuthContext,
+@@ -84,11 +85,14 @@
+     if user is None:
+         limiter.record_failure(rate_key)
+         raise AppError(400, "ACCOUNT_TOKEN_INVALID", "Mã tài khoản không hợp lệ.")
++    # populate_existing: the unlocked read above cached this row in the identity map;
++    # without a refresh, a concurrent consumer's committed used_at would be ignored.
+     locked_token = (
+         await db.execute(
+             select(AccountToken)
+             .where(AccountToken.id == token.id, AccountToken.purpose == purpose)
+             .with_for_update()
++            .execution_options(populate_existing=True)
+         )
+     ).scalar_one_or_none()
+     now = datetime.now(UTC)
+@@ -152,7 +156,7 @@
+         select(User).where(func.lower(User.email) == email).with_for_update()
+     )
+     user = result.scalar_one_or_none()
+-    password_ok = verify_password(
++    password_ok = await verify_password_async(
+         payload.password.get_secret_value(),
+         user.password_hash if user is not None else _DUMMY_PASSWORD_HASH,
+     )
+@@ -199,7 +203,7 @@
+         raise AppError(401, "LOGIN_FAILED", "Thông tin đăng nhập không hợp lệ.")
+ 
+     if needs_rehash(user.password_hash):
+-        user.password_hash = hash_password(payload.password.get_secret_value())
++        user.password_hash = await hash_password_async(payload.password.get_secret_value())
+     user.failed_login_count = 0
+     user.locked_until = None
+ 
+@@ -212,7 +216,7 @@
+         csrf_token_hash=hashlib.sha256(csrf_token.encode()).hexdigest(),
+         status=SessionStatus.ACTIVE,
+         expires_at=expires_at,
+-        user_agent=request.headers.get("user-agent"),
++        user_agent=bound_user_agent(request.headers.get("user-agent")),
+         ip_address=client_ip(request),
+     )
+     db.add(session)
+@@ -254,7 +258,7 @@
+         )
+         raise AppError(400, "ACCOUNT_TOKEN_INVALID", "Mã tài khoản không hợp lệ.")
+     now = datetime.now(UTC)
+-    user.password_hash = hash_password(payload.password.get_secret_value())
++    user.password_hash = await hash_password_async(payload.password.get_secret_value())
+     user.password_changed_at = now
+     user.status = UserStatus.ACTIVE
+     user.failed_login_count = 0
+@@ -280,6 +284,7 @@
+         user_agent=request.headers.get("user-agent"),
+         before_state={"status": str(UserStatus.PENDING)},
+         after_state={"status": str(UserStatus.ACTIVE)},
++        extra_data={"issued_by": str(token.created_by)},
+         create_outbox=True,
+     )
+     await db.commit()
+@@ -293,7 +298,7 @@
+     db: Annotated[AsyncSession, Depends(get_db_session)],
+ ) -> None:
+     raw_token = payload.token.get_secret_value()
+-    _token, user = await _consume_account_token(
++    token, user = await _consume_account_token(
+         db=db,
+         raw_token=raw_token,
+         purpose="password_reset",
+@@ -306,7 +311,7 @@
+         raise AppError(400, "ACCOUNT_TOKEN_INVALID", "Mã tài khoản không hợp lệ.")
+     now = datetime.now(UTC)
+     before_status = user.status
+-    user.password_hash = hash_password(payload.new_password.get_secret_value())
++    user.password_hash = await hash_password_async(payload.new_password.get_secret_value())
+     user.password_changed_at = now
+     user.failed_login_count = 0
+     user.locked_until = None
+@@ -338,6 +343,8 @@
+         user_agent=request.headers.get("user-agent"),
+         before_state={"status": str(before_status)},
+         after_state={"status": str(user.status), "sessions_revoked": True},
++        # The holder of the reset capability is not authenticated; record who issued it.
++        extra_data={"issued_by": str(token.created_by)},
+         create_outbox=True,
+     )
+     await db.commit()
+=== app/modules/auth/session.py
+--- ../.local/edu-0032/baseline/app/modules/auth/session.py	2026-11-13 09:18:52.498746500 +0700
++++ app/modules/auth/session.py	2026-11-14 11:52:36.009918000 +0700
+@@ -81,7 +81,10 @@
+             session.status = SessionStatus.EXPIRED
+             await db.commit()
+         raise AppError(401, "INVALID_SESSION", "Phiên đăng nhập không hợp lệ.")
+-    if user.status != UserStatus.ACTIVE:
++    # A0102-F05 — TẠM, chờ Security Owner chốt chính sách lockout: khóa do đăng nhập sai
++    # chỉ chặn đăng nhập mới (kiểm ở /auth/login), không để người chưa đăng nhập chấm dứt
++    # phiên hợp lệ đang có. Đình chỉ tự thu hồi phiên; tài khoản pending không có phiên.
++    if user.status not in {UserStatus.ACTIVE, UserStatus.LOCKED}:
+         raise AppError(401, "ACCOUNT_UNAVAILABLE", "Tài khoản không khả dụng.")
+ 
+     if session_needs_refresh(session.last_activity_at):
+=== app/modules/auth/services.py
+--- ../.local/edu-0032/baseline/app/modules/auth/services.py	2026-11-12 18:24:21.934280100 +0700
++++ app/modules/auth/services.py	2026-11-14 11:51:05.558225100 +0700
+@@ -5,16 +5,12 @@
+ """
+ 
+ from datetime import datetime, timedelta
+-from typing import TYPE_CHECKING
+ 
++from anyio import CapacityLimiter, to_thread
++from anyio.lowlevel import RunVar
+ from argon2 import PasswordHasher
+ from argon2.exceptions import InvalidHashError, VerifyMismatchError
+ 
+-from app.modules.auth.constants import UserStatus
+-
+-if TYPE_CHECKING:
+-    from app.modules.auth.models import User
+-
+ # Password hasher configuration per ADR-0005
+ _password_hasher = PasswordHasher(
+     time_cost=3,
+@@ -30,6 +26,11 @@
+ SESSION_DURATION_HOURS = 24
+ SESSION_REFRESH_THRESHOLD_HOURS = 1
+ 
++# A0102-F07 — TẠM, chờ đo tải theo OD-004: số phép Argon2id chạy đồng thời tối đa trên
++# một event loop. Mỗi phép dùng 64 MB (memory_cost), nên 4 luồng giới hạn khoảng 256 MB.
++PASSWORD_HASH_CONCURRENCY = 4
++_password_hash_limiter: RunVar[CapacityLimiter] = RunVar("eduops_password_hash_limiter")
++
+ 
+ def hash_password(password: str) -> str:
+     """Hash a password using Argon2id.
+@@ -62,6 +63,30 @@
+         return False
+ 
+ 
++def _current_password_hash_limiter() -> CapacityLimiter:
++    """Return the per-event-loop limiter that bounds concurrent Argon2 work."""
++    try:
++        return _password_hash_limiter.get()
++    except LookupError:
++        limiter = CapacityLimiter(PASSWORD_HASH_CONCURRENCY)
++        _password_hash_limiter.set(limiter)
++        return limiter
++
++
++async def hash_password_async(password: str) -> str:
++    """Hash in a bounded worker thread so request handlers never block the event loop."""
++    return await to_thread.run_sync(
++        hash_password, password, limiter=_current_password_hash_limiter()
++    )
++
++
++async def verify_password_async(password: str, password_hash: str) -> bool:
++    """Verify in a bounded worker thread so request handlers never block the event loop."""
++    return await to_thread.run_sync(
++        verify_password, password, password_hash, limiter=_current_password_hash_limiter()
++    )
++
++
+ def needs_rehash(password_hash: str) -> bool:
+     """Check if password needs rehashing due to parameter changes.
+ 
+@@ -76,40 +101,6 @@
+     return _password_hasher.check_needs_rehash(password_hash)
+ 
+ 
+-def check_account_locked(user: "User") -> tuple[bool, str | None]:
+-    """Check if user account is locked.
+-
+-    Args:
+-        user: User model instance
+-
+-    Returns:
+-        (is_locked, reason) tuple
+-    """
+-    if user.status == UserStatus.SUSPENDED:
+-        return (True, "Tài khoản đã bị khóa bởi quản trị viên")
+-
+-    if user.status == UserStatus.LOCKED:
+-        if user.locked_until is not None:
+-            from zoneinfo import ZoneInfo
+-
+-            now = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
+-            if now < user.locked_until:
+-                remaining = (user.locked_until - now).total_seconds() / 60
+-                return (
+-                    True,
+-                    f"Tài khoản tạm khóa. Thử lại sau {int(remaining)} phút",
+-                )
+-            # Lock expired → allow login (caller should reset status)
+-            return (False, None)
+-        # locked_until is None but status is LOCKED → permanent admin lock
+-        return (True, "Tài khoản bị khóa. Liên hệ quản trị viên")
+-
+-    if user.status == UserStatus.PENDING:
+-        return (True, "Tài khoản chưa được kích hoạt")
+-
+-    return (False, None)
+-
+-
+ def should_lock_account(failed_attempts: int) -> bool:
+     """Check if account should be locked after failed attempts.
+ 
+=== app/modules/audit_logs/service.py
+--- ../.local/edu-0032/baseline/app/modules/audit_logs/service.py	2026-11-13 15:54:12.885723700 +0700
++++ app/modules/audit_logs/service.py	2026-11-14 11:50:23.574663700 +0700
+@@ -14,6 +14,19 @@
+ 
+ from app.modules.audit_logs.models import AuditLog, AuditOutbox
+ 
++# audit_logs.user_agent and sessions.user_agent are VARCHAR(500).
++USER_AGENT_MAX_LENGTH = 500
++
++
++def bound_user_agent(value: str | None) -> str | None:
++    """Fit a client-supplied User-Agent into its VARCHAR(500) columns (A0102-F02).
++
++    An over-length header must never make the audit/session insert fail: that failure
++    rolls back the failed-login counter together with the audit row.
++    """
++    return None if value is None else value[:USER_AGENT_MAX_LENGTH]
++
++
+ _SENSITIVE_KEY_PARTS = frozenset(
+     {
+         "authorization",
+@@ -98,7 +111,7 @@
+         actor_email=actor_email,
+         request_id=request_id,
+         ip_address=ip_address,
+-        user_agent=user_agent,
++        user_agent=bound_user_agent(user_agent),
+         before_state=sanitize_audit_data(before_state),
+         after_state=sanitize_audit_data(after_state),
+         extra_data=sanitize_audit_data(extra_data),
+@@ -151,50 +164,3 @@
+ 
+     return changes
+ 
+-
+-# High-risk actions that require audit
+-HIGH_RISK_ACTIONS = frozenset([
+-    # User management
+-    "user:create",
+-    "user:invite",
+-    "user:invitation_accept",
+-    "user:suspend",
+-    "user:activate",
+-    "user:password_reset",
+-    "user:password_reset_issue",
+-    "user:password_reset_accept",
+-    "user:grant_role",
+-    "user:revoke_role",
+-    # Session
+-    "session:login",
+-    "session:logout",
+-    "session:revoke",
+-    # Permissions
+-    "role:create",
+-    "role:update",
+-    "role:delete",
+-    "permission:grant",
+-    "permission:revoke",
+-    # Future phases
+-    "student:create",
+-    "student:update",
+-    "student:delete",
+-    "student:import",
+-    "grade:update",
+-    "grade:lock",
+-    "grade:approve",
+-    "timetable:publish",
+-    "policy:activate",
+-])
+-
+-
+-def is_high_risk_action(action: str) -> bool:
+-    """Check if an action is high-risk and requires transactional audit.
+-
+-    Args:
+-        action: Action string in format "resource:action"
+-
+-    Returns:
+-        True if action is high-risk
+-    """
+-    return action in HIGH_RISK_ACTIONS
+=== tests/auth/test_services.py
+--- ../.local/edu-0032/baseline/tests/auth/test_services.py	2026-11-12 18:26:05.936747500 +0700
++++ tests/auth/test_services.py	2026-11-14 11:51:19.153426200 +0700
+@@ -123,54 +123,12 @@
+         assert should_lock_account(MAX_FAILED_ATTEMPTS - 1) is False
+ 
+ 
+-class TestCheckAccountLocked:
+-    """Tests for check_account_locked (F08 fix)."""
++class TestPasswordVerificationErrors:
++    """Password verification error handling.
+ 
+-    def test_expired_lock_allows_login(self):
+-        """Account lock that has expired should allow login."""
+-        from datetime import datetime, timedelta
+-        from types import SimpleNamespace
+-        from zoneinfo import ZoneInfo
+-
+-        from app.modules.auth.services import check_account_locked
+-
+-        tz = ZoneInfo("Asia/Ho_Chi_Minh")
+-        user = SimpleNamespace(
+-            status="locked",
+-            locked_until=datetime.now(tz) - timedelta(hours=1),
+-        )
+-
+-        locked, reason = check_account_locked(user)
+-        assert locked is False
+-
+-    def test_active_lock_denies_login(self):
+-        """Account lock still active should deny login."""
+-        from datetime import datetime, timedelta
+-        from types import SimpleNamespace
+-        from zoneinfo import ZoneInfo
+-
+-        from app.modules.auth.services import check_account_locked
+-
+-        tz = ZoneInfo("Asia/Ho_Chi_Minh")
+-        user = SimpleNamespace(
+-            status="locked",
+-            locked_until=datetime.now(tz) + timedelta(minutes=20),
+-        )
+-
+-        locked, reason = check_account_locked(user)
+-        assert locked is True
+-        assert "Thử lại sau" in reason
+-
+-    def test_suspended_always_denied(self):
+-        """Suspended accounts are always denied."""
+-        from types import SimpleNamespace
+-
+-        from app.modules.auth.services import check_account_locked
+-
+-        user = SimpleNamespace(status="suspended", locked_until=None)
+-        locked, reason = check_account_locked(user)
+-        assert locked is True
+-        assert "quản trị viên" in reason
++    Router lockout/expiry is covered live in tests/integration/test_auth_remediation.py
++    (A0102-F08); the unused ``check_account_locked`` helper was removed.
++    """
+ 
+     def test_verify_password_with_corrupt_hash(self):
+         """Corrupt hash should return False, not raise (LOW fix)."""
+=== backend/pyproject.toml
+--- backend/pyproject.toml.before
++++ backend/pyproject.toml
+@@ -16,6 +16,7 @@
+   "alembic==1.20.1",
+   "argon2-cffi==25.1.0",
+   "email-validator==2.2.0",
++  "anyio==4.16.0",
+ ]
+ 
+ [project.optional-dependencies]
+=== frontend
+--- .local/edu-0032/baseline/frontend/src/features/user-management/UserManagementPage.tsx	2026-11-13 15:58:13.607770200 +0700
++++ frontend/src/features/user-management/UserManagementPage.tsx	2026-11-14 11:54:25.065315900 +0700
+@@ -17,6 +17,20 @@
+   UserRoleGrant,
+ } from '../../shared/api/client';
+ 
++// Mirrors the backend transition rule (A0102-F03); the server remains authoritative.
++const STATUS_CHANGE_OPTIONS: Record<
++  AuthenticatedUser['status'],
++  { value: 'active' | 'suspended'; label: string }[]
++> = {
++  pending: [],
++  active: [{ value: 'suspended', label: 'Đình chỉ' }],
++  suspended: [{ value: 'active', label: 'Kích hoạt' }],
++  locked: [
++    { value: 'active', label: 'Kích hoạt' },
++    { value: 'suspended', label: 'Đình chỉ' },
++  ],
++};
++
+ type SessionState =
+   | { status: 'loading' }
+   | { status: 'signed-out' }
+@@ -258,22 +272,36 @@
+               </p>
+             </div>
+           </div>
+-          <form className="form-grid compact-form" onSubmit={submitStatus}>
+-            <label>
+-              Trạng thái
+-              <select name="status" defaultValue="active">
+-                <option value="active">Kích hoạt</option>
+-                <option value="suspended">Đình chỉ</option>
+-              </select>
+-            </label>
+-            <label>
+-              Lý do
+-              <input name="reason" maxLength={500} />
+-            </label>
+-            <button className="button" disabled={busy}>
+-              Cập nhật trạng thái
+-            </button>
+-          </form>
++          {STATUS_CHANGE_OPTIONS[createdUser.status].length === 0 ? (
++            <p>Tài khoản đang chờ phải hoàn tất lời mời trước khi đổi trạng thái.</p>
++          ) : (
++            <form
++              key={createdUser.status}
++              className="form-grid compact-form"
++              onSubmit={submitStatus}
++            >
++              <label>
++                Trạng thái
++                <select name="status" required defaultValue="">
++                  <option value="" disabled>
++                    Chọn trạng thái
++                  </option>
++                  {STATUS_CHANGE_OPTIONS[createdUser.status].map((option) => (
++                    <option key={option.value} value={option.value}>
++                      {option.label}
++                    </option>
++                  ))}
++                </select>
++              </label>
++              <label>
++                Lý do
++                <input name="reason" maxLength={500} />
++              </label>
++              <button className="button" disabled={busy}>
++                Cập nhật trạng thái
++              </button>
++            </form>
++          )}
+ 
+           <form className="form-grid role-form" onSubmit={submitGrant}>
+             <h3>Cấp vai trò có scope</h3>
+--- .local/edu-0032/baseline/frontend/src/features/user-management/UserManagementPage.test.tsx	2026-11-13 15:58:13.608768700 +0700
++++ frontend/src/features/user-management/UserManagementPage.test.tsx	2026-11-14 11:44:47.854948000 +0700
+@@ -2,6 +2,7 @@
+ import { beforeEach, describe, expect, it, vi } from 'vitest';
+ import { UserManagementPage } from './UserManagementPage';
+ import {
++  changeAdminUserStatus,
+   createAdminInvitation,
+   listAdminRoles,
+   loginUser,
+@@ -90,6 +91,33 @@
+     });
+   });
+ 
++  it('does not offer or default to activation for a pending invitee', async () => {
++    vi.mocked(readCurrentUser).mockResolvedValue(admin);
++    vi.mocked(createAdminInvitation).mockResolvedValue({
++      user: created,
++      one_time_token: 'synthetic-one-time-invitation-token-123456',
++      expires_at: '2026-11-14T00:00:00Z',
++    });
++    render(<UserManagementPage />);
++    await screen.findByText(admin.email);
++
++    const createHeading = screen.getByRole('heading', { name: 'Mời người dùng' });
++    const createForm = createHeading.closest('section')!;
++    fireEvent.change(within(createForm).getByLabelText('Họ tên'), {
++      target: { value: created.display_name },
++    });
++    fireEvent.change(within(createForm).getByLabelText('Email'), {
++      target: { value: created.email },
++    });
++    fireEvent.click(within(createForm).getByRole('button', { name: 'Tạo lời mời' }));
++
++    const managedHeading = await screen.findByRole('heading', { name: 'Tài khoản vừa mời' });
++    const managed = managedHeading.closest('section')!;
++    expect(within(managed).queryByRole('option', { name: 'Kích hoạt' })).not.toBeInTheDocument();
++    expect(within(managed).getByText(/hoàn tất lời mời/)).toBeInTheDocument();
++    expect(changeAdminUserStatus).not.toHaveBeenCalled();
++  });
++
+   it('shows a safe authorization error from the API', async () => {
+     vi.mocked(readCurrentUser).mockResolvedValue(admin);
+     vi.mocked(createAdminInvitation).mockRejectedValue(

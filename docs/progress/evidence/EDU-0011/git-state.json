@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-11-12T13:53:54.680094+07:00",
+  "records": [
+    {
+      "command": [
+        "git",
+        "status",
+        "-sb"
+      ],
+      "exit_code": 128,
+      "stdout": "",
+      "stderr": "fatal: not a git repository (or any of the parent directories): .git\n"
+    },
+    {
+      "command": [
+        "git",
+        "reflog",
+        "-5"
+      ],
+      "exit_code": 128,
+      "stdout": "",
+      "stderr": "fatal: not a git repository (or any of the parent directories): .git\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit_code": 128,
+      "stdout": "",
+      "stderr": "fatal: not a git repository (or any of the parent directories): .git\n"
+    }
+  ]
+}

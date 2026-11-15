@@ -1,0 +1,69 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+___________ test_login_rate_limit_blocks_password_spray_from_one_ip ___________
+
+    def test_login_rate_limit_blocks_password_spray_from_one_ip() -> None:
+        suffix = uuid4().hex
+        app = create_app(
+            Settings(
+                database_url=_app_database_url(),
+                environment="test",
+                login_rate_limit_attempts=10,
+                login_ip_rate_limit_attempts=2,
+                login_rate_limit_window_seconds=60,
+                _env_file=None,
+            )
+        )
+        with _client(app) as client:
+            statuses = [
+                client.post(
+                    "/api/v1/auth/login",
+                    json={"email": f"spray-{index}-{suffix}@example.com", "password": "wrong"},
+                ).status_code
+                for index in range(3)
+            ]
+>       assert statuses == [401, 401, 429]
+E       assert [401, 401, 401] == [401, 401, 429]
+E         
+E         At index 2 diff: 401 != 429
+E         Use -v to get more diff
+
+tests\integration\test_auth_api.py:183: AssertionError
+________________________ test_idle_session_is_expired _________________________
+
+    def test_idle_session_is_expired() -> None:
+        suffix = uuid4().hex
+        email = f"idle-{suffix}@example.com"
+        password = "Synthetic-Password-123!"
+        with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
+            user_id = _insert_user(migrator, email=email, password=password)
+    
+        app = create_app(
+            Settings(
+                database_url=_app_database_url(),
+                environment="test",
+                session_idle_timeout_minutes=30,
+                _env_file=None,
+            )
+        )
+        with _client(app) as client:
+            assert client.post(
+                "/api/v1/auth/login", json={"email": email, "password": password}
+            ).status_code == 200
+            with closing(psycopg.connect(MIGRATOR_DSN, autocommit=True)) as migrator:
+                migrator.execute(
+                    "UPDATE sessions SET last_activity_at = now() - interval '31 minutes' "
+                    "WHERE user_id = %s AND status = 'active'",
+                    (user_id,),
+                )
+>           assert client.get("/api/v1/auth/me").status_code == 401
+E           AssertionError: assert 200 == 401
+E            +  where 200 = <Response [200 OK]>.status_code
+E            +    where <Response [200 OK]> = get('/api/v1/auth/me')
+E            +      where get = <starlette.testclient.TestClient object at 0x0000026012399590>.get
+
+tests\integration\test_auth_api.py:211: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_auth_api.py::test_login_rate_limit_blocks_password_spray_from_one_ip
+FAILED tests/integration/test_auth_api.py::test_idle_session_is_expired - Ass...
+2 failed in 1.11s

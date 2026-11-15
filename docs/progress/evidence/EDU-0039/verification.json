@@ -1,0 +1,26 @@
+{
+  "task_id": "EDU-0039",
+  "recorded_at": "2026-11-14T15:16:00+07:00",
+  "finding": "A0102-F17",
+  "before": "0 of 7 historical task journals contained the explicit evidence correction marker",
+  "after": "7 of 7 contain append-only corrections and fresh-evidence pointers",
+  "commands": [
+    {
+      "command": "rg correction marker across EDU-0024..0030",
+      "exit_code": 0,
+      "result": "7 files after; 0 before"
+    },
+    {
+      "command": "python -B scripts/check_structure.py",
+      "exit_code": 0,
+      "result": "governance structure OK"
+    },
+    {
+      "command": "python -B scripts/check_text_encoding.py",
+      "exit_code": 0,
+      "result": "361 files, 0 errors"
+    }
+  ],
+  "integrity": "Original evidence files and historical command claims were not rewritten or fabricated."
+}
+

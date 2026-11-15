@@ -1,0 +1,46 @@
+[
+  {
+    "recorded_at": "2026-11-12T13:36:06.202975+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "test:e2e"
+    ],
+    "cwd": "D:\\eduops360\\frontend",
+    "exit_code": 0,
+    "stdout": "\n> eduops360-frontend@0.1.0 test:e2e\n> playwright test\n\n\nRunning 5 tests using 1 worker\n\n  ok 1 tests\\e2e\\foundation.spec.ts:3:1 › light and dark text palettes meet normal-text contrast (614ms)\n  ok 2 tests\\e2e\\foundation.spec.ts:43:1 › Vietnamese navigation, keyboard, theme persistence and mobile layout (1.2s)\n  ok 3 tests\\e2e\\foundation.spec.ts:75:1 › database unavailable, network error and retry recovery (757ms)\n  ok 4 tests\\e2e\\foundation.spec.ts:98:1 › unknown route provides a working return link (543ms)\n  ok 5 tests\\e2e\\foundation.spec.ts:105:1 › malformed health timestamp stays recoverable (602ms)\n\n  5 passed (5.6s)\n",
+    "stderr": "(node:29564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  {
+    "recorded_at": "2026-11-12T13:36:08.947324+07:00",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "eduops360-audit-0011-linux-tests",
+      "--mount",
+      "type=bind,source=D:\\eduops360,target=/workspace,readonly",
+      "--workdir",
+      "/workspace/backend",
+      "--env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "eduops360-audit-0011-backend",
+      "python",
+      "-B",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "D:\\eduops360",
+    "exit_code": 0,
+    "stdout": ".....................                                                    [100%]\n21 passed in 1.16s\n",
+    "stderr": ""
+  }
+]

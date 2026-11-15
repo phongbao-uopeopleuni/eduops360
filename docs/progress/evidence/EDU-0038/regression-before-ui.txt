@@ -1,0 +1,195 @@
+
+ RUN  v5.1.0 D:/eduops360/frontend
+
+ ❯ src/features/user-management/UserManagementPage.test.tsx (4 tests | 1 failed) 1167ms
+   ❯ user administration (4)
+     × shows a role-catalog loading error instead of an empty silent list 1029ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/features/user-management/UserManagementPage.test.tsx > user administration > shows a role-catalog loading error instead of an empty silent list
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="admin-stack"
+    >
+      <section
+        aria-label="Phiên quản trị"
+        class="panel session-summary"
+      >
+        <div>
+          <strong>
+            Quản trị tổng hợp
+          </strong>
+          <span>
+            admin@example.com
+          </span>
+        </div>
+        <button
+          class="button button-secondary"
+        >
+          Đăng xuất
+        </button>
+      </section>
+      <section
+        aria-labelledby="create-user-title"
+        class="panel"
+      >
+        <div
+          class="panel-heading"
+        >
+          <div>
+            <h2
+              id="create-user-title"
+            >
+              Mời người dùng
+            </h2>
+            <p>
+              Tài khoản mới chờ người nhận đặt mật khẩu bằng mã một lần; mã không được lưu dạng rõ.
+            </p>
+          </div>
+        </div>
+        <form
+          class="form-grid form-grid-wide"
+        >
+          <label>
+            Họ tên
+            <input
+              maxlength="100"
+              name="display_name"
+              required=""
+            />
+          </label>
+          <label>
+            Email
+            <input
+              name="email"
+              required=""
+              type="email"
+            />
+          </label>
+          <label>
+            Thời hạn lời mời (giờ)
+            <input
+              max="168"
+              min="1"
+              name="valid_hours"
+              required=""
+              type="number"
+              value="24"
+            />
+          </label>
+          <button
+            class="button"
+          >
+            Tạo lời mời
+          </button>
+        </form>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="admin-stack"
+    >
+      <section
+        aria-label="Phiên quản trị"
+        class="panel session-summary"
+      >
+        <div>
+          <strong>
+            Quản trị tổng hợp
+          </strong>
+          <span>
+            admin@example.com
+          </span>
+        </div>
+        <button
+          class="button button-secondary"
+        >
+          Đăng xuất
+        </button>
+      </section>
+      <section
+        aria-labelledby="create-user-title"
+        class="panel"
+      >
+        <div
+          class="panel-heading"
+        >
+          <div>
+            <h2
+              id="create-user-title"
+            >
+              Mời người dùng
+            </h2>
+            <p>
+              Tài khoản mới chờ người nhận đặt mật khẩu bằng mã một lần; mã không được lưu dạng rõ.
+            </p>
+          </div>
+        </div>
+        <form
+          class="form-grid form-grid-wide"
+        >
+          <label>
+            Họ tên
+            <input
+              maxlength="100"
+              name="display_name"
+              required=""
+            />
+          </label>
+          <label>
+            Email
+            <input
+              name="email"
+              required=""
+              type="email"
+            />
+          </label>
+          <label>
+            Thời hạn lời mời (giờ)
+            <input
+              max="168"
+              min="1"
+              name="valid_hours"
+              required=""
+              type="number"
+              value="24"
+            />
+          </label>
+          <button
+            class="button"
+          >
+            Tạo lời mời
+          </button>
+        </form>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/features/user-management/UserManagementPage.test.tsx:149:25
+    147|     render(<UserManagementPage />);
+    148|     expect(await screen.findByText(admin.email)).toBeInTheDocument();
+    149|     expect(await screen.findByRole('alert')).toHaveTextContent(
+       |                         ^
+    150|       'Không thể tải danh sách vai trò.',
+    151|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  15:06:46
+   Duration  2.34s (tests 53%, environment 33%, setup 10%, import 2%, transform 2%)
+

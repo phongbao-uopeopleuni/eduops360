@@ -1,0 +1,443 @@
+{
+  "recorded_at": "2026-11-12T13:53:55.406562+07:00",
+  "scope": "D:\\eduops360",
+  "created_source_evidence_files": [
+    {
+      "path": "docs/progress/evidence/EDU-0011/audit-summary.json",
+      "sha256": "e6bd1b2312a361d521306799b54f527635790d5ba56a392cfe0091bda38bc97f",
+      "mtime_ns": 1794466433769899000,
+      "bytes": 1135
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/backend-governance-checks.json",
+      "sha256": "bb4cbca71fa8d44d65040fb4e43960cb358b44bebe34ed9288ac99c8bacd01bc",
+      "mtime_ns": 1794465156313970800,
+      "bytes": 5825
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/before.json",
+      "sha256": "66fd2c939efd8ef63084af1aad43523eb4e21a6a289c6a250e9a14abfc50f5b8",
+      "mtime_ns": 1794464775771934500,
+      "bytes": 41589
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/browser-linux-checks.json",
+      "sha256": "21d3f606a5a0293c7c834e82be9e00a48cd069a468d2b79126618cfa72b6b32e",
+      "mtime_ns": 1794465368947415200,
+      "bytes": 1857
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/browser-results.json",
+      "sha256": "6f40959fd29357588febc046f3152ad0ffe8c9f34565374f7d7619f7fce1ec52",
+      "mtime_ns": 1794466214077304600,
+      "bytes": 9540
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/ci-env-before.json",
+      "sha256": "be4a24b57d5188a26ffbfa919916baae2564a38d3421eff13ea44e483d59fa99",
+      "mtime_ns": 1794464812372165000,
+      "bytes": 126
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/dark.png",
+      "sha256": "6334e5dc482b1894616a2e9fadbdf0cd9f41a2c3daec71409de3c8e3b0811e45",
+      "mtime_ns": 1794466214079728600,
+      "bytes": 68577
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/dependency-provenance.json",
+      "sha256": "5fcc03de8995a7be75496d3d8b89424a62e5f1367199cf7c123de60d2423d4ae",
+      "mtime_ns": 1794465879282864800,
+      "bytes": 190
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/dependency-resolution.json",
+      "sha256": "7a9fac0054954980aaeb1d9a687829cfcd700e77318e231a7c2ec99dda927369",
+      "mtime_ns": 1794465291492508500,
+      "bytes": 1114
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/engine-lock-final-checks.json",
+      "sha256": "2913af1723cbfb81bf2e9a497cb278de8c577c6b5f71d755df7bb04c7a5f916f",
+      "mtime_ns": 1794465511791242200,
+      "bytes": 1378
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/final-runtime-checks.json",
+      "sha256": "bd192d54a7803be1aae22f00573de8b04da386115bc5983e1a09c0433d452d10",
+      "mtime_ns": 1794465879677803800,
+      "bytes": 879
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/frontend-checks.json",
+      "sha256": "8d31c0bb0fa5b3eb1de15ce04d0ab90d8ef049c2ef81cc9fcda72bc3b4bafd5b",
+      "mtime_ns": 1794465199197526000,
+      "bytes": 5578
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/git-state.json",
+      "sha256": "cce25ce7fd1630440b798673cfa006592f33d794980cac1750409e18a5095eb3",
+      "mtime_ns": 1794466434680384600,
+      "bytes": 787
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/http-headers-after.json",
+      "sha256": "36511861f4344da470541dfa192d1f44884436d097c963dfb357694b4e7832ce",
+      "mtime_ns": 1794465359655912000,
+      "bytes": 246
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/http-headers-before.json",
+      "sha256": "296a56e37fa299231f3f7dfb07d294dc7dab3b34dba75b52e8d881486e7975b9",
+      "mtime_ns": 1794464812371165100,
+      "bytes": 252
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/light.png",
+      "sha256": "3ce74c506d4eb6824816187deedd37c3615209f5a660aa5a24ff83ddf2d97b11",
+      "mtime_ns": 1794466214079124700,
+      "bytes": 68385
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/migration-runtime.json",
+      "sha256": "ea9c8b216a49528bd4ba93ba558c69f794bb45d80e61e3e6bf21193c7ab69c1b",
+      "mtime_ns": 1794465215838951700,
+      "bytes": 7119
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/mobile.png",
+      "sha256": "ca247473b5d1279fcef04de08c73ddc13b5f063eba3e67ddb1b5daa11e896ad7",
+      "mtime_ns": 1794466214080383900,
+      "bytes": 52954
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/node-engine-after.json",
+      "sha256": "f9d9d91614555ff47df9ed62e1b6d2a2d0468496bf6ad38542e538a3e28bca53",
+      "mtime_ns": 1794465879281864800,
+      "bytes": 288
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/node-engine-check.json",
+      "sha256": "b684a4013d00aa43b783585635200ec9f0988addd9fe3179425a4ec326cae95c",
+      "mtime_ns": 1794465359140074100,
+      "bytes": 1272
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/npm-audit-after.json",
+      "sha256": "6a68ef99f5fda99158dca5738b43494658121d081c103317e2743732c70e0b48",
+      "mtime_ns": 1794465511791242200,
+      "bytes": 386
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/npm-audit-before.json",
+      "sha256": "277bb6eae20c9322b78d929450f7d415a6f9c00fd3d12a8e2800f90eb4ef901f",
+      "mtime_ns": 1794464854068430400,
+      "bytes": 5327
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/python-osv-before.json",
+      "sha256": "20c57872ed9ca5711ac7e2cab6d21e40172723656482988d1543d67ca40e56d1",
+      "mtime_ns": 1794464854684684000,
+      "bytes": 4650
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/regressions-before.json",
+      "sha256": "d69a75e561193259c57d175df014c0c09e51a0a97bcdeb16dac0ad46474b697a",
+      "mtime_ns": 1794465041328355500,
+      "bytes": 10790
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/secret-scan.json",
+      "sha256": "3cba3fb9626c115e77c9f54915b150462a0ca97732c0868a9d585bba3e238418",
+      "mtime_ns": 1794465216354812400,
+      "bytes": 360
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/shutdown.json",
+      "sha256": "ae14f2b12737da20199cb02d75f679bdf8ed5b910e47e3ff3e0106e24cc1ea15",
+      "mtime_ns": 1794466433768906500,
+      "bytes": 4252
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/workflow-structure.json",
+      "sha256": "e360edef04030b763bf84def4976422c28e8a1669f48218550e7fe0e60600db8",
+      "mtime_ns": 1794465966114326900,
+      "bytes": 439
+    },
+    {
+      "path": "docs/progress/evidence/EDU-0011/workspace-temp-checks.json",
+      "sha256": "fcc788e17060ce68973f3396998e2a426289e0d59dd9ff0e847ce76a9af3b821",
+      "mtime_ns": 1794466183471469900,
+      "bytes": 2308
+    },
+    {
+      "path": "docs/progress/tasks/EDU-0011.md",
+      "sha256": "d94a7f7d489ba5cf0dd998005350c9d7f2bbbb1b237e3076a70293bf7ae99930",
+      "mtime_ns": 1794466433767891600,
+      "bytes": 8726
+    },
+    {
+      "path": "docs/quality/PHASE_01_AUDIT_2026-11-12.md",
+      "sha256": "7a2412af7b60b9e1d0d6a6294f7db9a0864824b3e897a0bfa7ca496029c5734b",
+      "mtime_ns": 1794466270119418200,
+      "bytes": 9272
+    }
+  ],
+  "modified_source_files": [
+    {
+      "before": {
+        "sha256": "8318599d3a01bd4bbc0d24dd1eb0177138e14a0689bd295e7845a74c83cb29bf",
+        "mtime_ns": 1794462350934824700,
+        "bytes": 2635
+      },
+      "after": {
+        "path": "backend/app/main.py",
+        "sha256": "7c8564a367f270ef3105c29e840902d760cd17d0dd9dd080be7cf50d4f8493d9",
+        "mtime_ns": 1794465084310051100,
+        "bytes": 2729
+      }
+    },
+    {
+      "before": {
+        "sha256": "9da5489af480d5e6e1d09d2e85ad384752d589a89bf34decb67e6b9124ee5fd1",
+        "mtime_ns": 1794462350922458100,
+        "bytes": 763
+      },
+      "after": {
+        "path": "backend/app/core/errors.py",
+        "sha256": "1598beff81f3e70e4525bccc2ae034c35650dc63e7bc05920c03d8edd215998c",
+        "mtime_ns": 1794465084310051100,
+        "bytes": 925
+      }
+    },
+    {
+      "before": {
+        "sha256": "88ba22e7a919395f858734b37f66a4dc77b2ae2fec9e7eab0549fe91395cd7cf",
+        "mtime_ns": 1794462941056615900,
+        "bytes": 4924
+      },
+      "after": {
+        "path": "backend/tests/test_foundation.py",
+        "sha256": "77f5a71fbb2bfa42a7daed1d8b0aceccbcae02e95700a99c8fb8a161999a928a",
+        "mtime_ns": 1794465017451085100,
+        "bytes": 5895
+      }
+    },
+    {
+      "before": {
+        "sha256": "f5eb4949d7d1fba7ad43a41a49e490da262fa7d571b723a39ee865509bc4fb74",
+        "mtime_ns": 1794463589493226000,
+        "bytes": 4028
+      },
+      "after": {
+        "path": "docs/progress/HANDOFF.md",
+        "sha256": "b2ceff449e11b2cc46e04a26c6b1d843dff1b17324344271e5be19f0331e3c6d",
+        "mtime_ns": 1794466270120418100,
+        "bytes": 5419
+      }
+    },
+    {
+      "before": {
+        "sha256": "9195aa9e4d152c142f43bab946d22c4b7d9f74e93cf56b9af631a8af9a937d87",
+        "mtime_ns": 1794464285055111600,
+        "bytes": 5618
+      },
+      "after": {
+        "path": "docs/progress/TASK_BOARD.md",
+        "sha256": "dcc291acf02e9880909af7a09f1e99b35c9f72c0422222707861aeef443955ee",
+        "mtime_ns": 1794466433833105000,
+        "bytes": 6721
+      }
+    },
+    {
+      "before": {
+        "sha256": "91364e14a35cdc30c6e71962d62aa5f43e257dc65a719fcfc6353f4e8006d70c",
+        "mtime_ns": 1794431314000000000,
+        "bytes": 1116
+      },
+      "after": {
+        "path": "docs/quality/RELEASE_GATE.md",
+        "sha256": "d8f00cbb3ae9415a60fada3ab29d0e1fa2b9a52a9e954e62d6600db96d4d1d57",
+        "mtime_ns": 1794465508941483500,
+        "bytes": 1155
+      }
+    },
+    {
+      "before": {
+        "sha256": "30c7df542c39dcd7fb8172bad2ddc10c43dbc10e34235f5c811b1016d172e81d",
+        "mtime_ns": 1794462829879027200,
+        "bytes": 148805
+      },
+      "after": {
+        "path": "frontend/package-lock.json",
+        "sha256": "dd4162f5741fcf64ead75814aa713a7e2502d9db09d0e33f726ab455298ef13e",
+        "mtime_ns": 1794465420126370800,
+        "bytes": 149226
+      }
+    },
+    {
+      "before": {
+        "sha256": "8040eea2b0c2e8321e4703ade104f77ab7a4b2ad0546220607afffc3573dbd0d",
+        "mtime_ns": 1794462752180167700,
+        "bytes": 1521
+      },
+      "after": {
+        "path": "frontend/package.json",
+        "sha256": "e900ae7ed6672551901bea778a1dec4424b319b01a999e1131d187d0196001b3",
+        "mtime_ns": 1794465418617022100,
+        "bytes": 1581
+      }
+    },
+    {
+      "before": {
+        "sha256": "563e52134a4685ff0dd00c145ad1c319520bc452f58d1d550428eb5a12dd12e5",
+        "mtime_ns": 1794463274031715200,
+        "bytes": 1253
+      },
+      "after": {
+        "path": "frontend/playwright.config.ts",
+        "sha256": "83b12b07f27bcb4707bb198134d5d24de46415619e931caa93a2dd45d710aa2c",
+        "mtime_ns": 1794466170544527500,
+        "bytes": 1557
+      }
+    },
+    {
+      "before": {
+        "sha256": "5611b235fc529c595d3ebf3541d93706555ad791dafceeedd8c60d68c7fc866d",
+        "mtime_ns": 1794463257542409500,
+        "bytes": 1970
+      },
+      "after": {
+        "path": "frontend/README.md",
+        "sha256": "ea62f98c2fdebad71b41f9991400054d33c424a28383691a43fb780f8867c00e",
+        "mtime_ns": 1794465084314526600,
+        "bytes": 2316
+      }
+    },
+    {
+      "before": {
+        "sha256": "25af9fbfc1442df6ce20f0ece3e6a14c6e2a152bfbc3b0ad48c6d3e1c3128d3c",
+        "mtime_ns": 1794462492635830300,
+        "bytes": 806
+      },
+      "after": {
+        "path": "frontend/src/shared/api/client.ts",
+        "sha256": "6b2620f930f68a8df606499891f267240024bd32074c789bdef903b4f9d530f8",
+        "mtime_ns": 1794465084311518100,
+        "bytes": 933
+      }
+    },
+    {
+      "before": {
+        "sha256": "0dcfa03802e8418d3a2dbaec2b20e085bc0cd28ce2bf819889733dca0e2101d3",
+        "mtime_ns": 1794462699405204200,
+        "bytes": 632
+      },
+      "after": {
+        "path": "frontend/src/shared/lib/dates.test.ts",
+        "sha256": "b105bf3f73871729acf68afbdd0bfe358e3aa77b69178bca39f7c271c11607b9",
+        "mtime_ns": 1794465086869006300,
+        "bytes": 1102
+      }
+    },
+    {
+      "before": {
+        "sha256": "d9bd57a9e5790324dc3d2b62ad215f2e5661f0f3abc86102f712335bcbbbc753",
+        "mtime_ns": 1794462699404168900,
+        "bytes": 914
+      },
+      "after": {
+        "path": "frontend/src/shared/lib/dates.ts",
+        "sha256": "84d1bf0669d4c485d138e42f50792fd31c9a1f040eae1dd9d6fefec87e177276",
+        "mtime_ns": 1794465086860641900,
+        "bytes": 1412
+      }
+    },
+    {
+      "before": {
+        "sha256": "4169f56587083598b462818dff8b3aee870cd781b392e9223a37e320698b32dd",
+        "mtime_ns": 1794463257538892900,
+        "bytes": 4633
+      },
+      "after": {
+        "path": "frontend/tests/e2e/foundation.spec.ts",
+        "sha256": "b6fea80ca86737cfd391e75813a8504e1ba11ed1387805ea8dfdeba20ea5f394",
+        "mtime_ns": 1794466170547032700,
+        "bytes": 5665
+      }
+    }
+  ],
+  "same_content_changed_mtime": [],
+  "verified_original_backups": [
+    "backend/app/main.py",
+    "backend/app/core/errors.py",
+    "backend/tests/test_foundation.py",
+    "docs/progress/HANDOFF.md",
+    "docs/progress/TASK_BOARD.md",
+    "docs/quality/RELEASE_GATE.md",
+    "frontend/package-lock.json",
+    "frontend/package.json",
+    "frontend/playwright.config.ts",
+    "frontend/README.md",
+    "frontend/src/shared/api/client.ts",
+    "frontend/src/shared/lib/dates.test.ts",
+    "frontend/src/shared/lib/dates.ts",
+    "frontend/tests/e2e/foundation.spec.ts"
+  ],
+  "retained_artifacts": [
+    {
+      "path": "frontend/node_modules",
+      "files": 11155,
+      "bytes": 189947835
+    },
+    {
+      "path": "frontend/dist",
+      "files": 12,
+      "bytes": 386779
+    },
+    {
+      "path": "frontend/test-results",
+      "files": 5,
+      "bytes": 199501
+    },
+    {
+      "path": "backend/.ruff_cache",
+      "files": 7,
+      "bytes": 1586
+    },
+    {
+      "path": ".local/audit-0011",
+      "files": 2401,
+      "bytes": 107872743
+    },
+    {
+      "path": ".local/playwright-tmp",
+      "files": 0,
+      "bytes": 0
+    }
+  ],
+  "rewrite_actions": [
+    "npm ci removed and recreated existing frontend/node_modules",
+    "Vite build removed and recreated frontend/dist",
+    "Playwright replaced frontend/test-results for failed and subsequent passing runs",
+    "frontend/package-lock.json was regenerated for the minimatch override and Node engine metadata"
+  ],
+  "docker_effects": {
+    "images_built_and_rebuilt": [
+      "eduops360-audit-0011-backend:latest",
+      "eduops360-audit-0011-frontend:latest"
+    ],
+    "retained_volume": "eduops360-audit-0011_postgres-data",
+    "volume_database_state": "UTF8 audit database, upgrade/downgrade/re-upgrade at 0001_foundation",
+    "containers_and_network": "removed with project-scoped compose down",
+    "desktop": "started and stopped for this audit",
+    "build_cache": "retained"
+  },
+  "external_runtime_temp": {
+    "observed_default_temp": "C:\\Users\\PHONGB~1\\AppData\\Local\\Temp",
+    "effect": "E2E before redirection used the Windows temporary directory",
+    "inventory": "not performed outside the authorized workspace",
+    "subsequent_runs": ".local/playwright-tmp, enforced by Playwright process environment and worker test"
+  },
+  "additional_manifest": "docs/progress/evidence/EDU-0011/side-effects.json"
+}

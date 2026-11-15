@@ -1,0 +1,62 @@
+[
+  {
+    "recorded_at": "2026-11-12T13:49:32.475375+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "format:check"
+    ],
+    "cwd": "D:\\eduops360\\frontend",
+    "exit_code": 0,
+    "stdout": "\n> eduops360-frontend@0.1.0 format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:49:34.594714+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "lint"
+    ],
+    "cwd": "D:\\eduops360\\frontend",
+    "exit_code": 0,
+    "stdout": "\n> eduops360-frontend@0.1.0 lint\n> eslint .\n\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:49:36.453244+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "cwd": "D:\\eduops360\\frontend",
+    "exit_code": 0,
+    "stdout": "\n> eduops360-frontend@0.1.0 typecheck\n> tsc --noEmit\n\n",
+    "stderr": ""
+  },
+  {
+    "recorded_at": "2026-11-12T13:49:43.470717+07:00",
+    "command": [
+      "cmd.exe",
+      "/d",
+      "/c",
+      "npm",
+      "run",
+      "test:e2e"
+    ],
+    "cwd": "D:\\eduops360\\frontend",
+    "exit_code": 0,
+    "stdout": "\n> eduops360-frontend@0.1.0 test:e2e\n> playwright test\n\n\nRunning 6 tests using 1 worker\n\n  ok 1 tests\\e2e\\foundation.spec.ts:5:1 › test-worker temporary storage is inside the workspace (4ms)\n  ok 2 tests\\e2e\\foundation.spec.ts:14:1 › light and dark text palettes meet normal-text contrast (683ms)\n  ok 3 tests\\e2e\\foundation.spec.ts:54:1 › Vietnamese navigation, keyboard, theme persistence and mobile layout (1.3s)\n  ok 4 tests\\e2e\\foundation.spec.ts:86:1 › database unavailable, network error and retry recovery (771ms)\n  ok 5 tests\\e2e\\foundation.spec.ts:109:1 › unknown route provides a working return link (655ms)\n  ok 6 tests\\e2e\\foundation.spec.ts:116:1 › malformed health timestamp stays recoverable (743ms)\n\n  6 passed (6.1s)\n",
+    "stderr": "(node:40888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  }
+]

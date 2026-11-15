@@ -1,0 +1,30 @@
+{
+  "started_at": "2026-11-14T16:05:32+0700",
+  "run": "36454f7369",
+  "result": {
+    "statuses_per_attempt": [
+      [
+        200,
+        401
+      ],
+      [
+        200,
+        401
+      ],
+      [
+        200,
+        401
+      ],
+      [
+        200,
+        401
+      ],
+      [
+        200,
+        401
+      ]
+    ],
+    "all_attempts_complete": true,
+    "max_successes_in_any_attempt": 1
+  }
+}

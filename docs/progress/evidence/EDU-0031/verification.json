@@ -1,0 +1,92 @@
+{
+  "task_id": "EDU-0031",
+  "recorded_at": "2026-11-14T11:16:03+07:00",
+  "conclusion": "needs_changes_phase_01_02_not_accepted",
+  "reviewer": "Claude acting independent technical/security reviewer; not Human Security Owner (OD-001)",
+  "report": "docs/quality/PHASE_01_02_INDEPENDENT_AUDIT_2026-11-14.md",
+  "environment": {
+    "os": "Windows 11 Pro 10.0.26300",
+    "python": "3.13.5 (backend/.venv), pytest 9.2.0, SQLAlchemy 2.1.8",
+    "node": "24.12.0",
+    "npm": "11.6.2",
+    "docker_engine": "29.9.2 (started for audit, stopped afterwards)",
+    "postgresql_image": "postgres:18 (local image id e3d24f6906d0, no pull)",
+    "browser": "Playwright channel chrome (installed Google Chrome)"
+  },
+  "preflight": {
+    "at": "2026-11-14T10:41:40+07:00",
+    "git_status_sb": {"exit_code": 128, "output": "fatal: not a git repository"},
+    "git_reflog": {"exit_code": 128, "output": "fatal: not a git repository"},
+    "project_listeners": "none on 5173/4173/8000/55432/55xxx",
+    "docker": "daemon not running",
+    "unrelated_processes": "OpenAI Codex runtime and chrome-devtools MCP node processes; untouched",
+    "manifest_files": 326
+  },
+  "commands": [
+    {"id": "backend-pytest-host", "cwd": "backend", "started_at": "2026-11-14T10:50:52+07:00", "command": ".venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider", "exit_code": 0, "result": "72 passed, 7 skipped in 2.08s"},
+    {"id": "backend-ruff", "cwd": "backend", "command": ".venv/Scripts/python.exe -B -m ruff check --no-cache app migrations tests", "exit_code": 0, "result": "All checks passed!"},
+    {"id": "governance-blueprint", "cwd": ".", "command": "python -B scripts/validate_blueprint.py", "exit_code": 0, "result": "PASS: all required blueprint checks"},
+    {"id": "governance-structure", "cwd": ".", "command": "python -B scripts/check_structure.py", "exit_code": 0, "result": "Unified AI Agent SP governance structure: OK"},
+    {"id": "governance-encoding-initial", "cwd": ".", "command": "python -B scripts/check_text_encoding.py", "exit_code": 0, "result": "Checked text files: 293; encoding errors: 0"},
+    {"id": "root-unittest", "cwd": ".", "command": "python -B -m unittest discover -s tests -p test_*.py", "exit_code": 0, "result": "Ran 17 tests OK"},
+    {"id": "openapi-drift", "cwd": "backend", "command": ".venv/Scripts/python.exe -B ../scripts/export_openapi.py --check", "exit_code": 0, "result": "OpenAPI contract matches FastAPI"},
+    {"id": "frontend-typecheck", "cwd": "frontend", "command": "npm run --silent typecheck", "exit_code": 0, "result": "no output"},
+    {"id": "frontend-lint", "cwd": "frontend", "command": "npm run --silent lint", "exit_code": 0, "result": "no output"},
+    {"id": "frontend-format", "cwd": "frontend", "command": "npm run --silent format:check", "exit_code": 0, "result": "All matched files use Prettier code style!"},
+    {"id": "frontend-api-check", "cwd": "frontend", "command": "npm run --silent api:check", "exit_code": 0, "result": "TypeScript client types match OpenAPI"},
+    {"id": "frontend-unit", "cwd": "frontend", "command": "npm run --silent test", "exit_code": 0, "result": "Test Files 4 passed; Tests 19 passed"},
+    {"id": "compose-db-up", "cwd": ".", "command": "docker compose -p eduops360-audit-p0102 --env-file .local/audit-phase-01-02/audit.env -f infra/compose.dev.yml up -d db --wait", "exit_code": 0, "result": "db healthy on 127.0.0.1:55491; synthetic random passwords, values not recorded"},
+    {"id": "alembic-upgrade-head", "cwd": "backend", "command": "EDUOPS_DATABASE_URL=<migrator> .venv/Scripts/python.exe -B -m alembic upgrade head; alembic current; alembic check", "exit_code": 0, "result": "0007_account_tokens (head); No new upgrade operations detected."},
+    {"id": "backend-pytest-postgres", "cwd": "backend", "started_at": "2026-11-14T10:55:42+07:00", "command": "EDUOPS_TEST_MIGRATOR_DSN/RUNTIME_DSN/AUDIT_WORKER_DSN=<isolated> .venv/Scripts/python.exe -B -m pytest tests -q -p no:cacheprovider", "exit_code": 0, "result": "79 passed in 3.54s; integration subset 7 passed"},
+    {"id": "runtime-alembic-denied", "cwd": "backend", "started_at": "2026-11-14T11:01:02+07:00", "command": "EDUOPS_DATABASE_URL=<runtime> .venv/Scripts/python.exe -B -m alembic current", "exit_code": 1, "result": "psycopg.errors.InsufficientPrivilege: permission denied for table alembic_version"},
+    {"id": "migration-roundtrip", "cwd": "backend", "command": "alembic downgrade 0003_audit_logs; alembic downgrade base; alembic upgrade head; alembic check", "exit_code": 0, "result": "all steps exit 0; check clean; ACL snapshots in migration_roundtrip.txt"},
+    {"id": "compose-db-down", "cwd": ".", "command": "docker compose -p eduops360-audit-p0102 ... down -v --remove-orphans", "exit_code": 0, "result": "container, volume eduops360-audit-p0102_postgres-data and network removed"},
+    {"id": "docker-desktop-stop", "cwd": ".", "command": "docker desktop stop", "exit_code": 0, "result": "engine stopped at 2026-11-14T11:03:21+07:00"},
+    {"id": "e2e-default-config", "cwd": "frontend", "started_at": "2026-11-14T11:02:06+07:00", "command": "PLAYWRIGHT_BROWSERS_PATH=.local/browsers PLAYWRIGHT_CHANNEL=chrome npx --no-install playwright test", "exit_code": 1, "result": "webServer bind 127.0.0.1:8000 failed WinError 10013; port in Windows excluded range 7957-8056 (A0102-F15)"},
+    {"id": "e2e-external-servers", "cwd": "frontend", "started_at": "2026-11-14T11:04:00+07:00", "command": "backend: python -m app --port 58093; vite with API_PROXY_TARGET=http://127.0.0.1:58093; PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome npx --no-install playwright test", "exit_code": 0, "result": "7 passed (6.6s); backend received 0 /api/v1/auth or /api/v1/admin requests"},
+    {"id": "frontend-build", "cwd": "frontend", "command": "npm run --silent build", "exit_code": 0, "result": "typecheck + vite build passed"},
+    {"id": "board-sync", "cwd": ".", "started_at": "2026-11-14T11:15:01+07:00", "command": "python -B scripts/sync_task_board.py", "exit_code": 0, "result": "Generated docs/progress/TASK_BOARD.md with 26 task(s)"},
+    {"id": "governance-after-docs", "cwd": ".", "command": "validate_blueprint; check_structure; check_text_encoding; unittest", "exit_code": 0, "result": "PASS; OK; 307 files 0 encoding errors; 17 tests OK (run before this JSON was written)"}
+  ],
+  "probes": {
+    "location": "docs/progress/evidence/EDU-0031/probes/ (copies of .local/audit-phase-01-02/ probes)",
+    "probe_identity_map": {"output": "probe_identity_map.txt", "finding": "A0102-F04", "observed": "with_for_update re-read used_at=None while DB row set; populate_existing returns value"},
+    "probe_offline": {"output": "probe_offline.txt", "findings": ["A0102-F11", "A0102-F07", "A0102-F09"], "observed": "CORS reflects attacker origin with credentials; argon2 verify ~45 ms; victim limiter key evicted after 10000 keys"},
+    "probe_live": {"output": "probe_live.json", "started_at": "2026-11-14T10:59:36+07:00", "findings": ["A0102-F01", "A0102-F02", "A0102-F03", "A0102-F04", "A0102-F05", "A0102-F06", "A0102-F10", "A0102-F21"]},
+    "probe_loop": {"output": "probe_loop.json", "finding": "A0102-F07", "observed": "10 concurrent failed logins: liveness max 197 ms, burst 626.9 ms"},
+    "probe_readiness": {"output": "probe_readiness.json", "observed": "up 200; DB stopped 503 in ~3.0 s with status/database/checked_at only; live 200; recovered 200"},
+    "probe_invite_race": {"output": "probe_invite_race.json", "observed": "4 concurrent case-variant invitations: 201,409,409,409; one user row"}
+  },
+  "docker": {
+    "project": "eduops360-audit-p0102",
+    "services_started": ["db"],
+    "images_built": [],
+    "resources_after_teardown": "container/volume/network/image name lists identical to baseline snapshot (raw snapshot kept in ignored .local because it lists unrelated projects)"
+  },
+  "side_effects": [
+    "frontend/dist regenerated by npm run build; frontend/test-results regenerated by Playwright; .local/playwright-tmp used",
+    ".local/audit-phase-01-02/ (ignored): probes, logs, manifests, docker snapshots; synthetic env file deleted at the end of the audit",
+    "temporary API on 127.0.0.1:58093 and Vite on 127.0.0.1:5173 for E2E; both stopped, no project listeners at 2026-11-14T11:04:59+07:00",
+    "Docker Desktop started for the audit and stopped again; Windows still reports TCP 7957-8056 excluded after stop",
+    "Git Bash /tmp/out.txt created and deleted; root unittest used system TEMP via tempfile (auto-removed)",
+    "docs: added report, EDU-0031 journal and this evidence folder; appended EDU-0031 section to HANDOFF.md; regenerated TASK_BOARD.md",
+    "no product source modified; no real student data; no public deployment"
+  ],
+  "source_integrity": {
+    "method": ".local/audit-phase-01-02/manifest.py SHA-256 over 326 -> 340 files excluding node_modules/.venv/.local/caches/dist/test-results",
+    "compared_at": "2026-11-14T11:15:12+07:00 (manifest-after mtime; before this JSON was written)",
+    "added": 14,
+    "removed": 0,
+    "changed": ["docs/progress/HANDOFF.md", "docs/progress/TASK_BOARD.md"],
+    "unexpected_paths": [],
+    "note": "this verification.json is the only file written after the comparison"
+  },
+  "git": {
+    "repository": false,
+    "branch": "not_created",
+    "commit": "not_done",
+    "push": "not_done",
+    "pull_request": "none",
+    "merge": "not_done"
+  }
+}

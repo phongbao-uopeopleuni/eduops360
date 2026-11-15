@@ -1,0 +1,112 @@
+FFFFF                                                                    [100%]
+================================== FAILURES ===================================
+_______ test_failed_login_audit_bounds_long_user_agent_to_column_length _______
+
+    def test_failed_login_audit_bounds_long_user_agent_to_column_length() -> None:
+        """A0102-F02: an oversized header must not reach the VARCHAR(500) audit column."""
+        db = FakeDbSession(user=None)
+        with _client(_app_with(db)) as client:
+            response = client.post(
+                "/api/v1/auth/login",
+                json={"email": "nobody@example.com", "password": "wrong-password"},
+                headers={"User-Agent": LONG_USER_AGENT},
+            )
+        assert response.status_code == 401
+        audits = [obj for obj in db.added if isinstance(obj, AuditLog)]
+        assert len(audits) == 1
+>       assert audits[0].user_agent == LONG_USER_AGENT[:USER_AGENT_COLUMN_LENGTH]
+E       AssertionError: assert 'Mozilla/5.0 ...AAAAAAAAAAAAA' == 'Mozilla/5.0 ...AAAAAAAAAAAAA'
+E         
+E         Skipping 489 identical leading characters in diff, use -v to show
+E         - AAAAAAAAAAA
+E         + AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+tests\auth\test_remediation_host.py:140: AssertionError
+__________ test_successful_login_bounds_session_and_audit_user_agent __________
+
+    def test_successful_login_bounds_session_and_audit_user_agent() -> None:
+        """A0102-F02: the session row and login audit both receive the bounded value."""
+        db = FakeDbSession(user=_active_user())
+        with _client(_app_with(db)) as client:
+            response = client.post(
+                "/api/v1/auth/login",
+                json={"email": "host-login@example.com", "password": PASSWORD},
+                headers={"User-Agent": LONG_USER_AGENT},
+            )
+        assert response.status_code == 200
+        sessions = [obj for obj in db.added if isinstance(obj, Session)]
+        audits = [obj for obj in db.added if isinstance(obj, AuditLog)]
+        assert len(sessions) == 1
+>       assert sessions[0].user_agent == LONG_USER_AGENT[:USER_AGENT_COLUMN_LENGTH]
+E       AssertionError: assert 'Mozilla/5.0 ...AAAAAAAAAAAAA' == 'Mozilla/5.0 ...AAAAAAAAAAAAA'
+E         
+E         Skipping 489 identical leading characters in diff, use -v to show
+E         - AAAAAAAAAAA
+E         + AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+tests\auth\test_remediation_host.py:156: AssertionError
+____________ test_audit_writer_bounds_user_agent_for_every_caller _____________
+
+    def test_audit_writer_bounds_user_agent_for_every_caller() -> None:
+        """A0102-F02: the shared audit writer itself never emits an over-length header."""
+        db = FakeDbSession()
+    
+        async def write() -> AuditLog:
+            return await write_audit_in_transaction(
+                db,
+                action="session:login_failed",
+                resource_type="session",
+                user_agent=LONG_USER_AGENT,
+            )
+    
+        audit = asyncio.run(write(), loop_factory=create_event_loop)
+>       assert audit.user_agent == LONG_USER_AGENT[:USER_AGENT_COLUMN_LENGTH]
+E       AssertionError: assert 'Mozilla/5.0 ...AAAAAAAAAAAAA' == 'Mozilla/5.0 ...AAAAAAAAAAAAA'
+E         
+E         Skipping 489 identical leading characters in diff, use -v to show
+E         - AAAAAAAAAAA
+E         + AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+tests\auth\test_remediation_host.py:175: AssertionError
+_______ test_login_password_verification_runs_off_the_event_loop_thread _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022F720882B0>
+
+    def test_login_password_verification_runs_off_the_event_loop_thread(monkeypatch) -> None:
+        """A0102-F07: Argon2 verification must not execute on the event-loop thread."""
+        hasher = RecordingHasher()
+        monkeypatch.setattr(services, "_password_hasher", hasher)
+        db = FakeDbSession(user=None)
+        with _client(_app_with(db)) as client:
+            response = client.post(
+                "/api/v1/auth/login",
+                json={"email": "nobody@example.com", "password": "wrong-password"},
+            )
+        assert response.status_code == 401
+        assert hasher.threads, "password verification was not invoked"
+        loop_thread = db.execute_threads[0]
+>       assert all(thread != loop_thread for thread in hasher.threads)
+E       assert False
+E        +  where False = all(<generator object test_login_password_verification_runs_off_the_event_loop_thread.<locals>.<genexpr> at 0x0000022F7207B920>)
+
+tests\auth\test_remediation_host.py:191: AssertionError
+________________ test_password_hashing_concurrency_is_bounded _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022F7208A520>
+
+    def test_password_hashing_concurrency_is_bounded(monkeypatch) -> None:
+        """A0102-F07: concurrent Argon2 work is capped so memory/CPU stay bounded."""
+        hasher = RecordingHasher(delay=0.05)
+        monkeypatch.setattr(services, "_password_hasher", hasher)
+>       limit = services.PASSWORD_HASH_CONCURRENCY
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'app.modules.auth.services' has no attribute 'PASSWORD_HASH_CONCURRENCY'
+
+tests\auth\test_remediation_host.py:198: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/auth/test_remediation_host.py::test_failed_login_audit_bounds_long_user_agent_to_column_length
+FAILED tests/auth/test_remediation_host.py::test_successful_login_bounds_session_and_audit_user_agent
+FAILED tests/auth/test_remediation_host.py::test_audit_writer_bounds_user_agent_for_every_caller
+FAILED tests/auth/test_remediation_host.py::test_login_password_verification_runs_off_the_event_loop_thread
+FAILED tests/auth/test_remediation_host.py::test_password_hashing_concurrency_is_bounded
+5 failed in 0.95s

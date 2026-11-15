@@ -1,0 +1,30 @@
+{
+  "task_id": "EDU-0024",
+  "verified_at": "2026-11-13T15:49:45+07:00",
+  "environment": "isolated Docker Compose projects with synthetic-only PostgreSQL 18",
+  "migration_head": "0007_account_tokens",
+  "results": {
+    "initial_database_security_tests": "3 passed",
+    "runtime_migration_attempt": "denied, exit 1",
+    "full_isolated_roundtrip": "base -> head successful",
+    "final_integration_suite": "7 passed",
+    "alembic_check": "No new upgrade operations detected",
+    "isolated_resources_after_teardown": "0 containers, 0 volumes, 0 networks, 0 project images"
+  },
+  "database_roles": {
+    "eduops_migrator": "schema owner and Alembic only",
+    "eduops_runtime": "business DML plus insert/select audit; no schema create or audit update/delete/truncate",
+    "eduops_audit_worker": "select audit log and select/update outbox; no source audit mutation"
+  },
+  "open_items": [
+    "OD-011 retention and production downgrade authority",
+    "named Human Security Owner acceptance"
+  ],
+  "side_effects": [
+    "Docker Desktop was started for verification",
+    "temporary Compose projects and volumes were created then removed",
+    "temporary project images were created then removed",
+    "Docker global layer/build caches may remain",
+    "exact source backups exist under ignored .local/EDU-0024/codex-before"
+  ]
+}

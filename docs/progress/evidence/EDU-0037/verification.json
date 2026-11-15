@@ -1,0 +1,46 @@
+{
+  "task_id": "EDU-0037",
+  "recorded_at": "2026-11-14T15:04:59+07:00",
+  "finding": "A0102-F12 replay portion only",
+  "failing_first": [
+    {
+      "scope": "ORM/migration alignment",
+      "exit_code": 1,
+      "result": "mfa_last_used_step absent"
+    },
+    {
+      "scope": "same TOTP submitted twice on live PostgreSQL",
+      "exit_code": 1,
+      "result": "second login returned 200 instead of 401"
+    }
+  ],
+  "verification": [
+    {
+      "command": "schema alignment plus RFC TOTP unit test",
+      "exit_code": 0,
+      "result": "2 passed"
+    },
+    {
+      "command": "live TOTP replay regression",
+      "exit_code": 0,
+      "result": "first login 200; replay 401; persisted step matches code step"
+    },
+    {
+      "command": "alembic downgrade 0007_account_tokens; upgrade head; current; check",
+      "exit_code": 0,
+      "result": "column count 0 after downgrade and 1 after upgrade; head 0008; no new operations"
+    },
+    {
+      "command": "ruff check app tests",
+      "exit_code": 0,
+      "result": "All checks passed"
+    }
+  ],
+  "design": "Login locks the user row, verifies password/TOTP, compares the matched step to the persisted last step, and advances only on successful authentication.",
+  "blocked": [
+    "mfa_secret encryption/custody",
+    "MFA enrollment and recovery activation",
+    "break-glass approval"
+  ]
+}
+

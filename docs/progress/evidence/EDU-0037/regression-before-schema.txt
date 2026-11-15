@@ -1,0 +1,38 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______________ test_mfa_replay_counter_model_and_migration_align ______________
+
+self = <sqlalchemy.sql.base.ReadOnlyColumnCollection object at 0x000001E3ABB887C0>
+key = 'mfa_last_used_step'
+
+    def __getattr__(self, key: str) -> _COL_co:
+        try:
+>           return self._index[key][1]
+                   ^^^^^^^^^^^^^^^^
+E           KeyError: 'mfa_last_used_step'
+
+.venv\Lib\site-packages\sqlalchemy\sql\base.py:2116: KeyError
+
+The above exception was the direct cause of the following exception:
+
+    def test_mfa_replay_counter_model_and_migration_align() -> None:
+>       assert User.__table__.c.mfa_last_used_step.nullable
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\auth\test_schema_alignment.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <sqlalchemy.sql.base.ReadOnlyColumnCollection object at 0x000001E3ABB887C0>
+key = 'mfa_last_used_step'
+
+    def __getattr__(self, key: str) -> _COL_co:
+        try:
+            return self._index[key][1]
+        except KeyError as err:
+>           raise AttributeError(key) from err
+E           AttributeError: mfa_last_used_step
+
+.venv\Lib\site-packages\sqlalchemy\sql\base.py:2118: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/auth/test_schema_alignment.py::test_mfa_replay_counter_model_and_migration_align
+1 failed in 0.40s

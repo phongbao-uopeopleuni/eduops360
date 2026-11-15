@@ -1,0 +1,47 @@
+{
+  "task_id": "EDU-0035",
+  "recorded_at": "2026-11-14T14:58:35+07:00",
+  "findings": ["A0102-F13", "A0102-F14", "A0102-F15", "A0102-F16", "A0102-F18", "A0102-F19"],
+  "failing_first": {
+    "command": "python -B -m unittest tests.foundation.test_infrastructure_safety -v",
+    "exit_code": 1,
+    "result": "6 failed before implementation"
+  },
+  "verification": [
+    {
+      "command": "python -B -m unittest tests.foundation.test_infrastructure_safety tests.foundation.test_synthetic_students -v",
+      "exit_code": 0,
+      "result": "9 passed"
+    },
+    {
+      "command": "backend/.venv/Scripts/python.exe -B -m pytest tests/integration/test_auth_api.py -q -p no:cacheprovider with isolated PostgreSQL DSNs",
+      "exit_code": 0,
+      "result": "4 passed; seeded system_admin/auditor permission count unchanged 9 -> 9"
+    },
+    {
+      "command": "backend/.venv/Scripts/python.exe -B -m ruff check app tests",
+      "exit_code": 0,
+      "result": "All checks passed"
+    },
+    {
+      "command": "frontend npm run typecheck; npm run format:check",
+      "exit_code": 0,
+      "result": "passed after local Prettier formatting"
+    },
+    {
+      "command": "docker compose config --quiet; docker inspect isolated db healthcheck",
+      "exit_code": 0,
+      "result": "TCP healthcheck is pg_isready -h 127.0.0.1; container healthy"
+    }
+  ],
+  "blocked": [
+    "requirements locks remain version-pinned without hashes; generating trustworthy hashes requires a separately approved package-index/network lock refresh"
+  ],
+  "safety": [
+    "No real .env file was read or edited.",
+    "No dependency was installed and no network package lookup was performed.",
+    "The synthetic generator now rejects every destination outside workspace/.local.",
+    "The runtime image uses a strict subset lock without httpx2, pytest or ruff."
+  ]
+}
+

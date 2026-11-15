@@ -1,0 +1,26 @@
+#!/bin/sh
+set -eu
+
+: "${EDUOPS_RUNTIME_PASSWORD:?EDUOPS_RUNTIME_PASSWORD is required}"
+: "${EDUOPS_AUDIT_WORKER_PASSWORD:?EDUOPS_AUDIT_WORKER_PASSWORD is required}"
+
+psql \
+  --set=ON_ERROR_STOP=1 \
+  --username "$POSTGRES_USER" \
+  --dbname "$POSTGRES_DB" \
+  --set=runtime_password="$EDUOPS_RUNTIME_PASSWORD" \
+  --set=audit_worker_password="$EDUOPS_AUDIT_WORKER_PASSWORD" <<'EOSQL'
+SELECT 'CREATE ROLE eduops_runtime LOGIN'
+WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'eduops_runtime') \gexec
+
+ALTER ROLE eduops_runtime WITH
+  LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS
+  CONNECTION LIMIT 50 PASSWORD :'runtime_password';
+
+SELECT 'CREATE ROLE eduops_audit_worker LOGIN'
+WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'eduops_audit_worker') \gexec
+
+ALTER ROLE eduops_audit_worker WITH
+  LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS
+  CONNECTION LIMIT 5 PASSWORD :'audit_worker_password';
+EOSQL

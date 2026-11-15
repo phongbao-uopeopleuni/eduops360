@@ -1,0 +1,13 @@
+
+> eduops360-frontend@0.1.0 test
+> vitest run ThemeProvider.test.tsx
+
+
+ RUN  v5.1.0 D:/eduops360/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  09:09:31
+   Duration  1.10s (environment 68%, setup 20%, tests 6%, transform 2%, import 2%)
+

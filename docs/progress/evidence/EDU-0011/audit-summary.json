@@ -1,0 +1,43 @@
+{
+  "recorded_at": "2026-11-12T13:53:53+07:00",
+  "test_cases": {
+    "root": 17,
+    "backend_windows": 21,
+    "frontend_unit": 17,
+    "browser": 6,
+    "unique_total": 61,
+    "backend_linux_repeat": 21
+  },
+  "checks": [
+    {
+      "file": "frontend-checks.json",
+      "successful_commands": 9
+    },
+    {
+      "file": "backend-governance-checks.json",
+      "successful_commands": 9
+    },
+    {
+      "file": "browser-linux-checks.json",
+      "successful_commands": 2
+    },
+    {
+      "file": "engine-lock-final-checks.json",
+      "successful_commands": 3
+    },
+    {
+      "file": "workspace-temp-checks.json",
+      "successful_commands": 4
+    },
+    {
+      "file": "final-runtime-checks.json",
+      "successful_commands": 2
+    }
+  ],
+  "npm_advisories_after": 0,
+  "osv_pypi_queries": 35,
+  "osv_pypi_matches": 0,
+  "review_role": "technical self-audit by Phase 01 implementer",
+  "transition_gate": "pending independent review and authorized acceptance",
+  "external_temp_inventory": "Windows TEMP used before redirection; inventory outside workspace not performed"
+}

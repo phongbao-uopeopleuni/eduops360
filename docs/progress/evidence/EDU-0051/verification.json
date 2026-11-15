@@ -1,0 +1,86 @@
+{
+  "task_id": "EDU-0051",
+  "recorded_at": "2026-11-15T09:11:24+07:00",
+  "conclusion": "implementation_complete_pending_independent_review",
+  "scope": "Light theme default, accessible icon toggle, and restrained warm-orange background accents only",
+  "commands": [
+    {
+      "id": "fail-first-unit",
+      "command": "npm test -- ThemeProvider.test.tsx",
+      "exit_code": 1,
+      "result": "2 expected failures: provider returned system instead of light"
+    },
+    {
+      "id": "fail-first-e2e",
+      "command": "PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome npx playwright test tests/e2e/foundation.spec.ts -g light-is-default",
+      "exit_code": 1,
+      "result": "expected failure: accessible theme icon button absent"
+    },
+    {
+      "id": "frontend-gates",
+      "command": "typecheck; lint; format:check; api:check; unit; build",
+      "exit_code": 0,
+      "result": "all checks passed; 4 test files and 24 unit tests passed; Vite production build passed"
+    },
+    {
+      "id": "playwright-full",
+      "command": "PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome npx playwright test",
+      "exit_code": 0,
+      "result": "9 passed; 1 real-auth test skipped because its disposable fixture was not supplied"
+    },
+    {
+      "id": "visual-review",
+      "command": "inspect Playwright light.png/dark.png and open http://127.0.0.1:5173 in the visible local browser",
+      "exit_code": 0,
+      "result": "light opens by default; moon/sun toggle is exposed by accessible name; orange remains a subtle background tint"
+    },
+    {
+      "id": "governance",
+      "command": "sync_task_board; validate_blueprint; check_structure; check_text_encoding; unittest discover",
+      "exit_code": 0,
+      "result": "46 tasks; blueprint and structure pass; 456 text files with 0 encoding errors; 24 root tests passed"
+    }
+  ],
+  "behavior": {
+    "default_theme": "light",
+    "legacy_system_value": "treated as invalid and falls back to light",
+    "theme_control": "44px button with moon in light mode and sun in dark mode",
+    "persistence": "eduops.theme stores only light or dark",
+    "cta_colour": "indigo unchanged",
+    "api_contract_migrations": "unchanged"
+  },
+  "prompt_backup": {
+    "path": "docs/progress/evidence/EDU-0051/NEXT_AGENT_PROMPT.before-EDU-0051.md",
+    "sha256_original_before_edit_and_backup": "566D5341A56F8CE839D49E7E590F8BA243866FE44D11BD99957062D5A52E374C",
+    "match_before_edit": true,
+    "change": "Corrected only the next free task ID, frontend test baseline and EDU-0051 theme context"
+  },
+  "final_state": {
+    "recorded_at": "2026-11-15T09:13:00+07:00",
+    "ui_http": 200,
+    "api_live_http": 200,
+    "api_ready_http": 200,
+    "docker_desktop": "running",
+    "compose_project": "eduops360-dev",
+    "database_container": "healthy",
+    "ports": "127.0.0.1:5173 UI; 127.0.0.1:58080 API; 127.0.0.1:55440 PostgreSQL",
+    "git_status_exit": 128,
+    "git_reflog_exit": 128,
+    "git_result": "not a git repository",
+    "prompt_line_endings": "152 CR and 152 LF (CRLF)",
+    "task_board_count": 46
+  },
+  "side_effects": [
+    "frontend/dist was overwritten by the successful Vite build",
+    "frontend/test-results was overwritten by fail-first, targeted and full Playwright runs and now contains current screenshots/results",
+    "Node/Vite/Playwright caches and touched file mtimes may have changed",
+    ".local/edu-0051 contains ignored baseline copies and local logs; durable sanitized copies are under docs/progress/evidence/EDU-0051",
+    "the pre-existing local UI/API/DB processes remain running intentionally for user review",
+    "no package installation, lockfile change, public deployment, real student data, credential file, API/contract/migration or Git mutation"
+  ],
+  "authority_boundary": [
+    "EDU-0051 remains in_review",
+    "Codex cannot use this task to close UI49-F01",
+    "Phase 01 and Phase 02 acceptance status is unchanged"
+  ]
+}

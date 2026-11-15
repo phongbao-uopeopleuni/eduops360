@@ -1,0 +1,20 @@
+{
+  "task_id": "EDU-0026",
+  "verified_at": "2026-11-13T15:49:45+07:00",
+  "results": {
+    "deny_by_default_unit_tests": "passed",
+    "delegation_scope_tests": "passed",
+    "live_idor_escalation_and_stale_grant_tests": "passed"
+  },
+  "controls": [
+    "active, non-revoked, time-valid role grants loaded from PostgreSQL on each request",
+    "unknown resource/action values skipped rather than granted",
+    "resource/action/scope evaluated server-side",
+    "role delegation requires every delegated permission to be held in covering scope",
+    "global role grants blocked at the admin API until OD-008 is resolved"
+  ],
+  "open_items": [
+    "OD-007 exact approval action policy",
+    "OD-008 authoritative scope dimensions and role matrix activation"
+  ]
+}

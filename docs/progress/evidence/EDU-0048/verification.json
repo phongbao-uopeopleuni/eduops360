@@ -1,0 +1,55 @@
+{
+  "task_id": "EDU-0048",
+  "recorded_at": "2026-11-14T22:15:11+07:00",
+  "conclusion": "implementation_in_review__independent_re_review_required",
+  "findings": ["R42-F03", "R42-F04", "R42-F05"],
+  "changed_files": [
+    "backend/app/modules/auth/rate_limit.py",
+    "backend/tests/auth/test_session_security.py",
+    "scripts/seed_real_auth_e2e.py",
+    "frontend/tests/e2e/real-auth.spec.ts",
+    "docs/quality/TEST_STRATEGY.md",
+    "docs/progress/tasks/EDU-0040.md",
+    "docs/progress/tasks/EDU-0048.md",
+    "docs/progress/evidence/EDU-0048/verification.json"
+  ],
+  "r42_f03": {
+    "fail_first": "1 failed: LoginRateLimiter did not accept eviction_scan_limit",
+    "final": "5 passed in test_session_security.py",
+    "behavior": "scan at most 64 oldest windows by default; evict first expired/unblocked slot; otherwise preserve existing windows and leave the new key untracked"
+  },
+  "r42_f04": {
+    "missing_required_fixture": "expected exit 1 with explicit PLAYWRIGHT_REQUIRE_REAL_AUTH error before server/browser launch",
+    "seed": "tracked helper required EDUOPS_TEST_MIGRATOR_DSN, inserted only synthetic data, wrote credentials below .local and printed no credential value",
+    "first_e2e": "8 passed, 1 failed because email-validator rejects example.invalid",
+    "final_e2e": "9 passed through self-started frontend/backend and isolated PostgreSQL using Chrome",
+    "http_exception": "EDUOPS_SESSION_COOKIE_SECURE=false applied only to the disposable local HTTP backend process"
+  },
+  "r42_f05": {
+    "journal": "docs/progress/tasks/EDU-0040.md",
+    "method": "append-only correction",
+    "files_listed": 14,
+    "migration_note": "EDU-0042 verified 0002/0003/0007 changes were formatting-only; applied migrations must not be reformatted without explicit migration review"
+  },
+  "static_checks": {
+    "ruff": "check passed; 3 files formatted",
+    "frontend_typecheck": "passed",
+    "frontend_lint": "passed",
+    "frontend_format": "passed"
+  },
+  "evidence_logs": [
+    "logs/r42-f03-before.txt",
+    "logs/r42-f03-after.txt",
+    "logs/r42-f04-missing-required-final.txt",
+    "logs/r42-f04-seed.txt",
+    "logs/r42-f04-e2e-final.txt"
+  ],
+  "side_effects_so_far": [
+    "frontend/test-results was overwritten by expected-failure and final Playwright runs; the first failure context contained the disposable synthetic password",
+    "the failure context was accidentally printed into the agent transcript; no production or user credential was involved",
+    "ignored .local/edu-0046/real-auth-fixture.json contains disposable synthetic credentials and must be deleted at teardown",
+    "temporary API 58096 and Vite 5177 were self-started by Playwright and exited after each run",
+    "Python/Node caches and mtimes changed; no package installed or lockfile changed"
+  ],
+  "review_boundary": "R42-F03..F05 may only be closed by an actor other than Codex"
+}

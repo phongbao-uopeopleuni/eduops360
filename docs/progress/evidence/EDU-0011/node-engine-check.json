@@ -1,0 +1,52 @@
+{
+  "22.12.0": [
+    {
+      "name": "node_modules/@eslint/config-array",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/@eslint/config-helpers",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/@eslint/core",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/@eslint/object-schema",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/@eslint/plugin-kit",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/@napi-rs/wasm-runtime",
+      "range": "^20.19.0 || ^22.13.0 || >=23.5.0"
+    },
+    {
+      "name": "node_modules/@rolldown/binding-wasm32-wasi",
+      "range": "^20.19.0 || ^22.13.0 || >=23.5.0"
+    },
+    {
+      "name": "node_modules/eslint",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/eslint-scope",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/eslint-visitor-keys",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    {
+      "name": "node_modules/espree",
+      "range": "^20.19.0 || ^22.13.0 || >=24"
+    }
+  ],
+  "22.13.0": [],
+  "24.0.0": [],
+  "24.12.0": [],
+  "26.0.0": []
+}

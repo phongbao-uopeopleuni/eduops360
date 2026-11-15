@@ -1,0 +1,89 @@
+{
+  "task_id": "EDU-0042",
+  "recorded_at": "2026-11-14T16:17:39+07:00 (board regeneration; final verification row appended to the journal afterwards)",
+  "conclusion": "needs_changes_phase_02__phase_01_technical_gate_reproduced__phase_01_02_not_accepted",
+  "reviewer": "Claude acting independent technical reviewer of Codex EDU-0034..0041; not Human Security Owner (OD-001); conflict of interest disclosed for EDU-0034 and R42-F01 (Claude implemented EDU-0032)",
+  "report": "docs/quality/EDU-0034-0041_INDEPENDENT_REVIEW_2026-11-14.md",
+  "environment": {
+    "os": "Windows 11 Pro 10.0.26300",
+    "python": "3.13.5 (backend/.venv)",
+    "node": "24.12.0",
+    "docker_engine": "29.9.2 (Docker Desktop was stopped at preflight; started 15:55, stopped again and confirmed 16:10:39)",
+    "postgresql_image": "postgres:18 (local image, no pull, no build)",
+    "browser": "Playwright channel chrome"
+  },
+  "preflight": {
+    "at": "2026-11-14T15:47:13+07:00",
+    "git_status_sb": {"exit_code": 128, "output": "fatal: not a git repository (or any of the parent directories): .git"},
+    "git_reflog": {"exit_code": 128, "output": "fatal: not a git repository (or any of the parent directories): .git"},
+    "listeners": "none on 5173/4173/8000/55xxx/58xxx",
+    "processes": "no process with D:\\eduops360 in its command line other than the reviewer's own shells",
+    "docker": "Docker Desktop stopped (daemon pipe absent; no Docker Desktop.exe)",
+    "manifest": ".local/edu-0042/manifest-before.json, 401 files at 15:50:02 (excludes .venv, node_modules, .local, caches, dist, test-results)",
+    "concurrent_actor_check": "newest project file mtime 15:34:07 (EDU-0041 board); no project process; treated as no concurrent editor",
+    "task_id": "EDU-0042 free"
+  },
+  "review_inputs": {
+    "governing_docs": "AGENTS.md, PHASE-00, PROJECT_CONTEXT, OPERATING_RULES unchanged since the reviewer's earlier full read in this session (mtimes 11-12/11-13, identical sizes); package, HANDOFF, PHASE-01/02, EDU-0032 review, Phase 01 local gate, RELEASE_GATE, TRACEABILITY and journals/evidence EDU-0034..0041 read",
+    "codex_change_set": "codex-edu0035-0041.normalized.diff: Codex EDU-0034 baseline (post-EDU-0032, .local/EDU-0034/baseline) vs current tree, both copies normalised with the project's ruff format so formatting-only edits disappear; real .env files excluded"
+  },
+  "commands": [
+    {"id": "gov-blueprint", "cwd": ".", "started_at": "2026-11-14T15:55:02+07:00", "command": "python scripts/validate_blueprint.py", "exit_code": 0, "result": "PASS: all required blueprint checks"},
+    {"id": "gov-structure", "cwd": ".", "started_at": "2026-11-14T15:55:03+07:00", "command": "python scripts/check_structure.py", "exit_code": 0, "result": "Unified AI Agent SP governance structure: OK"},
+    {"id": "gov-encoding", "cwd": ".", "started_at": "2026-11-14T15:55:03+07:00", "command": "python scripts/check_text_encoding.py", "exit_code": 0, "result": "Checked text files: 370; encoding errors: 0 (before EDU-0042 documents were added)"},
+    {"id": "gov-students-csv", "cwd": ".", "started_at": "2026-11-14T15:55:04+07:00", "command": "python scripts/validate_students_csv.py samples/templates/students_import_template.csv", "exit_code": 0, "result": "Rows examined: 3; errors: 0"},
+    {"id": "root-unittest-default", "cwd": ".", "started_at": "2026-11-14T15:55:05+07:00", "command": "python -m unittest discover", "exit_code": 0, "result": "Ran 24 tests OK"},
+    {"id": "root-unittest-tests", "cwd": ".", "started_at": "2026-11-14T15:55:06+07:00", "command": "python -m unittest discover -s tests -p test_*.py", "exit_code": 0, "result": "Ran 24 tests OK"},
+    {"id": "ruff-check", "cwd": ".", "started_at": "2026-11-14T15:55:07+07:00", "command": "backend/.venv/Scripts/python.exe -m ruff check backend tests/foundation", "exit_code": 0, "result": "All checks passed!"},
+    {"id": "ruff-format", "cwd": ".", "started_at": "2026-11-14T15:55:08+07:00", "command": "backend/.venv/Scripts/python.exe -m ruff format --check backend tests/foundation", "exit_code": 0, "result": "56 files already formatted"},
+    {"id": "pytest-host", "cwd": ".", "started_at": "2026-11-14T15:55:08+07:00", "command": "env -u EDUOPS_TEST_*_DSN backend/.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider", "exit_code": 0, "result": "77 passed, 18 skipped"},
+    {"id": "openapi-check", "cwd": ".", "started_at": "2026-11-14T15:55:11+07:00", "command": "backend/.venv/Scripts/python.exe scripts/export_openapi.py --check", "exit_code": 0, "result": "OpenAPI contract matches FastAPI"},
+    {"id": "fe-typecheck", "cwd": "frontend", "started_at": "2026-11-14T15:55:19+07:00", "command": "npm run --silent typecheck", "exit_code": 0, "result": "no output"},
+    {"id": "fe-lint", "cwd": "frontend", "started_at": "2026-11-14T15:55:22+07:00", "command": "npm run --silent lint", "exit_code": 0, "result": "no output"},
+    {"id": "fe-format", "cwd": "frontend", "started_at": "2026-11-14T15:55:25+07:00", "command": "npm run --silent format:check", "exit_code": 0, "result": "All matched files use Prettier code style!"},
+    {"id": "fe-api-check", "cwd": "frontend", "started_at": "2026-11-14T15:55:26+07:00", "command": "npm run --silent api:check", "exit_code": 0, "result": "TypeScript client types match OpenAPI"},
+    {"id": "fe-test", "cwd": "frontend", "started_at": "2026-11-14T15:55:28+07:00", "command": "npm test", "exit_code": 0, "result": "Test Files 4 passed; Tests 22 passed"},
+    {"id": "fe-build", "cwd": "frontend", "started_at": "2026-11-14T15:55:31+07:00", "command": "npm run build", "exit_code": 0, "result": "vite build ok"},
+    {"id": "docker-desktop-start", "cwd": ".", "started_at": "2026-11-14T15:55:43+07:00", "command": "docker desktop start", "exit_code": 0, "result": "daemon 29.9.2 at 15:55:55"},
+    {"id": "compose-up", "cwd": ".", "started_at": "2026-11-14T15:56:19+07:00", "command": "docker compose -p eduops360-edu0042 --env-file .local/edu-0042/edu0042.env -f infra/compose.dev.yml up -d db --wait", "exit_code": 0, "result": "db healthy on 127.0.0.1:55495; random synthetic passwords, never printed; env file deleted after teardown"},
+    {"id": "alembic-roundtrip", "cwd": "backend", "started_at": "2026-11-14T15:56:25+07:00 (approx, same command block)", "command": "EDUOPS_DATABASE_URL=<isolated migrator> alembic upgrade head; current; check; downgrade -1; current; upgrade head; current; check", "exit_code": 0, "result": "0008 head; check clean; downgrade to 0007; re-upgrade 0008; check clean; users.mfa_last_used_step bigint nullable; migrator rolsuper=true"},
+    {"id": "pytest-postgres", "cwd": ".", "started_at": "2026-11-14T15:56:45+07:00", "command": "EDUOPS_TEST_MIGRATOR_DSN/RUNTIME_DSN/AUDIT_WORKER_DSN=<isolated> backend/.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider", "exit_code": 0, "result": "95 passed; afterwards the 7 seeded system roles still have 0 permission mappings"},
+    {"id": "probe-review", "cwd": "backend", "started_at": "2026-11-14T15:58:47+07:00", "command": "PYTHONPATH=. .venv/Scripts/python.exe -B ../.local/edu-0042/probes/probe_review.py (copy in evidence/probes)", "exit_code": null, "result": "probe_review.json written 15:59; process then hung on a probe-only TOTP thread (shared app object) and was stopped; RA/RB/RC/RE valid, RD superseded by probe-totp-race"},
+    {"id": "probe-totp-race", "cwd": "backend", "started_at": "2026-11-14T16:05:31+07:00", "command": "PYTHONPATH=. timeout 280 .venv/Scripts/python.exe -B ../.local/edu-0042/probes/probe_totp_race.py", "exit_code": 0, "result": "5/5 attempts exactly one 200 and one 401"},
+    {"id": "e2e-servers", "cwd": "backend + frontend", "started_at": "between 2026-11-14T16:05:45+07:00 and 16:06:14+07:00 (not separately timestamped)", "command": "EDUOPS_DATABASE_URL=<isolated runtime> EDUOPS_SESSION_COOKIE_SECURE=false python -m app --port 58099; API_PROXY_TARGET=http://127.0.0.1:58099 npm run dev -- --port 5173 --strictPort", "exit_code": null, "result": "live/ready/proxy 200; one synthetic browser user seeded with a user:read synthetic role; both stopped; orphaned Vite node PID verified by command line then stopped"},
+    {"id": "fe-e2e", "cwd": "frontend", "started_at": "2026-11-14T16:06:14+07:00", "command": "PLAYWRIGHT_EXTERNAL_SERVER=1 PLAYWRIGHT_CHANNEL=chrome PLAYWRIGHT_REAL_AUTH_EMAIL/PASSWORD=<synthetic> npx playwright test", "exit_code": 0, "result": "8 passed, 0 skipped; real-auth ran; API log POST /auth/login 200 and POST /auth/logout 204; DB session revoked"},
+    {"id": "compose-down", "cwd": ".", "started_at": "2026-11-14T16:08:19+07:00", "command": "docker compose -p eduops360-edu0042 ... down -v", "exit_code": 0, "result": "container, volume eduops360-edu0042_postgres-data and network removed; Docker resource lists identical to the 15:56 baseline"},
+    {"id": "docker-desktop-stop", "cwd": ".", "started_at": "2026-11-14T16:08:29+07:00 and 16:09:53+07:00", "command": "docker desktop stop (twice)", "exit_code": 0, "result": "first stop did not hold (status running again by 16:09:43, possibly woken by an immediate docker version call); second stop confirmed 16:10:39: status unavailable, no Docker Desktop.exe"}
+  ],
+  "probes": {
+    "RA_reset_token_issued_before_target_promotion": "issue 201 → target promoted → new issue 403 → old token redeemed 204 → login as target 200 → admin read 200 (actor alone 403)  [R42-F01]",
+    "RB_invitation_token_kept_while_pending_account_is_granted": "invite 201 → admin grants scoped role to pending account 201 → inviter redeems kept token 204 → login 200 → grant at scope 201 (inviter alone 403)  [R42-F01]",
+    "RC_per_ip_window_blocks_other_accounts_behind_same_peer": "50 x 401 with random unknown emails → other account correct password 429 LOGIN_RATE_LIMITED, Retry-After 56; victim active, 0 failures  [R42-F02]",
+    "RD2_concurrent_totp_same_code": "5/5 attempts [200, 401]; replay prevention holds under concurrency",
+    "RE_limiter_new_key_when_table_full_of_blocked_keys": "10000 blocked keys: 0/200 new keys recorded; 3.869 ms average per new key under lock  [R42-F03]"
+  },
+  "findings": [
+    {"id": "R42-F01", "severity": "P1", "summary": "Target-privilege containment (A0102-F01) checked only at token issue; reset and invitation tokens stay redeemable after the target gains privileges", "owner": "different actor than Claude; Security Owner confirms rule"},
+    {"id": "R42-F02", "severity": "P2", "summary": "Per-IP login window blocks correct logins of all accounts behind the same peer (NAT/proxy); unauthenticated DoS", "owner": "different actor after Security Owner decision"},
+    {"id": "R42-F03", "severity": "P3", "summary": "Saturated limiter stops tracking new identities; O(n) scan under a global lock on the event loop", "owner": "different actor"},
+    {"id": "R42-F04", "severity": "P3", "summary": "Real-auth E2E fixture helper lives only in ignored .local; spec skips without env (CI skips); needs non-Secure cookie over HTTP", "owner": "different actor"},
+    {"id": "R42-F05", "severity": "P3", "summary": "EDU-0040 evidence lacks verification.json/raw output; reformatted files unnamed, including applied migrations 0002/0003/0007 (formatting-only, verified)", "owner": "different actor (documentation)"}
+  ],
+  "docker": {
+    "project": "eduops360-edu0042",
+    "services_started": ["db"],
+    "images_built": [],
+    "resources_after_teardown": "container/volume/network/image name lists identical to the 15:56 baseline (.local/edu-0042/docker/, kept local because it lists unrelated projects)"
+  },
+  "side_effects": [
+    "added docs/quality/EDU-0034-0041_INDEPENDENT_REVIEW_2026-11-14.md, docs/progress/tasks/EDU-0042.md, docs/progress/evidence/EDU-0042/; appended an EDU-0042 section to docs/progress/HANDOFF.md; regenerated docs/progress/TASK_BOARD.md",
+    "no product source, test, migration, contract or EDU-0041 package file modified (manifest comparison in the journal's final row)",
+    "frontend/dist regenerated by npm run build; frontend/test-results regenerated by Playwright; .local/playwright-tmp and Python/Node caches updated",
+    ".local/edu-0042/ (ignored): manifests, normalised diff copies, probes, logs, Docker snapshots; synthetic credential files and E2E fixture file deleted",
+    "temporary API 127.0.0.1:58099 and Vite 127.0.0.1:5173; both stopped, no listeners afterwards",
+    "reviewer error 1: the normalised-diff copy step copied the real infra/.env into .local/edu-0042/normdiff (content never printed); copy and affected diff deleted immediately and the diff regenerated with .env excluded",
+    "reviewer error 2: a secret-scan grep did not exclude .env and printed one line of backend/.env (local Phase 01 superuser DSN with password) into the session transcript; not written to any file; user advised to rotate that local password or drop the disposable volume",
+    "no real student data, public deployment, package install, package-index access or Git operation"
+  ],
+  "git": {"repository": false, "branch": "not_created", "commit": "not_done", "push": "not_done", "pull_request": "none", "merge": "not_done"}
+}

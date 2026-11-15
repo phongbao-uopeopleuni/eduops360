@@ -1,0 +1,33 @@
+== 2026-11-14T11:01:02+07:00 runtime: alembic current
+psycopg.errors.InsufficientPrivilege: permission denied for table alembic_version
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table alembic_version
+  exit=1
+== head state
+  datacl = {=T/eduops_migrator,eduops_migrator=CTc/eduops_migrator,eduops_runtime=c/eduops_migrator,eduops_audit_worker=c/eduops_migrator}
+  public_schema_acl = {pg_database_owner=UC/pg_database_owner,eduops_runtime=U/pg_database_owner,eduops_audit_worker=U/pg_database_owner}
+  tables = ['account_tokens', 'alembic_version', 'audit_logs', 'audit_outbox', 'permissions', 'role_permissions', 'roles', 'sessions', 'user_roles', 'users']
+  runtime users SELECT = True
+  default_acl = -
+== downgrade -> 0003_audit_logs
+  exit=0
+  datacl = {=Tc/eduops_migrator,eduops_migrator=CTc/eduops_migrator}
+  public_schema_acl = {pg_database_owner=UC/pg_database_owner,=U/pg_database_owner}
+  tables = ['alembic_version', 'audit_logs', 'audit_outbox', 'permissions', 'role_permissions', 'roles', 'sessions', 'user_roles', 'users']
+  runtime users SELECT = False
+  default_acl = -
+== downgrade -> base
+  exit=0
+  datacl = {=Tc/eduops_migrator,eduops_migrator=CTc/eduops_migrator}
+  public_schema_acl = {pg_database_owner=UC/pg_database_owner,=U/pg_database_owner}
+  tables = ['alembic_version']
+  default_acl = -
+== upgrade -> head
+  exit=0
+0007_account_tokens (head)
+No new upgrade operations detected.
+  check_exit=0
+  datacl = {=T/eduops_migrator,eduops_migrator=CTc/eduops_migrator,eduops_runtime=c/eduops_migrator,eduops_audit_worker=c/eduops_migrator}
+  public_schema_acl = {pg_database_owner=UC/pg_database_owner,eduops_runtime=U/pg_database_owner,eduops_audit_worker=U/pg_database_owner}
+  tables = ['account_tokens', 'alembic_version', 'audit_logs', 'audit_outbox', 'permissions', 'role_permissions', 'roles', 'sessions', 'user_roles', 'users']
+  runtime users SELECT = True
+  default_acl = -
