@@ -15,8 +15,8 @@
 | IMPORT-02 | Phase 04 | unit + integration + E2E per phase | EDU-0057 covers only template encoding/header documentation; import/export security tests remain P04-T02..T09 |
 | CAL-01 | Phase 05 | unit + integration + E2E per phase | EDU-0058 P05-T01 pure-domain model/tests; validation, persistence, API/UI/E2E remain P05-T02..T09 |
 | CAL-02 | Phase 05 | unit + integration + E2E per phase | docs/phases/PHASE-05* / task evidence |
-| SCH-01 | Phase 06 | unit + integration + E2E per phase | docs/phases/PHASE-06* / task evidence |
-| SCH-02 | Phase 06 | unit + integration + E2E per phase | docs/phases/PHASE-06* / task evidence |
+| SCH-01 | Phase 06 | unit + integration + E2E per phase | EDU-0059 P06-T01 immutable input projection; collision constraints/validator remain P06-T02..T08 |
+| SCH-02 | Phase 06 | unit + integration + E2E per phase | EDU-0059 snapshot contract only; CP-SAT/status/worker/repair/benchmark remain P06-T02..T10 |
 | SCH-03 | Phase 06 | unit + integration + E2E per phase | docs/phases/PHASE-06* / task evidence |
 | EXAM-01 | Phase 07 | unit + integration + E2E per phase | docs/phases/PHASE-07* / task evidence |
 | EXAM-02 | Phase 07 | unit + integration + E2E per phase | docs/phases/PHASE-07* / task evidence |

@@ -1,10 +1,16 @@
 # PHASE-06 — Automatic scheduling with CP-SAT and local repair
 
-**Status:** NOT_STARTED / SPEC_ONLY  
+**Status:** P06_T01_IMPLEMENTED_IN_REVIEW / PHASE_05_DEBT_OPEN
 **Implementers:** Solver Agent / Backend Agent  
 **Independent reviewer:** Domain SME / Performance QA  
 **Prerequisite:** PHASE-05 accepted; cross-phase tasks explicitly reviewed.  
 **Approval:** domain owner/tech lead; high-impact security, grades, legal or production changes require designated human sign-off.
+
+**Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
+the agent to proceed to the next phase. Because Phase 05 is not accepted, this
+exception is limited to P06-T01's pure immutable input-snapshot contract. It
+does not accept Phase 05 or authorize P06-T02..T10, OR-Tools, solver execution,
+workers, APIs, UI, publication, real data or production use. Evidence: EDU-0059.
 
 ## A. Purpose and implementation boundaries
 Automatic scheduling with CP-SAT and local repair; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -16,7 +22,7 @@ Automatic scheduling with CP-SAT and local repair; implement only the scope appr
 - `Manual changes and publication`
 
 ## C. Detailed execution steps
-1. **P06-T01:** Define immutable scheduling input snapshot: teaching assignments, classrooms, class/group loads, slots, holidays.
+1. **P06-T01:** Define immutable scheduling input snapshot: teaching assignments, classrooms, class/group loads, slots, holidays. Conditional implementation in EDU-0059; independent review pending.
 2. **P06-T02:** Pre-validate feasibility lower bounds for teacher/room/available slots, detect inconsistent assignments.
 3. **P06-T03:** Model hard constraints for teacher/class/group/room date+time overlap, room capacity, required weekly lessons and closed times.
 4. **P06-T04:** Model soft objectives for teacher gaps, daily balance, double periods and minimum changes on repair.
