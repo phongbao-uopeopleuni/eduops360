@@ -1,10 +1,16 @@
 # PHASE-09 — Statistical Analytics Studio
 
-**Status:** NOT_STARTED / SPEC_ONLY  
+**Status:** P09_T01_IMPLEMENTED_IN_REVIEW / PHASE_08_DEBT_OPEN
 **Implementers:** Data Analytics Agent / Frontend Agent  
 **Independent reviewer:** QA / Examination SME  
 **Prerequisite:** PHASE-08 accepted; cross-phase tasks explicitly reviewed.  
 **Approval:** domain owner/tech lead; high-impact security, grades, legal or production changes require designated human sign-off.
+
+**Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
+the agent to proceed through Phase 09. Because Phase 08 is not accepted, this
+exception is limited to P09-T01's pure chart-input contract and direct-variable
+denylist. P09-T02..T09, queries, privacy thresholds, charts, exports, UI and
+production analytics remain gated. Evidence: EDU-0062.
 
 ## A. Purpose and implementation boundaries
 Statistical Analytics Studio; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -16,7 +22,7 @@ Statistical Analytics Studio; implement only the scope approved on task journal,
 - `Reporting consistency`
 
 ## C. Detailed execution steps
-1. **P09-T01:** Define chart input schema (x/y/group/filter, academic_year, subject) and reject inappropriate variables.
+1. **P09-T01:** Define chart input schema (x/y/group/filter, academic_year, subject) and reject inappropriate variables. Conditional pure-domain implementation in EDU-0062; independent review pending.
 2. **P09-T02:** Build scoped, parameterized aggregation queries with minimum group size policy for privacy.
 3. **P09-T03:** Implement histogram bins and KDE where meaningful; boxplot quartiles and whiskers consistent across reports.
 4. **P09-T04:** Build scatter, KDE/hist, box/swarm, heatmap, line/ECDF/violin and accessible legends.

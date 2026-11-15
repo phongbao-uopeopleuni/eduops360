@@ -1,8 +1,16 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P08-T01 REGISTRY PUBLISHED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 07 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P09-T01 IMPLEMENTED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 08 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0061 and EDU-0060, then the earlier stacked tasks. The user explicitly requested Phases 07–09. Phase 08 is limited to a fail-closed source registry because Phase 07 remains unaccepted. Do not enable connectors or begin P08-T02..T09 automatically.
+Start at EDU-0062, EDU-0061 and EDU-0060, then the earlier stacked tasks. The user explicitly requested Phases 07–09. Phase 09 is limited to a pure chart-input contract because Phase 08 remains unaccepted. Do not present this as a working analytics studio or begin P09-T02..T09 automatically.
+
+## Conditional P09-T01 kickoff EDU-0062 — 2026-11-15
+
+- Scope is limited to an immutable chart input with x/y/group/filter roles, required academic-year scope, optional subject scope and a small approved aggregate-variable catalog.
+- Direct student identifiers and PII fields are denied; unknown variables fail closed. Role-specific suitability is checked before any query exists.
+- Fail-first collection exited `1`; final targeted tests pass `11`; backend host passes `112` with `20` isolated-PostgreSQL tests skipped. Ruff, OpenAPI, root governance and encoding gates pass.
+- No database query, aggregation, minimum group-size policy, statistical calculation, chart renderer, export, frontend or cache is part of this slice.
+- EDU-0062 is stacked on PR #5 and must remain `in_review`; Phase 08 and earlier debt remain open.
 
 ## Conditional P08-T01 kickoff EDU-0061 — 2026-11-15
 
