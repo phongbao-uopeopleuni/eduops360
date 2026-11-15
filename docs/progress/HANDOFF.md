@@ -4,6 +4,14 @@
 
 Start at EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly allowed the narrow P03-T01 kickoff while carrying Phase 02 debt. Phase 01/02 remain unaccepted; do not present this exception as acceptance or automatically begin P03-T02..T09.
 
+## Git bootstrap EDU-0055 — 2026-11-15
+
+- Initialized Git on `main` and connected `origin` to `https://github.com/phongbao-uopeopleuni/eduops360.git` under explicit user authorization.
+- Bootstrap commit `446c0a871854fb8236361801f8a19a7fdd8df5c3` was pushed and verified at `origin/main`. The GitHub repository is public and owned by `phongbao-uopeopleuni`; visibility was not changed.
+- `.env*`, `.local`, virtualenv, dependencies, caches, build and test-result directories were excluded. Import audit found no forbidden staged environment file, ignored artifact, file over 20 MB or high-confidence secret match.
+- GitHub Actions foundation/governance runs were dispatched. Branch protection was absent at first check; EDU-0055 remains `in_review` until protection and hosted CI are verified.
+- Existing whitespace in historical Markdown/evidence makes `git diff --cached --check` exit `2`; those audit artifacts were not bulk-rewritten.
+
 ## Conditional P03-T01 kickoff EDU-0054 — 2026-11-15
 
 - User instruction superseded the EDU-0053 stop only for a narrow Phase 03 kickoff while retaining all Phase 02 items as debt. No Phase 02 approval ledger entry was created.
