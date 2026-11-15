@@ -1,8 +1,15 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P09-T01 IMPLEMENTED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 08 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P10-T01 TARGET CONTRACT / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 09 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0062, EDU-0061 and EDU-0060, then the earlier stacked tasks. The user explicitly requested Phases 07–09. Phase 09 is limited to a pure chart-input contract because Phase 08 remains unaccepted. Do not present this as a working analytics studio or begin P09-T02..T09 automatically.
+Start at EDU-0063, then EDU-0062..0060 and earlier stacked tasks. The user explicitly requested the next phase. Phase 10 is limited to a review-only prediction target because Phase 09 remains unaccepted. Do not create features, access data, train a model or begin P10-T02..T09 automatically.
+
+## Conditional P10-T01 kickoff EDU-0063 — 2026-11-15
+
+- Selected one measurable operational target: 14 days before an approved grade-submission deadline, estimate whether a student-subject-term record will remain incomplete at the deadline.
+- Intended use is a private authorized human review queue with manual completeness fallback. Ability/grade/discipline/teacher evaluation and autonomous action are prohibited.
+- Published entity grain, prediction/label time, positive/negative/unsupported states, leakage boundary, mistake costs, abstention and approval gates in `docs/ml/PREDICTION_TARGET_V1.md`.
+- No data, label materialization, feature, dataset, model, dependency, notebook, job, endpoint or prediction was created. EDU-0063 is stacked on PR #6 and remains `in_review`.
 
 ## Conditional P09-T01 kickoff EDU-0062 — 2026-11-15
 
