@@ -8,6 +8,11 @@ CSV upload for grades 1–12. Separate persistent `students` identities from yea
 
 `student_code,full_name,date_of_birth,gender,academic_year,grade_level,class_code,enrollment_status`
 
+The published artifact is `samples/templates/students_import_template.csv`;
+`samples/templates/STUDENTS_IMPORT_V1.vi.md` records the immutable v1 header,
+artifact checksum and Vietnamese field guide. Any header change requires a new
+template version.
+
 - `student_code`: required school-scoped identifier, as **text**; preserve leading zeros; future production UI can generate code before import.
 - `full_name`: required, nonempty, Vietnamese UTF-8; string length caps.
 - `date_of_birth`: ISO `YYYY-MM-DD`; use a date, not a datetime.
