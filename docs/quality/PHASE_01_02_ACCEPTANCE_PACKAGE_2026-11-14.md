@@ -25,7 +25,7 @@ Final local gates của EDU-0050: backend host `78 passed, 20 skipped`; PostgreS
 | Regression, unit, integration, browser và build | Đạt kỹ thuật | EDU-0050: host `78 passed, 20 skipped`; PostgreSQL `98 passed`; frontend `22 passed`; Playwright `9 passed` |
 | UI design/accessibility | Needs changes | EDU-0049: UI49-F01 P2, brand 36 px và text-link 25,6 px thấp hơn hit-area 44 px; actor khác reviewer phải sửa |
 | Journal/evidence/task board | Đạt kỹ thuật | EDU-0039..0041; validator và board sync cuối lượt |
-| Git/hosted CI | Blocked | OD-003; thư mục hiện không phải Git repository |
+| Git/hosted CI | Đạt kỹ thuật sau gói ban đầu | EDU-0055/0056: public GitHub repo, protected `main`, foundation/governance/blueprint checks xanh trên `d8012da`; human merge authority/acceptance vẫn mở |
 | Reviewer độc lập và người nghiệm thu | Chờ con người | OD-001; Codex không được tự review/approve phần mình triển khai |
 
 ### Phase 02

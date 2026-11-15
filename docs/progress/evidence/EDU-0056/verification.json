@@ -1,7 +1,7 @@
 {
   "task_id": "EDU-0056",
   "recorded_at": "2026-11-15T09:54:00+07:00",
-  "conclusion": "local_fix_passed__hosted_rerun_pending",
+  "conclusion": "clean_checkout_ci_fixed__local_and_hosted_gates_pass",
   "fail_first": {
     "run_id": 43669694836,
     "url": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43669694836",
@@ -37,7 +37,25 @@
       "result": "51 tasks; 470 text files; 0 encoding errors"
     }
   ],
-  "hosted_rerun": "pending",
+  "commit": "d8012da9fc33bafa2d17e7ca81d0fecc996bf585",
+  "push": "origin/main verified at d8012da9fc33bafa2d17e7ca81d0fecc996bf585",
+  "hosted_rerun": {
+    "foundation": {
+      "run_id": 43700379144,
+      "url": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43700379144",
+      "conclusion": "success",
+      "coverage": "dependency install, backend/source checks, frontend/build, isolated config, Compose full-stack smoke/E2E, cleanup and artifact upload"
+    },
+    "governance": {
+      "run_id": 43700379165,
+      "url": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43700379165",
+      "conclusion": "success",
+      "checks": [
+        "governance",
+        "blueprint-check"
+      ]
+    }
+  },
   "side_effects": [
     "Root tests created and removed temporary synthetic CSV directories below ignored .local",
     "TASK_BOARD regenerated",

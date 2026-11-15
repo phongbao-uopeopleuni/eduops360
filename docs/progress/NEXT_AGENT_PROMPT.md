@@ -29,7 +29,7 @@ Yêu cầu “bắt đầu Phase tiếp theo” không tự động thay thế p
 - OD-001/003/007/008/011, MFA custody/enrollment/recovery, audit archive/retention và human acceptance còn mở.
 - EDU-0051 đổi theme mặc định sang sáng, thay dropdown bằng icon sáng/tối 44 px và thêm tint cam nhẹ. Không được làm mất thay đổi này khi sửa UI49-F01.
 - Baseline gần nhất: backend host `78 passed, 20 skipped`; PostgreSQL cô lập `98 passed`; Alembic head `0008`; frontend `24 passed`; UI Playwright `9 passed, 1 real-auth conditional skip`; required-real-auth gần nhất ở EDU-0050 là `9 passed`.
-- Thư mục hiện không phải Git repository. Không được `git init` hoặc bịa commit/push/PR/merge.
+- Git đã được khởi tạo và push trong EDU-0055 tại `https://github.com/phongbao-uopeopleuni/eduops360`; `main` được bảo vệ sau EDU-0056. Phải đo `git status`, remote, checks và PR/merge thật; không bịa Git success.
 - Local UI/API/DB có thể đang chạy ở `5173/58080/55440` cho người dùng xem. Phải tự đo lại; không dừng hoặc ghi test vào DB dev đó nếu chưa được yêu cầu.
 
 Nếu trạng thái thực tế khác, ưu tiên bằng chứng mới và cập nhật tài liệu; không sửa lịch sử cũ.

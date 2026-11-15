@@ -1,7 +1,7 @@
 {
   "task_id": "EDU-0055",
   "recorded_at": "2026-11-15T09:52:00+07:00",
-  "conclusion": "git_initialized_and_bootstrap_pushed__protection_and_ci_pending",
+  "conclusion": "git_initialized_pushed_and_protected__hosted_checks_green",
   "repository": {
     "local_path": "D:/eduops360",
     "remote": "https://github.com/phongbao-uopeopleuni/eduops360.git",
@@ -56,16 +56,39 @@
     }
   ],
   "hosted_ci": {
-    "foundation_run": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43669694836",
-    "governance_run": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43669694814",
-    "state_at_recording": "in_progress"
+    "initial_foundation_run": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43669694836 (failure; clean-checkout scratch defect fixed by EDU-0056)",
+    "green_foundation_run": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43700379144",
+    "green_governance_run": "https://github.com/phongbao-uopeopleuni/eduops360/actions/runs/43700379165",
+    "green_commit": "d8012da9fc33bafa2d17e7ca81d0fecc996bf585",
+    "checks": {
+      "foundation": "success",
+      "governance": "success",
+      "blueprint-check": "success"
+    }
   },
-  "branch_protection": "absent at initial verification; configuration pending",
+  "branch_protection": {
+    "strict_required_checks": [
+      "foundation",
+      "governance",
+      "blueprint-check"
+    ],
+    "pull_request_required": true,
+    "required_approvals": 1,
+    "dismiss_stale_reviews": true,
+    "require_last_push_approval": true,
+    "linear_history": true,
+    "conversation_resolution": true,
+    "allow_force_pushes": false,
+    "allow_deletions": false,
+    "enforce_admins_at_documentation_commit": false,
+    "enforce_admins_final_target": true
+  },
   "side_effects": [
     "Created .git metadata and local Git configuration",
     "Created .gitmessage and EDU-0055 journal/evidence",
     "Created and pushed a public GitHub main branch with the existing 487-file project snapshot",
-    "Triggered two GitHub Actions workflows",
+    "Triggered GitHub Actions workflows; the first foundation run exposed a clean-checkout defect, fixed in EDU-0056, and the replacement checks passed",
+    "Configured main branch protection; final documentation push uses the temporary admin bypass before enforce_admins is enabled",
     "Did not stage .env files, .local, dependencies, caches, build or test-result directories",
     "No repository visibility change, package installation, database mutation or public application deployment"
   ]

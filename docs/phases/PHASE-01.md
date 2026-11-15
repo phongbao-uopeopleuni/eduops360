@@ -69,3 +69,9 @@ Exact local commands/results and remaining gates are linked from `docs/progress/
 EDU-0040 repeated the complete local gate after the Phase 02 remediation work. Backend host tests passed (`77 passed, 18 skipped`); the isolated PostgreSQL suite passed (`95 passed`); frontend unit tests passed (`22 passed`); and Playwright passed all 8 browser paths, including a real login/CSRF logout against the isolated backend and database. Startup, OpenAPI/client drift, formatting, lint, build, UTF-8, structure and migration checks also passed. The detailed command ledger is `docs/quality/PHASE_01_LOCAL_GATE_2026-11-14.md`.
 
 This closes the five local technical checkboxes above only. Phase 01 remains `IN_REVIEW`: the directory has no Git/hosted-CI evidence, OD-001 has not named the independent reviewer/authority, and Codex cannot independently approve work it implemented.
+
+## J. Git and hosted-CI update — 2026-11-15
+
+EDU-0055 initialized and pushed the repository to `https://github.com/phongbao-uopeopleuni/eduops360` on `main`. EDU-0056 fixed the first clean-checkout CI defect. Hosted foundation run `43700379144` and governance run `43700379165` pass on commit `d8012da9fc33bafa2d17e7ca81d0fecc996bf585`, including the `foundation`, `governance` and `blueprint-check` contexts. Protected `main` requires those checks plus a pull request and one approval.
+
+This supersedes only the earlier “no Git/hosted-CI evidence” statement. Phase 01 remains `IN_REVIEW`: the repository is public, independent reviewer/authority assignments and human acceptance remain open, and green CI is not acceptance.
