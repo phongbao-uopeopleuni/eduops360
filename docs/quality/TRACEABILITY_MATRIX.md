@@ -22,7 +22,7 @@
 | EXAM-02 | Phase 07 | unit + integration + E2E per phase | EDU-0060 explicitly activates no policy and mutates no grade; approval/workflow/audit remain gated |
 | LEGAL-01 | Phase 08 | unit + integration + E2E per phase | EDU-0061 P08-T01 fail-closed official-source registry; collection/archive/versioning remain P08-T02..T05 |
 | LEGAL-02 | Phase 08 | unit + integration + E2E per phase | EDU-0061 enables no connector/search/RAG; retrieval/search/human confirmation remain P08-T02..T09 |
-| ANA-01 | Phase 09 | unit + integration + E2E per phase | docs/phases/PHASE-09* / task evidence |
+| ANA-01 | Phase 09 | unit + integration + E2E per phase | EDU-0062 P09-T01 chart-input role allowlist and direct PII/identifier rejection; queries/charts/privacy/export remain P09-T02..T09 |
 | ML-01 | Phase 10 | eval + security + nonfunctional tests | docs/phases/PHASE-10* / task evidence |
 | ML-02 | Phase 10 | eval + security + nonfunctional tests | docs/phases/PHASE-10* / task evidence |
 | SEC-01 | Phase 02/11 | transaction/audit privilege tests + negative API/E2E | EDU-0024/0028/0030/0034/0036/0037/0038; Phase 11 evidence later |
