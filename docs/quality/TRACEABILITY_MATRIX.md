@@ -18,8 +18,8 @@
 | SCH-01 | Phase 06 | unit + integration + E2E per phase | EDU-0059 P06-T01 immutable input projection; collision constraints/validator remain P06-T02..T08 |
 | SCH-02 | Phase 06 | unit + integration + E2E per phase | EDU-0059 snapshot contract only; CP-SAT/status/worker/repair/benchmark remain P06-T02..T10 |
 | SCH-03 | Phase 06 | unit + integration + E2E per phase | docs/phases/PHASE-06* / task evidence |
-| EXAM-01 | Phase 07 | unit + integration + E2E per phase | docs/phases/PHASE-07* / task evidence |
-| EXAM-02 | Phase 07 | unit + integration + E2E per phase | docs/phases/PHASE-07* / task evidence |
+| EXAM-01 | Phase 07 | unit + integration + E2E per phase | EDU-0060 P07-T01 official-source/applicability brief; policy model/rules/tests remain P07-T02..T09 |
+| EXAM-02 | Phase 07 | unit + integration + E2E per phase | EDU-0060 explicitly activates no policy and mutates no grade; approval/workflow/audit remain gated |
 | LEGAL-01 | Phase 08 | unit + integration + E2E per phase | docs/phases/PHASE-08* / task evidence |
 | LEGAL-02 | Phase 08 | unit + integration + E2E per phase | docs/phases/PHASE-08* / task evidence |
 | ANA-01 | Phase 09 | unit + integration + E2E per phase | docs/phases/PHASE-09* / task evidence |

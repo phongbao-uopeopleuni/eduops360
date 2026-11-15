@@ -1,8 +1,15 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P06-T01 IMPLEMENTED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 05 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P07-T01 RESEARCHED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 06 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0059, EDU-0058, EDU-0057 and EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly requested the next phase. Therefore only the pure immutable P06-T01 snapshot contract may proceed while Phase 05 remains unaccepted. Do not present this as Phase 05 acceptance or automatically begin P06-T02..T10.
+Start at EDU-0060, EDU-0059, EDU-0058, EDU-0057 and EDU-0054. The user explicitly requested Phases 07–09. Phase 07 is limited to a manual official-source brief because Phase 06 remains unaccepted. Do not present source identification as an approved assessment policy or begin P07-T02..T09 automatically.
+
+## Conditional P07-T01 kickoff EDU-0060 — 2026-11-15
+
+- Official Government metadata confirms `27/2020/TT-BGDĐT` for primary assessment and `22/2021/TT-BGDĐT` for lower/upper secondary assessment.
+- `89/2026/TT-BGDĐT`, issued 2026-10-16 and effective 2026-12-01, amends both. At the 2026-11-15 review date it is not yet effective; activation is blocked pending signed-text diff and Domain SME review.
+- Published `docs/requirements/ASSESSMENT_POLICY_SOURCE_REVIEW_2026-11-15.md` with applicability boundaries, uncertainties and blank human gates. No calculation, schema, endpoint, UI or grade mutation was added.
+- EDU-0060 is stacked on PR #3 and remains `in_review`; Phase 06 and earlier debt remain open.
 
 ## Conditional P06-T01 kickoff EDU-0059 — 2026-11-15
 
