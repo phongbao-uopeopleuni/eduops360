@@ -1,8 +1,16 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P05-T01 IMPLEMENTED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 04 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P06-T01 IMPLEMENTED / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 05 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0058, EDU-0057 and EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly requested Phase 05 with complete Markdown evidence. Therefore only the pure-domain P05-T01 model may proceed while Phase 04 remains unaccepted. Do not present this as Phase 04 acceptance or automatically begin P05-T02..T09.
+Start at EDU-0059, EDU-0058, EDU-0057 and EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly requested the next phase. Therefore only the pure immutable P06-T01 snapshot contract may proceed while Phase 05 remains unaccepted. Do not present this as Phase 05 acceptance or automatically begin P06-T02..T10.
+
+## Conditional P06-T01 kickoff EDU-0059 — 2026-11-15
+
+- Scope is limited to a self-contained, immutable scheduling-input projection for one school/year: teaching assignments, classrooms, class/group loads, weekly slots and holiday closures.
+- Fail-first collection exited `1` before the module existed. Final targeted tests pass `4`; backend host passes `101` with `20` isolated-PostgreSQL tests skipped; Ruff, OpenAPI, root governance and encoding gates pass.
+- No feasibility bound, collision constraint, soft objective, OR-Tools dependency, solver status, worker/job, post-solve validator, timetable draft/UI, publication or benchmark is part of this slice.
+- EDU-0059 is stacked on EDU-0058/PR #2 so the Phase 05 dependency remains visible. It must remain `in_review` until an independent Domain SME/Performance QA reviewer acts.
+- Phase 05 and all earlier debt remain open; P06-T02..T10 stay gated.
 
 ## Conditional P05-T01 kickoff EDU-0058 — 2026-11-15
 
