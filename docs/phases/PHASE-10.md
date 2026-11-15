@@ -1,10 +1,16 @@
 # PHASE-10 — Educational ML lab and careful predictive use
 
-**Status:** NOT_STARTED / SPEC_ONLY  
+**Status:** P10_T01_TARGET_IN_REVIEW / PHASE_09_DEBT_OPEN
 **Implementers:** ML Agent / Domain SME  
 **Independent reviewer:** Independent ML QA / Security  
 **Prerequisite:** PHASE-09 accepted; cross-phase tasks explicitly reviewed.  
 **Approval:** domain owner/tech lead; high-impact security, grades, legal or production changes require designated human sign-off.
+
+**Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
+the agent to proceed to Phase 10. Because Phase 09 is not accepted, this exception
+is limited to P10-T01's review-only prediction contract. It authorizes no data
+access, feature snapshot, training, evaluation, serving or production decision.
+P10-T02..T09 remain gated. Evidence: EDU-0063.
 
 ## A. Purpose and implementation boundaries
 Educational ML lab and careful predictive use; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -16,7 +22,7 @@ Educational ML lab and careful predictive use; implement only the scope approved
 - `Human reviewed warnings`
 
 ## C. Detailed execution steps
-1. **P10-T01:** Choose one measurable target with a pre-declared prediction time and intended use.
+1. **P10-T01:** Choose one measurable target with a pre-declared prediction time and intended use. Review-only operational completeness target published in EDU-0063; human approval pending.
 2. **P10-T02:** Create `as_of` feature snapshots only from information known at prediction time.
 3. **P10-T03:** Define leakage-aware temporal train/validation/test, student grouping and independent cohort holdout.
 4. **P10-T04:** Build baseline models (mean/linear/logistic) before RandomForest/XGBoost/NN experimentation.
