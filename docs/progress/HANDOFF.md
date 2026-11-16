@@ -1,8 +1,14 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P11-T01 ENVIRONMENT CONTRACT / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 10 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P11-T01/T02 ENVIRONMENT + CI GATES / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 10 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0064, then EDU-0063..0060 and earlier stacked tasks. The user explicitly requested the next phase. Phase 11 is limited to a review-only environment isolation contract because Phase 10 remains unaccepted. Do not provision staging/production, access credentials, run migrations, deploy or begin P11-T02..T09 automatically.
+Start at EDU-0065, then EDU-0064..0060 and earlier stacked tasks. The user explicitly requested Phase 11 continuation. P11-T02 is limited to repository-local CI gates because Phase 10 remains unaccepted. Do not provision staging/production, access credentials, run migrations against a real system, deploy or begin P11-T03..T09 automatically.
+
+## Conditional P11-T02 kickoff EDU-0065 — 2026-11-16
+
+- Existing CI already runs backend/frontend lint, types, unit/E2E, OpenAPI, UTF-8 and Compose `alembic check`; EDU-0065 adds a sanitized tracked-secret scan, frontend runtime dependency audit and offline `alembic upgrade --sql head` dry-run.
+- Added a path-scoped ML evaluation workflow. It does not run for today’s documentation-only ML contract; when future ML source/test/evaluator changes, it fails closed unless `backend/tests/machine_learning/` and `scripts/evaluate_ml_models.py --check` exist and pass.
+- No dependency version, secret, cloud credential, infrastructure, database, artifact release or deployment is created. EDU-0065 is stacked on PR #8 and remains `in_review`.
 
 ## Conditional P11-T01 kickoff EDU-0064 — 2026-11-15
 

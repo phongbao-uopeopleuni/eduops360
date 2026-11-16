@@ -35,6 +35,10 @@ jobs:
           backend/.venv/bin/python scripts/export_openapi.py --check
           python -m unittest discover -s tests -p 'test_*.py'
           python scripts/check_text_encoding.py
+          python scripts/check_repository_secrets.py
+      - name: Frontend runtime dependency audit
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high
       - name: Frontend checks and build
         working-directory: frontend
         run: |
@@ -61,6 +65,7 @@ jobs:
         run: |
           docker compose --env-file infra/.env -f infra/compose.dev.yml config --quiet
           docker compose --env-file infra/.env -f infra/compose.dev.yml up --build -d --wait
+          docker compose --env-file infra/.env -f infra/compose.dev.yml run --rm -e PYTHONIOENCODING=utf-8 migrate python -m alembic upgrade --sql head > /tmp/eduops-migration.sql
           docker compose --env-file infra/.env -f infra/compose.dev.yml run --rm migrate python -m alembic check
           python scripts/smoke_local.py
           npm run test:e2e --prefix frontend
