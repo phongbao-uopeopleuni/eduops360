@@ -43,13 +43,17 @@ test('Pages preview assets and self-hosted fonts load at mobile width', async ({
     return {
       width: document.documentElement.scrollWidth,
       viewport: innerWidth,
-      fonts: [...document.fonts].filter((face) => face.status === 'loaded').map((face) => face.family),
+      fonts: [...document.fonts]
+        .filter((face) => face.status === 'loaded')
+        .map((face) => face.family),
       prefixedResources: resources.filter((url) => new URL(url).origin === location.origin),
     };
   });
   expect(result.width).toBeLessThanOrEqual(result.viewport);
   expect(result.fonts.some((family) => family.includes('Be Vietnam Pro'))).toBe(true);
   expect(result.fonts.some((family) => family.includes('Inter'))).toBe(true);
-  expect(result.prefixedResources.some((url) => new URL(url).pathname.startsWith('/eduops360/assets/'))).toBe(true);
+  expect(
+    result.prefixedResources.some((url) => new URL(url).pathname.startsWith('/eduops360/assets/')),
+  ).toBe(true);
   expect(failedAssets).toEqual([]);
 });
