@@ -1,0 +1,109 @@
+name: Deploy UI to GitHub Pages
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.12.0'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked frontend dependencies
+        run: npm ci --prefix frontend --no-fund --no-audit
+      - name: Frontend checks
+        working-directory: frontend
+        run: |
+          npm run api:check
+          npm run format:check
+          npm run lint
+          npm run typecheck
+          npm test
+      - name: Build GitHub Pages UI
+        run: npm run build --prefix frontend
+        env:
+          VITE_GITHUB_PAGES: 'true'
+      - name: Verify Pages asset prefix and bundle contents
+        working-directory: frontend
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, readdirSync } from 'node:fs';
+          import { join } from 'node:path';
+          const html = readFileSync('dist/index.html', 'utf8');
+          if (!html.includes('/eduops360/assets/')) throw new Error('Pages asset prefix missing from index.html');
+          const files = [];
+          const walk = (dir) => {
+            for (const name of readdirSync(dir, { withFileTypes: true })) {
+              const path = join(dir, name.name);
+              if (name.isDirectory()) walk(path);
+              else files.push(path);
+            }
+          };
+          walk('dist');
+          if (!files.some((path) => path.endsWith('.woff2'))) throw new Error('Self-hosted font assets missing');
+          const forbidden = /(postgres(?:ql)?:\/\/|DATABASE_URL|SECRET_KEY|BEGIN (?:RSA |OPENSSH )?PRIVATE KEY|gh[pousr]_[A-Za-z0-9]{20,})/i;
+          for (const path of files) {
+            if (!/\.(?:html|js|css|json|svg|txt)$/.test(path)) continue;
+            const body = readFileSync(path, 'utf8');
+            if (forbidden.test(body)) throw new Error(`Potential secret marker in ${path}`);
+          }
+          console.log(`Verified ${files.length} static files, /eduops360/ assets and self-hosted fonts`);
+          NODE
+      - name: Install Chromium for static-preview smoke test
+        run: npx --prefix frontend playwright install --with-deps chromium
+      - name: Test the built static preview
+        working-directory: frontend
+        env:
+          PLAYWRIGHT_EXTERNAL_SERVER: '1'
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173/eduops360/
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/eduops360/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:4173/eduops360/ >/dev/null
+          npx playwright test tests/e2e/github-pages.spec.ts --reporter=list
+      - name: Prepare Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      - name: Upload only the static frontend
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: frontend/dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
