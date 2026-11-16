@@ -153,5 +153,6 @@ Exact commands and side effects are in `docs/progress/evidence/EDU-0030/verifica
 - The separate `docs/progress/PROJECT_STATUS.md` file is absent from this
   main-based task branch; do not invent a replacement or import the unrelated
   stacked PR chain to enable Pages.
+- The first trusted-branch attempt (`43862744119`, commit `bf74ee1`) completed all build/frontend/Playwright checks and uploaded the `frontend/dist` artifact, but the deploy job failed before executing any step. This is consistent with the `github-pages` environment deployment-branch allowlist rejecting the unprotected preview branch; confirm/configure the environment to allow the two explicit refs above. Do not disable environment protection or select unrestricted deployment branches.
 - Deployment is not considered complete until the trusted-branch workflow
   succeeds and the public URL, static assets, and browser navigation are checked.
