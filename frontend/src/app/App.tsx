@@ -170,6 +170,27 @@ function Overview() {
   );
 }
 
+const isGitHubPagesPreview = import.meta.env.VITE_GITHUB_PAGES === 'true';
+
+function PreviewNotice() {
+  return (
+    <div className="container" role="status">
+      <p className="preview-notice">
+        Bản xem trước giao diện công khai · Backend chưa được kết nối. Không nhập thông tin đăng nhập hoặc dữ liệu thật.
+      </p>
+    </div>
+  );
+}
+
+function PreviewUnavailable({ title }: { title: string }) {
+  return (
+    <section className="panel" aria-label={title}>
+      <h2>{title}</h2>
+      <p>Chức năng này chưa khả dụng trong bản xem trước tĩnh vì chưa kết nối backend.</p>
+    </section>
+  );
+}
+
 function SystemPage() {
   return (
     <section className="page">
@@ -181,8 +202,14 @@ function SystemPage() {
             Kiểm tra kết nối trước khi làm việc với môi trường thử nghiệm.
           </p>
         </div>
-        <HealthPanel />
-        <p className="support-note">Môi trường hiện tại sử dụng dữ liệu giả lập.</p>
+        {isGitHubPagesPreview ? (
+          <PreviewUnavailable title="Trạng thái dịch vụ" />
+        ) : (
+          <>
+            <HealthPanel />
+            <p className="support-note">Môi trường hiện tại sử dụng dữ liệu giả lập.</p>
+          </>
+        )}
       </div>
     </section>
   );
@@ -199,7 +226,11 @@ function UsersPage() {
             Quản trị tài khoản, trạng thái và vai trò có scope. Backend luôn quyết định quyền.
           </p>
         </div>
-        <UserManagementPage />
+        {isGitHubPagesPreview ? (
+          <PreviewUnavailable title="Quản trị người dùng" />
+        ) : (
+          <UserManagementPage />
+        )}
       </div>
     </section>
   );
@@ -249,6 +280,7 @@ export function App() {
 
   return (
     <div className="app-shell">
+      {isGitHubPagesPreview && <PreviewNotice />}
       <a className="skip-link" href="#main-content">
         Đến nội dung chính
       </a>
