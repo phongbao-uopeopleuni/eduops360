@@ -10,6 +10,7 @@ preview protection and deployment runbook. Local image smoke passed; final
 hosted CI evidence is linked from EDU-0069. No Railway account/project connection
 or verified online URL exists yet. This is not a production release or phase
 acceptance. See `docs/operations/ONLINE_STAGING.md` for the concrete next steps.
+Implementation `a8cd107` is pushed as PR #12; final CI status is read from GitHub.
 
 Latest remediation: EDU-0068, 2026-11-16. A67-F01/F02/F03 and UI49-F01 have code
 fixes with regression evidence, **in review, not independently accepted**.
