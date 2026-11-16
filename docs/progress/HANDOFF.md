@@ -133,3 +133,25 @@ The sections below are retained as historical audit/remediation context. Where c
 ## Reproduction
 
 Exact commands and side effects are in `docs/progress/evidence/EDU-0030/verification.json`. All DB tests use an isolated disposable PostgreSQL instance and synthetic identities only.
+
+
+## GitHub Pages UI preview EDU-0070 — 2026-11-16
+
+- PR #14 (`codex/edu-0070-github-pages` → `main`) remains open and unmerged.
+  GitHub requires an independent approval from someone other than the last
+  pusher; the repository currently has a single maintainer. Do not self-approve,
+  fabricate an approval, use admin bypass, or weaken the `main` branch rules.
+- To make the requested static UI preview available without a second
+  collaborator, the Pages workflow explicitly permits trusted pushes from
+  `codex/edu-0070-github-pages` as a temporary deployment source, as well as
+  `main`. Pull-request events remain validation-only and cannot deploy.
+- Pages artifact remains limited to `frontend/dist`; no backend, PostgreSQL,
+  Railway configuration, credentials, or student data are deployed.
+- This does not merge PR #14, change the default branch, alter branch
+  protection, or accept any project phase. After a future approved merge,
+  `main` remains a deployment source.
+- The separate `docs/progress/PROJECT_STATUS.md` file is absent from this
+  main-based task branch; do not invent a replacement or import the unrelated
+  stacked PR chain to enable Pages.
+- Deployment is not considered complete until the trusted-branch workflow
+  succeeds and the public URL, static assets, and browser navigation are checked.
