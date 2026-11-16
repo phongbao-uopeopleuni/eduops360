@@ -84,7 +84,7 @@ jobs:
           curl --fail --silent http://127.0.0.1:4173/eduops360/ >/dev/null
           npx playwright test tests/e2e/github-pages.spec.ts --reporter=list
       - name: Prepare Pages artifact
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v5
       - name: Upload only the static frontend
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
