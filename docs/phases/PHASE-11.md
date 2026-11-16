@@ -1,6 +1,6 @@
 # PHASE-11 — Operations, security hardening, performance & release
 
-**Status:** P11_T01_T02_IN_REVIEW / PHASE_10_DEBT_OPEN
+**Status:** P11_T01_T03A_IN_REVIEW / PHASE_10_DEBT_OPEN
 **Implementers:** DevOps Agent / Security Agent / QA Lead  
 **Independent reviewer:** Human Product Owner + Operations Owner  
 **Prerequisite:** PHASE-10 accepted; cross-phase tasks explicitly reviewed.  
@@ -8,10 +8,12 @@
 
 **Conditional kickoff exception — 2026-11-15:** the user explicitly instructed
 the agent to proceed to the next phase. Because Phase 10 is not accepted, this
-exception is limited to P11-T01's review-only environment isolation contract and
-P11-T02's repository-local CI gate additions. It authorizes no environment
-provisioning, credential access, migration against a real system, release or
-deployment. P11-T03..T09 remain gated. Evidence: EDU-0064 and EDU-0065.
+exception is limited to P11-T01's review-only environment isolation contract,
+P11-T02's repository-local CI gate additions and P11-T03A's local HTTP request
+correlation/log redaction slice. It authorizes no environment provisioning,
+credential access, metrics/trace/alert backend, worker, migration against a real
+system, release or deployment. P11-T03B..T09 remain gated. Evidence: EDU-0064,
+EDU-0065 and EDU-0066.
 
 ## A. Purpose and implementation boundaries
 Operations, security hardening, performance & release; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
@@ -25,7 +27,7 @@ Operations, security hardening, performance & release; implement only the scope 
 ## C. Detailed execution steps
 1. **P11-T01:** Build staging and prod isolated environment configs, secrets management, minimal service IAM and TLS. Review-only boundary contract published in EDU-0064; deployable configuration and human approval remain pending.
 2. **P11-T02:** Create CI gates: lint/types/tests, migration dry-run, API contract, security scans, UTF-8 and model eval when changed. EDU-0065 adds narrowly scoped repository gates; future ML implementation must provide its test/evaluator before ML code can merge.
-3. **P11-T03:** Implement metrics/tracing/logs, redaction, alerts, job queue health and correlation IDs.
+3. **P11-T03:** Implement metrics/tracing/logs, redaction, alerts, job queue health and correlation IDs. EDU-0066 implements only P11-T03A: privacy-preserving HTTP completion logs and generated correlation IDs; metrics/tracing exporters, alert routing and queue health remain P11-T03B and gated.
 4. **P11-T04:** Run RLS/IDOR tests, injection cases, privilege escalation, bulk export abuse and worker DoS simulations.
 5. **P11-T05:** Load test agreed datasets/concurrent roles and compare p95 to SRS target; tune DB indexes using EXPLAIN.
 6. **P11-T06:** Run backup and restore drill with documented RPO/RTO targets; confirm audit archive separation.

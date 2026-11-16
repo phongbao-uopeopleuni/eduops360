@@ -1,4 +1,18 @@
-# Prompt bàn giao cho Agent — đóng gate và kickoff Phase 03 có điều kiện
+# Current handoff — residual remediation first (EDU-0068)
+
+Read `docs/progress/PROJECT_STATUS.md`, `docs/progress/tasks/EDU-0068.md` and
+`docs/progress/HANDOFF.md` before acting. This section supersedes the historical
+prompt below. Phase 03 P03-T01 already exists; Phase 04–11 also have conditional
+kickoff slices. Do not report Phase 03 as NOT STARTED or equate those slices with
+complete phases. None of the 12 phases is formally accepted.
+
+First verify EDU-0068 fix/test/Git evidence and obtain eligible independent
+review. R42-F02, approved role/scope/approval policies, MFA custody, audit archive
+operation and human acceptance remain explicit gates. User priority is bug and
+documentation closeout before new feature scope. Do not self-approve or deploy.
+Raw historical logs remain ignored; use the sanitized EDU-0068 evidence manifest.
+
+## Historical Phase 03 handoff — superseded, retained for traceability
 
 Tạo bởi EDU-0052; cập nhật bởi EDU-0054 sau chỉ đạo mới của người dùng. Bản trước EDU-0052 được sao lưu tại `docs/progress/evidence/EDU-0052/NEXT_AGENT_PROMPT.previous.md`.
 

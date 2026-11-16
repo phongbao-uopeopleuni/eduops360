@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import date, time
 from uuid import UUID
 
+from app.common.domain_values import validate_scalar_fields
 from app.modules.school_calendar.domain import DayOfWeek, SchoolSession
 
 
@@ -19,17 +20,26 @@ class TeachingAssignmentSnapshot:
     subject_id: UUID
     required_weekly_lessons: int
 
+    def __post_init__(self) -> None:
+        validate_scalar_fields(self)
+
 
 @dataclass(frozen=True, slots=True)
 class ClassroomSnapshot:
     classroom_id: UUID
     capacity: int
 
+    def __post_init__(self) -> None:
+        validate_scalar_fields(self)
+
 
 @dataclass(frozen=True, slots=True)
 class ClassGroupLoadSnapshot:
     class_group_id: UUID
     student_count: int
+
+    def __post_init__(self) -> None:
+        validate_scalar_fields(self)
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,6 +50,9 @@ class ScheduleSlotSnapshot:
     start_time: time
     end_time: time
 
+    def __post_init__(self) -> None:
+        validate_scalar_fields(self)
+
 
 @dataclass(frozen=True, slots=True)
 class HolidaySnapshot:
@@ -48,6 +61,9 @@ class HolidaySnapshot:
     end_date: date
     start_time: time | None
     end_time: time | None
+
+    def __post_init__(self) -> None:
+        validate_scalar_fields(self)
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,13 +80,15 @@ class SchedulingInputSnapshot:
     holidays: tuple[HolidaySnapshot, ...]
 
     def __post_init__(self) -> None:
-        collection_names = (
-            "teaching_assignments",
-            "classrooms",
-            "class_group_loads",
-            "slots",
-            "holidays",
-        )
-        for name in collection_names:
+        collection_types = {
+            "teaching_assignments": TeachingAssignmentSnapshot,
+            "classrooms": ClassroomSnapshot,
+            "class_group_loads": ClassGroupLoadSnapshot,
+            "slots": ScheduleSlotSnapshot,
+            "holidays": HolidaySnapshot,
+        }
+        for name, element_type in collection_types.items():
             if not isinstance(getattr(self, name), tuple):
                 raise MutableSnapshotCollectionError(f"{name} must be an immutable tuple")
+            if any(type(item) is not element_type for item in getattr(self, name)):
+                raise TypeError(f"{name} must contain only {element_type.__name__} values")

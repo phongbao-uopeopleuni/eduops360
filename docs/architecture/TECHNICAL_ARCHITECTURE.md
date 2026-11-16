@@ -47,7 +47,11 @@ Frontend pages → feature hooks/API client → documented API → FastAPI route
 Source/doc/script: UTF-8 without BOM. API JSON UTF-8. CSV imported with strict UTF-8/UTF-8 BOM; Excel CSV export BOM; NFC for normalized text; never coerce student code to numbers. See `ai-agent-sp/standards/UNICODE_UTF8.md`.
 
 ## 7. Visual design
-White-first Scientific Minimalism; dark mode; Source Sans 3/Segoe UI fallback; high contrast; thin academic/science motifs only in quiet spaces. Never embed an unlicensed font file.
+Current local UI: Minimalist SaaS indigo tokens, light/dark, self-hosted Be Vietnam
+Pro display and Inter body fonts. Style evidence: EDU-0044/0049 and
+`docs/requirements/UI_STYLE_MINIMALIST_SAAS_2026-11-14.md`. Never embed an
+unlicensed font file. Architecture sections above include planned components;
+implemented scope is tracked in `docs/progress/PROJECT_STATUS.md`.
 
 ## 8. Deployment stages
 Local fake-data Docker Compose → staging with synthetic identities and isolated secrets → production only after school/data-owner approval and recovery test. No production action by an AI agent unless explicitly authorized.

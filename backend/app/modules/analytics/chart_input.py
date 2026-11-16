@@ -67,6 +67,8 @@ class ChartFilter:
     def __post_init__(self) -> None:
         if not isinstance(self.values, tuple):
             raise MutableChartInputError("filter values must be an immutable tuple")
+        if any(type(value) is not str for value in self.values):
+            raise ChartInputError("filter values must be strings")
         if not self.values:
             raise ChartInputError("filter values cannot be empty")
         _validate_variable(self.field, role="filter")
@@ -84,8 +86,14 @@ class ChartInput:
     filters: tuple[ChartFilter, ...] = ()
 
     def __post_init__(self) -> None:
+        if not isinstance(self.academic_year_id, UUID):
+            raise ChartInputError("academic_year_id must be a UUID")
+        if self.subject_id is not None and not isinstance(self.subject_id, UUID):
+            raise ChartInputError("subject_id must be a UUID or None")
         if not isinstance(self.filters, tuple):
             raise MutableChartInputError("filters must be an immutable tuple")
+        if any(type(item) is not ChartFilter for item in self.filters):
+            raise ChartInputError("filters must contain only validated ChartFilter values")
         _validate_variable(self.x, role="x")
         if self.y is not None:
             _validate_variable(self.y, role="y")
