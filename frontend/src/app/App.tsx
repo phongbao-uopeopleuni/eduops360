@@ -176,8 +176,8 @@ function PreviewNotice() {
   return (
     <div className="container" role="status">
       <p className="preview-notice">
-        Bản xem trước giao diện công khai · Backend chưa được kết nối.
-        Không nhập thông tin đăng nhập hoặc dữ liệu thật.
+        Bản xem trước giao diện công khai · Backend chưa được kết nối. Không nhập thông tin
+        đăng nhập hoặc dữ liệu thật.
       </p>
     </div>
   );
