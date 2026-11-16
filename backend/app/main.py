@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from time import perf_counter
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
@@ -7,6 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
 
+from app.common.observability import log_request_completed
 from app.core.config import Settings
 from app.core.errors import AppError, ErrorEnvelope, error_response
 from app.db.connection import Database
@@ -60,9 +62,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.middleware("http")
     async def request_context(request: Request, call_next):
         request.state.request_id = str(uuid4())
-        response = await call_next(request)
+        started_at = perf_counter()
+        try:
+            response = await call_next(request)
+        except Exception:
+            log_request_completed(request, status_code=500, started_at=started_at)
+            raise
         response.headers["X-Request-ID"] = request.state.request_id
         response.headers["Cache-Control"] = "no-store"
+        log_request_completed(request, status_code=response.status_code, started_at=started_at)
         return response
 
     @app.exception_handler(HTTPException)

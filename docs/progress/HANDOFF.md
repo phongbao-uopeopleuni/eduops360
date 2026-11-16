@@ -1,8 +1,15 @@
 # Current handoff — Phase 01/02 human acceptance
 
-**Status:** `P11-T01/T02 ENVIRONMENT + CI GATES / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 10 AND EARLIER DEBT STILL OPEN`.
+**Status:** `P11-T01/T02/T03A ENVIRONMENT + CI + LOCAL OBSERVABILITY / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 10 AND EARLIER DEBT STILL OPEN`.
 
-Start at EDU-0065, then EDU-0064..0060 and earlier stacked tasks. The user explicitly requested Phase 11 continuation. P11-T02 is limited to repository-local CI gates because Phase 10 remains unaccepted. Do not provision staging/production, access credentials, run migrations against a real system, deploy or begin P11-T03..T09 automatically.
+Start at EDU-0066, then EDU-0065..0060 and earlier stacked tasks. The user explicitly requested processing the remaining tasks. P11-T03A is limited to local privacy-preserving HTTP request logging because Phase 10 remains unaccepted. Do not provision observability infrastructure, access credentials, run migrations against a real system, deploy or begin P11-T03B..T09 automatically.
+
+## Conditional P11-T03A kickoff EDU-0066 — 2026-11-16
+
+- Added a server-generated request correlation ID to one sanitized HTTP completion event: method, matched route template, status and duration only. Query, body, headers/cookies, tokens, student data, IP/user-agent and exception detail are excluded.
+- Existing transactional audit log remains separate and fail-closed; operational logging failure cannot alter an HTTP response.
+- Published the boundary for metrics/tracing exporters, alerts, queue/worker health, backup/disk/archive monitoring and signal thresholds as `NOT IMPLEMENTED`/`NOT APPROVED` pending named owners and infrastructure.
+- No metrics or trace exporter, dashboard, alert channel, worker/queue, storage, credential, environment, migration, release or deployment was created. EDU-0066 is stacked on PR #9 and remains `in_review`.
 
 ## Conditional P11-T02 kickoff EDU-0065 — 2026-11-16
 
