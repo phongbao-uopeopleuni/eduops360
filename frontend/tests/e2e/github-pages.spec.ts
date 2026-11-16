@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+test.skip(
+  process.env.VITE_GITHUB_PAGES !== 'true',
+  'GitHub Pages-specific smoke tests run only in the Pages workflow.',
+);
+
 test('Pages preview uses hash navigation and survives direct reloads', async ({ page }) => {
   const apiRequests: string[] = [];
   page.on('request', (request) => {
