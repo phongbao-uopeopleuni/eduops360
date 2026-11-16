@@ -6,6 +6,7 @@ import pytest
 from app.modules.analytics.chart_input import (
     ChartFilter,
     ChartInput,
+    ChartInputError,
     InappropriateVariableError,
     MutableChartInputError,
     UnknownVariableError,
@@ -69,3 +70,18 @@ def test_chart_input_is_immutable() -> None:
 
     with pytest.raises(FrozenInstanceError):
         chart_input.x = "subject"  # type: ignore[misc]
+
+
+@pytest.mark.parametrize("year", [None, "unvalidated-year", []])
+def test_chart_rejects_missing_or_untyped_year(year):
+    with pytest.raises(ChartInputError):
+        ChartInput(year, None, "grade_level")
+
+
+def test_chart_rejects_untyped_subject_and_filter():
+    with pytest.raises(ChartInputError):
+        ChartInput(uuid4(), "unvalidated-subject", "grade_level")
+    with pytest.raises(ChartInputError):
+        ChartInput(uuid4(), None, "grade_level", filters=({"field": "full_name"},))
+    with pytest.raises(ChartInputError):
+        ChartFilter("class_code", values=([],))

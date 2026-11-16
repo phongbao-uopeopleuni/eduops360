@@ -1,0 +1,21 @@
+{
+  "task_id": "EDU-0068",
+  "recorded_at": "2026-11-16T09:54:17+07:00",
+  "base_commit": "d488bc055b0609430fe1dbf3177c427650617830",
+  "results": [
+    {"command": "backend venv pytest test_uvicorn_log_privacy.py school_calendar timetables analytics -q", "stage": "fail_first", "exit_code": 1, "failed": 12, "passed": 19},
+    {"command": "backend venv pytest log privacy, observability, school_calendar, timetables, analytics", "stage": "final_targeted", "exit_code": 0, "passed": 39},
+    {"command": "backend venv pytest backend/tests -q", "stage": "host_without_integration_dsns", "exit_code": 0, "passed": 132, "skipped": 20},
+    {"command": "backend venv python docs/progress/evidence/EDU-0068/verify_isolated_postgres.py", "stage": "disposable_postgresql_18", "exit_code": 0, "alembic_head": "0008_mfa_replay_counter", "alembic_check": "No new upgrade operations detected.", "passed": 152, "skipped": 0},
+    {"command": "npm test --prefix frontend", "exit_code": 0, "passed": 24},
+    {"command": "playwright test hit-targets.spec.ts --reporter=list", "exit_code": 0, "passed": 1, "widths": [390, 1280], "routes": ["/", "/missing"], "minimum_target_px": 44},
+    {"command": "python -m unittest discover -s tests -p test_*.py", "exit_code": 0, "passed": 28},
+    {"command": "backend Ruff lint and format, OpenAPI check; frontend typecheck/lint/format/api:check", "exit_code": 0},
+    {"command": "npm audit --omit=dev --audit-level=high", "exit_code": 0, "vulnerabilities": 0},
+    {"command": "backend venv python docs/progress/evidence/EDU-0067/audit_probe.py", "exit_code": 0, "all_six_defect_indicators": false}
+  ],
+  "historical_storage": {"raw_logs": 44, "source_bytes": 33393, "logs_with_numeric_summaries": 12, "raw_originals": "local_gitignored_unchanged", "published_content": "source hashes, byte counts and recognized numeric test outcomes only"},
+  "limits": ["No full real-backend browser suite rerun", "No independent approval", "R42-F02, MFA custody and operational audit archive require authority decisions", "No production deployment"],
+  "runtime_cleanup": {"vite_5178": "stopped", "disposable_container": "removed_with_storage"},
+  "git_at_recording": {"branch": "codex/edu-0068-bug-and-docs-closeout", "commit": "not_done", "push": "not_done", "merge": "not_done", "deploy": "not_done"}
+}

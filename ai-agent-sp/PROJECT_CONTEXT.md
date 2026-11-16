@@ -1,6 +1,13 @@
 # EduOps 360 — Canonical Project Context v2.1
 
-Goal: secure Vietnam Grades 1–12 academic/examination administration web app with timetable CP-SAT, document provenance, analytics and ML decision support. Stage: Phase 01 local foundation is implemented; Phase 02 local IAM/RBAC/session/audit/Admin package is ready for independent review through EDU-0030. Neither phase is formally accepted. Current evidence: `docs/progress/HANDOFF.md`. Phase 02 remains gated by the unaccepted Phase 01 prerequisite, OD-001/007/008/011, Human Security Owner review, approved role activation, encrypted MFA custody and audit archive operation. Stack: Frontend React + TypeScript (Vite); Backend Python FastAPI; PostgreSQL; OR-Tools workers planned for their owning phases; Docker Linux local environment. Frontend/backend are separate root folders.
+Latest correction, EDU-0068 (2026-11-16): A67-F01/F02/F03 and UI49-F01 now have
+code fixes and regression evidence, pending independent review. Full disposable
+PostgreSQL suite 152 passed, frontend 24, targeted browser 1 and root 28. The
+EDU-0067 paragraph below records the preceding audit, not unresolved code fixes.
+Historical evidence storage is indexed by the sanitized 44-log EDU-0068 manifest;
+raw logs are intentionally local/ignored. Current Git details are in EDU-0068.
+
+Goal: secure Vietnam Grades 1–12 academic/examination administration web app with timetable CP-SAT, document provenance, analytics and ML decision support. Stage verified 2026-11-16 (EDU-0067): Phase 01/02 local foundation and IAM exist with residual review/policy debt; Phase 03–10 have only narrow conditional first-task slices, and Phase 11 has environment/CI/local logging slices. None of the 12 phases is formally accepted. Current evidence: `docs/progress/PROJECT_STATUS.md`, `docs/progress/HANDOFF.md` and `docs/quality/RESIDUAL_BUG_AUDIT_2026-11-16.md`. New residual issues include default Uvicorn log disclosure and latent domain-constructor validation gaps. Phase 02 still needs EDU-0046/0048 independent re-review, approved role activation, encrypted MFA custody, audit archive operation and human acceptance. Stack: Frontend React + TypeScript (Vite); Backend Python FastAPI; PostgreSQL; OR-Tools workers remain planned. Frontend/backend are separate root folders.
 
 Read `docs/requirements/SRS_MASTER.md` for requirement IDs; `docs/phases/README.md` for release sequence; `docs/roles/README.md` for role accountability; `ai-agent-sp/skills/REGISTRY.md` for repeatable procedures. See README for check commands and `docs/progress/` for evidence.
 

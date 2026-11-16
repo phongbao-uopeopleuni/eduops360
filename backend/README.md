@@ -1,6 +1,8 @@
 # Backend EduOps 360
 
-FastAPI modular monolith, Python 3.13. Phase 01 cung cấp app factory, cấu hình môi trường, health và hợp đồng OpenAPI. Các module nghiệp vụ theo phase tiếp theo.
+FastAPI modular monolith, Python 3.13. Health, IAM/session/RBAC, audit và Admin API
+đã có local. Academic-year/calendar/timetable/analytics mới có các domain slice,
+chưa có API nghiệp vụ tương ứng. Xem [tiến độ](../docs/progress/PROJECT_STATUS.md).
 
 Chạy từ `backend/` trong PowerShell sau khi có PostgreSQL local và `.env` cấu hình theo `.env.example`.
 
@@ -18,6 +20,9 @@ Entry point `python -m app` chọn SelectorEventLoop trên Windows để psycopg
 - Swagger tại `/api/docs`, OpenAPI tại `/api/openapi.json`.
 
 Alembic baseline `0001_foundation` tạo bảng quản lý revision. Schema học vụ thuộc Phase 03. Chạy với database local giả lập đã được cấu hình.
+
+Migration chain hiện kết thúc ở `0008_mfa_replay_counter`; baseline `0001` không
+phải head hiện tại. Dùng role migrator riêng cho các lệnh Alembic bên dưới.
 
 ```powershell
 .venv/Scripts/python -m alembic upgrade head

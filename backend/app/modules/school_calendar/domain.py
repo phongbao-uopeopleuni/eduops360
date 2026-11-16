@@ -5,6 +5,8 @@ from datetime import time
 from enum import StrEnum
 from uuid import UUID
 
+from app.common.domain_values import validate_scalar_fields
+
 
 class DayOfWeek(StrEnum):
     """Locale-neutral day identifiers for a weekly schedule template."""
@@ -34,6 +36,9 @@ class ScheduleSlot:
     start_time: time
     end_time: time
 
+    def __post_init__(self) -> None:
+        validate_scalar_fields(self)
+
 
 @dataclass(frozen=True, slots=True)
 class ScheduleTemplate:
@@ -42,3 +47,9 @@ class ScheduleTemplate:
     school_id: UUID
     academic_year_id: UUID
     slots: tuple[ScheduleSlot, ...]
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.slots, tuple) or any(
+            type(slot) is not ScheduleSlot for slot in self.slots
+        ):
+            raise TypeError("slots must be an immutable tuple of ScheduleSlot values")

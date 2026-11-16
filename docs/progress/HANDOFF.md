@@ -1,5 +1,44 @@
 # Current handoff — Phase 01/02 human acceptance
 
+## Latest remediation — EDU-0068, 2026-11-16
+
+- User priority is bug/documentation closeout. A67-F01/F02/F03 and UI49-F01 have
+  implementations and regressions; **in review**, no independent closure claimed.
+  Runtime Uvicorn access/exception logs are protected, domain constructors reject
+  mutable/untyped values, and brand/text links have 44px minimum hit targets.
+- Implementation commit `bdcf508`; pushed as PR #11 stacked on PR #10. Hosted
+  check status must be read from GitHub; no self-approval/merge/deploy.
+- Fail-first backend: 12 failed / 19 passed. Final: backend host 132/20 skipped;
+  isolated disposable PostgreSQL full suite **152 passed / no skips**; frontend
+  24 unit, targeted browser 1, root 28. Contracts/static/security gates pass.
+- README migration role, fonts, architecture worker status, traceability and
+  next-agent guidance are corrected. EDU-0067 docs/probe are included in the Git
+  closeout. All 44 historical raw logs remain local/ignored; EDU-0068 manifest
+  retains hashes and numeric outcomes only, not an unsafe raw-log upload.
+- No new feature, schema, dependency or production deployment. See EDU-0068
+  for actual commit/push/PR evidence. Independent EDU-0046/0048 review, R42-F02
+  decision, MFA custody, operational audit archive and human acceptance remain.
+
+## Latest audit and completion refresh — EDU-0067, 2026-11-16
+
+- Current progress is in `PROJECT_STATUS.md`: **0/12 phases formally accepted**;
+  Phase 03–10 first-task slices are not complete feature modules. Existing PRs
+  #1–10 remain OPEN. Earlier rows below are historical, including pre-Git claims
+  and superseded kickoff restrictions; read their dates and later exceptions.
+- Residual report: `docs/quality/RESIDUAL_BUG_AUDIT_2026-11-16.md`.
+  **A67-F01 P2 OPEN:** Uvicorn default access/error logs still expose raw query
+  and exception detail despite sanitized `eduops.http` events. **A67-F02/F03 P3
+  OPEN:** latent immutability/year/filter constructor validation gaps, no current
+  API/solver/query consumers. Synthetic real-Uvicorn probe reproduces all cases.
+- Fresh baseline: backend 115 passed / 20 PostgreSQL skipped, frontend 24 passed,
+  root 28 passed; lint/types/OpenAPI/security scanner/runtime dependency audit and
+  governance checks pass. Existing PR #10 CI green for d488bc0; this audit's
+  document/probe edits are local, no new hosted run claimed.
+- R42-F02, UI49-F01, independent EDU-0046/0048 closure, MFA/archive operation and
+  human acceptance remain open. No code correction or self-approval in this audit.
+- Next: fix runtime log disclosure, complete eligible independent review/policy
+  decisions, then resume remaining master-data tasks under the documented gates.
+
 **Status:** `P11-T01/T02/T03A ENVIRONMENT + CI + LOCAL OBSERVABILITY / IN_REVIEW UNDER CONDITIONAL KICKOFF; PHASE 10 AND EARLIER DEBT STILL OPEN`.
 
 Start at EDU-0066, then EDU-0065..0060 and earlier stacked tasks. The user explicitly requested processing the remaining tasks. P11-T03A is limited to local privacy-preserving HTTP request logging because Phase 10 remains unaccepted. Do not provision observability infrastructure, access credentials, run migrations against a real system, deploy or begin P11-T03B..T09 automatically.

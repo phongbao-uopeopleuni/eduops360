@@ -282,6 +282,8 @@ main:focus-visible {
 }
 .brand {
   display: inline-flex;
+  min-height: 44px;
+  min-width: 44px;
   align-items: center;
   gap: 12px;
   font-family: var(--font-display);
@@ -397,6 +399,8 @@ nav a.active {
 }
 .text-link {
   display: inline-flex;
+  min-height: 44px;
+  min-width: 44px;
   align-items: center;
   gap: 8px;
   color: var(--accent);

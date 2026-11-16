@@ -1,0 +1,375 @@
+{
+  "task_id": "EDU-0068",
+  "recorded_at": "2026-11-16T09:50:00+07:00",
+  "policy": "Original logs stay local and ignored. Only numeric test summaries are copied; no raw log lines, passwords, tokens, DSNs or tracebacks are published. Hashes identify originals, not verification of their claims.",
+  "files": [
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/alembic-roundtrip.txt",
+      "source_sha256": "cc837965f57eb8d2f64a85fb9096e5e30bca8370e403e4b10a3665fa697db16c",
+      "source_bytes": 159,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/compose-down.txt",
+      "source_sha256": "419141058cb95e125d0e91fd6ea94c45ffe1300ec2bfa208708b3c869e83f4a6",
+      "source_bytes": 362,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/compose-up.txt",
+      "source_sha256": "d949ca1005a5a54dec62a5cef48dae61e2a108921dcdec91b9c5db4737ad5abc",
+      "source_bytes": 636,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/e2e-api-server.txt",
+      "source_sha256": "a2977147448d459f888a68d7b4ae963726ff9286e265a8dbd30f9d924c867ca3",
+      "source_bytes": 1374,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-api-check.txt",
+      "source_sha256": "27bd1d71ffa2b23511a5b34df492ca82dedecc3fc4d7b665836642b81df96cb9",
+      "source_bytes": 38,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-build.txt",
+      "source_sha256": "cdaeb668915d53c0add9471626f9b4f33140d3cac4af4f795b1870b1fa162324",
+      "source_bytes": 1159,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-e2e.txt",
+      "source_sha256": "3ffa99f701160582ba5004dadba684aa78379bbb6cc57a89c53e361986d963ab",
+      "source_bytes": 952,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-format.txt",
+      "source_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "source_bytes": 66,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-lint.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-test.txt",
+      "source_sha256": "b1ad90bf517a1c2df794da8956012d06d442e33c722752efa6f62dc4a6f6a9b7",
+      "source_bytes": 246,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/fe-typecheck.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/gov-blueprint.txt",
+      "source_sha256": "848eedc4825691b54d1b0e65cde6eb749c15a44fc1a68e4e66f82f9b4f98a674",
+      "source_bytes": 85,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/gov-encoding.txt",
+      "source_sha256": "ebd7b1fe5b1166ede5cd34bb057b0a3d20050e26ed747a76286bbe8b5fb55bcd",
+      "source_bytes": 45,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/gov-structure.txt",
+      "source_sha256": "f854b2968dfc5e567eb98cba27a3ce4c7d4cae5eddea115ca4af04818cefd987",
+      "source_bytes": 46,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/gov-students-csv.txt",
+      "source_sha256": "89d3bb98b63aa049b1a22d92aed58bbb745a4d76b65d479d6a5cdeb41d6a67dd",
+      "source_bytes": 29,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/index.txt",
+      "source_sha256": "8a66bdf64f0f026b54e11f9eacb99de9b74ca47b4df72948a9886b3e5791120e",
+      "source_bytes": 1293,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/openapi-check.txt",
+      "source_sha256": "5862b94e8cffdf38ee308a8aee9cfd1667965bd1cbae84af34d199da75b97e4d",
+      "source_bytes": 34,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/probe-totp-race.txt",
+      "source_sha256": "d54b3ec85945d8b95449500473d291490f7170be4f4d81cdcff15fd426c0cf98",
+      "source_bytes": 438,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/pytest-host.txt",
+      "source_sha256": "4557b20b7d8f015a30780b594fd4590aba5a91bbc692f422421617551d0ba500",
+      "source_bytes": 2406,
+      "test_outcomes": [
+        {
+          "summary": "77 passed, 18 skipped",
+          "seconds": "1.99"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/pytest-postgres.txt",
+      "source_sha256": "ff2c1ffaf5dd72969316792322b44dc8bbf08774812266db6693dc2a3238c909",
+      "source_bytes": 183,
+      "test_outcomes": [
+        {
+          "summary": "95 passed",
+          "seconds": "14.96"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/root-unittest-default.txt",
+      "source_sha256": "6ed3eabd9d44ca2adbc3faa29b7020f791777078b0761397ff37b0e8a7e6b27d",
+      "source_bytes": 128,
+      "test_outcomes": [
+        {
+          "unittest_count": 24,
+          "seconds": "0.416"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/root-unittest-tests.txt",
+      "source_sha256": "ee07e8f3bad51642fbd48eb561c718a977ffeb38bc7d5d9caddfeb6765f39cfa",
+      "source_bytes": 128,
+      "test_outcomes": [
+        {
+          "unittest_count": 24,
+          "seconds": "0.185"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/ruff-check.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "source_bytes": 19,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0042/logs/ruff-format.txt",
+      "source_sha256": "b642d2f0cc49caff9e609808fb9c82854fc174b2f54b459a0d09dbe4c0f837ab",
+      "source_bytes": 27,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/e2e-design-system-before.txt",
+      "source_sha256": "78ce7d7d86354a59a8b79ff11228682cbfad314486dcdbfa7c52ab44536093a4",
+      "source_bytes": 1823,
+      "test_outcomes": [
+        {
+          "summary": "1 failed",
+          "seconds": null
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-api-check.txt",
+      "source_sha256": "27bd1d71ffa2b23511a5b34df492ca82dedecc3fc4d7b665836642b81df96cb9",
+      "source_bytes": 38,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-build.txt",
+      "source_sha256": "a7e4aec56fefb700998186c5a8a400401d7d46136c9f87c8eff2b9bb10edfb81",
+      "source_bytes": 3570,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-e2e.txt",
+      "source_sha256": "ee676f96de1e0582a229d1aabbcdae67054e57592d876278652a2abbd79aa62b",
+      "source_bytes": 1083,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-format.txt",
+      "source_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "source_bytes": 66,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-lint.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-typecheck.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/fe-unit.txt",
+      "source_sha256": "f1c87123a217bb4f9cc2fb314647317a72abb08f6da6b6b059b3f2ef76762057",
+      "source_bytes": 245,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0044/logs/index.txt",
+      "source_sha256": "17cb4281ae1d8df7b80cf8c33ac1ee687697085132578e4c7ce9a74da4cd50ff",
+      "source_bytes": 461,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0046/logs/backend-live-after.txt",
+      "source_sha256": "691730bba707f7d6b06162df45cc1189dc34a18cece915504e94a1114546a73e",
+      "source_bytes": 5936,
+      "test_outcomes": [
+        {
+          "summary": "1 failed, 93 passed, 3 skipped",
+          "seconds": "9.05"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0046/logs/backend-live-all-roles.txt",
+      "source_sha256": "ac689214b5cab50e9a4764d8fc72358f65f6e447cd1e278ac873094ed2683cdf",
+      "source_bytes": 183,
+      "test_outcomes": [
+        {
+          "summary": "97 passed",
+          "seconds": "10.15"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0046/logs/r42-f01-after.txt",
+      "source_sha256": "329a0bfd190f7f3e1b882eb718102345bf95a7b162be478c7291bf157d30053d",
+      "source_bytes": 114,
+      "test_outcomes": [
+        {
+          "summary": "2 passed, 7 deselected",
+          "seconds": "2.36"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0046/logs/r42-f01-before.txt",
+      "source_sha256": "92ca95bc23eafe6a0c54f10c33ea7a34ca19edcdcb0bf961c314d7d84bb3c57b",
+      "source_bytes": 4521,
+      "test_outcomes": [
+        {
+          "summary": "2 failed, 7 deselected",
+          "seconds": "1.73"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0048/logs/r42-f03-after.txt",
+      "source_sha256": "bf32b9f41d1f1d7e31cd13141f0849e40a21a8060fcad15aeec740f2f212cc02",
+      "source_bytes": 100,
+      "test_outcomes": [
+        {
+          "summary": "5 passed",
+          "seconds": "0.50"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0048/logs/r42-f03-before.txt",
+      "source_sha256": "b1ebf858a4ef39f2ca1faa6379bb9bf3906810e65b26b907136f7967ffa6cd71",
+      "source_bytes": 883,
+      "test_outcomes": [
+        {
+          "summary": "1 failed, 4 deselected",
+          "seconds": "0.57"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0048/logs/r42-f04-e2e-final.txt",
+      "source_sha256": "9e8d6cc19194fb318ecd52585f5977ca50bba2f9428ce7b0b3d5d3b6447e4997",
+      "source_bytes": 1765,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0048/logs/r42-f04-missing-required-final.txt",
+      "source_sha256": "8ea2d4d8861982d552d2f447f3b1b293fca5d74959cb24715dcca2d31d522038",
+      "source_bytes": 692,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0048/logs/r42-f04-seed.txt",
+      "source_sha256": "400c78fbf9e7a7aeb4bcf52d3836130df9cc118d4391e4dd7018ef0b6eddeb66",
+      "source_bytes": 112,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0050/logs/final-postgres.txt",
+      "source_sha256": "a9a8dd7464a88d573e2e01269c0ea2523aa04c5e645477fb67ba86784e9a542f",
+      "source_bytes": 183,
+      "test_outcomes": [
+        {
+          "summary": "98 passed",
+          "seconds": "10.53"
+        }
+      ],
+      "raw_storage": "local_gitignored_not_published"
+    },
+    {
+      "source_path": "docs/progress/evidence/EDU-0050/logs/r42-f04-e2e-final.txt",
+      "source_sha256": "9e8d6cc19194fb318ecd52585f5977ca50bba2f9428ce7b0b3d5d3b6447e4997",
+      "source_bytes": 1765,
+      "test_outcomes": [],
+      "raw_storage": "local_gitignored_not_published"
+    }
+  ]
+}

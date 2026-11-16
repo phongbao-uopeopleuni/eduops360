@@ -1,19 +1,27 @@
 > **Phase 00 canonical:** `docs/phases/PHASE-00.md` (v2.2, IN_REVIEW). Do not maintain a second product baseline or open decisions file.
 
 
-# EduOps 360 — Nền tảng local Phase 01
+# EduOps 360 — Triển khai local đang review
 
 React/TypeScript/Vite, FastAPI và PostgreSQL đã được triển khai local qua các task EDU-0007..0010. Trạng thái review và bằng chứng hiện tại nằm trong `docs/progress/HANDOFF.md`. Phase 00 giữ sổ quyết định chuẩn tại `docs/phases/PHASE-00.md`.
+
+Tiến độ hiện tại: [PROJECT_STATUS](docs/progress/PROJECT_STATUS.md). IAM/Admin local
+đã có; Phase 03–10 mới có các lát cắt đầu tiên, Phase 11 mới triển khai một phần.
+Chưa có phase nào nghiệm thu chính thức hoặc production deployment được xác minh.
+Các ghi chú starter ở cuối là lịch sử, không mô tả code/Git hiện tại.
 
 Khởi chạy tại thư mục gốc với Docker Engine hoạt động và `infra/.env` có password local ngẫu nhiên theo `infra/.env.example`.
 
 ```powershell
 docker compose --env-file infra/.env -f infra/compose.dev.yml up --build -d --wait
-docker compose --env-file infra/.env -f infra/compose.dev.yml exec -T backend python -m alembic upgrade head
 python scripts/smoke_local.py
 ```
 
 Mở `http://127.0.0.1:5173`. Dừng bằng `docker compose --env-file infra/.env -f infra/compose.dev.yml down`. Volume local được giữ lại. Hướng dẫn chạy riêng từng phần và kiểm thử nằm tại `frontend/README.md`, `backend/README.md`, `infra/README.md` và `contracts/README.md`.
+
+Service `migrate` tự chạy trước backend bằng role migrator. API dùng role runtime
+và không được chạy Alembic. Lệnh kiểm tra migration thủ công nằm trong
+[infra README](infra/README.md).
 
 ## Read in this order
 1. `docs/phases/PHASE-00.md` (**single authoritative Phase 00 file; decisions, open items, steps, exit gates**)

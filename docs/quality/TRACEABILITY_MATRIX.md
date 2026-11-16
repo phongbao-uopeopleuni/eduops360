@@ -1,5 +1,11 @@
 # Requirement → phase → verification → evidence
 
+Current correction evidence (2026-11-16): EDU-0068 adds actual Uvicorn-log privacy
+coverage (SEC-01/OPS-01), runtime input rejection (CAL-01/SCH-01/ANA-01), and
+44px UI hit-target verification (UI-01). EDU-0046/0048 still require independent
+re-review; historical readiness claims below do not close those findings.
+Git/CI exists now; older dated evidence rows retain their historical meaning.
+
 | ID | Owning phase | Minimum verification | Evidence location |
 | --- | --- | --- | --- |
 | GOV-01 | Phase 00 | decision baseline + ADR + independent review | docs/quality/PHASE_00_ACCEPTANCE.md / EDU-0005 |

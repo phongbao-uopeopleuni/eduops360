@@ -78,3 +78,9 @@ def test_template_and_slots_are_immutable_domain_values() -> None:
 
     with pytest.raises(FrozenInstanceError):
         template.slots = ()  # type: ignore[misc]
+
+
+@pytest.mark.parametrize("slots", [[], ({"start_time": []},)])
+def test_template_rejects_mutable_or_untyped_slots(slots):
+    with pytest.raises(TypeError):
+        ScheduleTemplate(uuid4(), uuid4(), slots)
