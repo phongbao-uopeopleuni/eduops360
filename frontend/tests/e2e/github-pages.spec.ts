@@ -6,7 +6,7 @@ test('Pages preview uses hash navigation and survives direct reloads', async ({ 
     if (new URL(request.url()).pathname.startsWith('/api/')) apiRequests.push(request.url());
   });
 
-  await page.goto('/');
+  await page.goto('./');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'Không gian làm việc của nhà trường',
   );
@@ -25,7 +25,7 @@ test('Pages preview uses hash navigation and survives direct reloads', async ({ 
   await page.reload();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Người dùng và phân quyền');
 
-  await page.goto('/#/missing');
+  await page.goto('#/missing');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Không tìm thấy trang');
   await expect(page.getByRole('link', { name: 'Về tổng quan' })).toHaveAttribute('href', '#/');
 
@@ -36,7 +36,7 @@ test('Pages preview assets and self-hosted fonts load at mobile width', async ({
   const failedAssets: string[] = [];
   page.on('requestfailed', (request) => failedAssets.push(request.url()));
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
+  await page.goto('./');
   const result = await page.evaluate(async () => {
     await document.fonts.ready;
     const resources = performance.getEntriesByType('resource').map((entry) => entry.name);
