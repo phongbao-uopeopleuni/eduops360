@@ -7,8 +7,11 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from app.common.frontend import FrontendFiles
 from app.common.observability import configure_runtime_log_privacy, log_request_completed
+from app.common.preview import PreviewAccessMiddleware
 from app.core.config import Settings
 from app.core.errors import AppError, ErrorEnvelope, error_response
 from app.db.connection import Database
@@ -59,6 +62,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["Accept", "Content-Type", "X-CSRF-Token"],
         expose_headers=["X-Request-ID"],
     )
+    if config.environment == "staging":
+        app.add_middleware(
+            PreviewAccessMiddleware, access_key=config.preview_access_key.get_secret_value()
+        )
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=config.allowed_hosts)
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):
@@ -106,4 +114,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(admin_catalog_router, prefix="/api/v1")
     app.include_router(admin_auth_router, prefix="/api/v1")
+    if config.frontend_directory is not None:
+        app.mount("/", FrontendFiles(directory=config.frontend_directory, html=True))
     return app

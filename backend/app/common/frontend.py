@@ -1,0 +1,17 @@
+"""Serve the compiled SPA without turning unknown API paths into HTML."""
+
+from starlette.exceptions import HTTPException
+from starlette.staticfiles import StaticFiles
+
+
+class FrontendFiles(StaticFiles):
+    async def get_response(self, path, scope):
+        path = path.replace("\\", "/").lstrip("/")
+        if path == "api" or path.startswith("api/"):
+            raise HTTPException(404)
+        try:
+            return await super().get_response(path, scope)
+        except HTTPException as exc:
+            if exc.status_code != 404 or path.startswith("assets/"):
+                raise
+            return await super().get_response("index.html", scope)

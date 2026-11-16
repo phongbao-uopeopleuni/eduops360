@@ -2,6 +2,12 @@
 
 **Status:** `SELECTED_FOR_REVIEW / NOT APPROVED / NO DEPLOYMENT`
 
+EDU-0069 update (2026-11-16): subsequent user authorization permits preparing a
+Railway synthetic-staging package. See `ONLINE_STAGING.md` for current setup,
+separate migration/runtime identities and remaining account/deployment steps.
+The original review-only scope below is historical for EDU-0064; the isolation
+requirements remain applicable. No cloud environment is claimed to exist.
+
 ## Purpose and authority boundary
 
 This contract defines the minimum boundary for local, synthetic staging and
