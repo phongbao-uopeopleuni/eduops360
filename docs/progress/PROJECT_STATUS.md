@@ -6,6 +6,7 @@ Audit evidence: EDU-0067 and `docs/quality/RESIDUAL_BUG_AUDIT_2026-11-16.md`.
 
 Latest remediation: EDU-0068, 2026-11-16. A67-F01/F02/F03 and UI49-F01 have code
 fixes with regression evidence, **in review, not independently accepted**.
+Implementation commit `bdcf508`; pushed for review in PR #11 stacked on PR #10.
 Full isolated synthetic PostgreSQL backend suite: 152 passed (no skips);
 frontend unit: 24 passed; targeted browser hit-target test: 1 passed; root: 28.
 All 44 historical raw logs remain local/ignored; a sanitized manifest preserves
