@@ -2,11 +2,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  base: process.env.VITE_GITHUB_PAGES === 'true'
-    ? '/eduops360/'
-    : '/',
-
-  plugins: [react()],
+  base: process.env.VITE_GITHUB_PAGES === 'true' ? '/eduops360/' : '/',
+plugins: [react()],
   server: {
     port: 5173,
     strictPort: true,
