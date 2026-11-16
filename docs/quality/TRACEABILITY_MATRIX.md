@@ -25,8 +25,8 @@
 | ANA-01 | Phase 09 | unit + integration + E2E per phase | EDU-0062 P09-T01 chart-input role allowlist and direct PII/identifier rejection; queries/charts/privacy/export remain P09-T02..T09 |
 | ML-01 | Phase 10 | eval + security + nonfunctional tests | EDU-0063 P10-T01 prediction-time/entity/label contract; feature snapshots, splits, baseline/evals/model card remain P10-T02..T07 |
 | ML-02 | Phase 10 | eval + security + nonfunctional tests | EDU-0063 limits use to private human review with manual fallback; no model, ability label or autonomous action exists |
-| SEC-01 | Phase 02/11 | transaction/audit privilege tests + negative API/E2E | EDU-0024/0028/0030/0034/0036/0037/0038; EDU-0064 defines Phase 11 least-privilege/fail-closed review boundary; deployment tests remain later |
-| OPS-01 | Phase 11 | eval + security + nonfunctional tests | EDU-0064 P11-T01 environment contract; CI, observability, load, restore, UAT, rollback and release evidence remain P11-T02..T09 |
+| SEC-01 | Phase 02/11 | transaction/audit privilege tests + negative API/E2E | EDU-0024/0028/0030/0034/0036/0037/0038; EDU-0064 boundary contract; EDU-0065 tracked-secret and runtime dependency CI checks; deployment tests remain later |
+| OPS-01 | Phase 11 | eval + security + nonfunctional tests | EDU-0064 P11-T01 environment contract; EDU-0065 CI lint/type/test, offline migration SQL, OpenAPI, UTF-8, security and changed-ML-eval gates; observability/load/restore/UAT/rollback/release remain P11-T03..T09 |
 | UI-01 | Phase 01 | unit + integration + E2E per phase | EDU-0040 / docs/phases/PHASE-01* / task evidence |
 
 Detailed feature tests for later phases are added as implementation proceeds.

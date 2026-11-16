@@ -1,0 +1,37 @@
+name: ML evaluation gate
+
+on:
+  pull_request:
+    paths:
+      - "backend/app/modules/machine_learning/**"
+      - "backend/tests/machine_learning/**"
+      - "scripts/evaluate_ml_models.py"
+  push:
+    branches: [main]
+    paths:
+      - "backend/app/modules/machine_learning/**"
+      - "backend/tests/machine_learning/**"
+      - "scripts/evaluate_ml_models.py"
+
+permissions:
+  contents: read
+
+jobs:
+  model-evaluation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install locked backend dependencies
+        run: |
+          python -m venv backend/.venv
+          backend/.venv/bin/python -m pip install -r backend/requirements.lock
+          backend/.venv/bin/python -m pip install --no-deps -e backend
+      - name: Require reproducible ML evaluation
+        run: |
+          test -d backend/tests/machine_learning
+          test -f scripts/evaluate_ml_models.py
+          backend/.venv/bin/python -m pytest backend/tests/machine_learning -q
+          backend/.venv/bin/python scripts/evaluate_ml_models.py --check
