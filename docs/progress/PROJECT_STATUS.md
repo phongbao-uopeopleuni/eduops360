@@ -11,6 +11,8 @@ hosted CI evidence is linked from EDU-0069. No Railway account/project connectio
 or verified online URL exists yet. This is not a production release or phase
 acceptance. See `docs/operations/ONLINE_STAGING.md` for the concrete next steps.
 Implementation `a8cd107` is pushed as PR #12; final CI status is read from GitHub.
+Hosted source `7883df2` passed all four checks: 165 PostgreSQL backend tests/no
+skips, final Railway image/migration/runtime smoke and the existing foundation.
 
 Latest remediation: EDU-0068, 2026-11-16. A67-F01/F02/F03 and UI49-F01 have code
 fixes with regression evidence, **in review, not independently accepted**.

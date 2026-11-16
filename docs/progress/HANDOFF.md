@@ -7,7 +7,9 @@
   Railway-generated HTTPS domain; GitHub Pages is not a Python/PostgreSQL host.
 - Implementation `a8cd107` is pushed in PR #12; hosted checks include the final
   `railway-package` Docker/migration/runtime smoke and full isolated DB suite.
-  Read actual job result from the PR before deploying its source.
+  On source `7883df2`, all four checks passed, including 165 PostgreSQL tests/no
+  skips and final image smoke (run 43840387818). Read the actual PR check for
+  subsequent commits before deploying its source.
 - Root `railway.json` builds `infra/Dockerfile.railway`: compiled frontend + API
   in a non-root container honoring `PORT`; exact-host, HTTPS-cookie and preview
   access-key requirements; no wildcard CORS or DB-owner URL on web runtime.
