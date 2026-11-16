@@ -90,13 +90,13 @@ jobs:
         if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/codex/edu-0070-github-pages')
         uses: actions/configure-pages@v5
       - name: Upload only the static frontend
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/codex/edu-0070-github-pages')
         uses: actions/upload-pages-artifact@v4
         with:
           path: frontend/dist
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/codex/edu-0070-github-pages')
     needs: build
     runs-on: ubuntu-latest
     permissions:
