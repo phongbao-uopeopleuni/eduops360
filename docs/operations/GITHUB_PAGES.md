@@ -21,6 +21,12 @@ Target URL after a verified deployment:
    `codex/edu-0070-github-pages`. After that PR is merged, `main` remains a
    deployment source as well. Do not change the default branch or weaken
    branch protection to enable Pages.
+4. Open **Settings → Environments → github-pages**. Under **Deployment branches
+   and tags**, select **Selected branches and tags** and add exactly these
+   branch patterns: `codex/edu-0070-github-pages` and `main`. This keeps an
+   explicit deployment allowlist while permitting the single-maintainer preview
+   branch. Do not select **No restriction**. If the environment already uses
+   **Protected branches only**, the unprotected preview branch will be rejected.
 
 ## Vite and router behavior
 
@@ -41,8 +47,9 @@ manual dispatch is also restricted to those two refs. Pull-request events run
 checks and a static preview browser smoke test but never upload or deploy a
 Pages artifact. The current single-maintainer deployment source is explicitly
 `codex/edu-0070-github-pages`; `main` remains the protected integration branch
-and becomes the canonical source after PR #14 is merged. The workflow uploads
-only `frontend/dist`.
+and becomes the canonical source after PR #14 is merged. The `github-pages`
+environment must allow these two refs in its deployment branch allowlist. The
+workflow uploads only `frontend/dist`.
 
 The build uses the Node version supported by `frontend/package.json` and
 `frontend/package-lock.json`, runs `npm ci`, API contract/format/lint/type
