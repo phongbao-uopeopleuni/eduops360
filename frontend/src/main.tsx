@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
+
+const Router =
+  import.meta.env.VITE_GITHUB_PAGES === 'true'
+    ? HashRouter
+    : BrowserRouter;
 // Self-hosted fonts (EDU-0044): Be Vietnam Pro for headings (Poppins has no Vietnamese
 // glyphs), Inter for body. Only the three weights allowed by the UI spec: 400/600/700.
 // Per-weight files declare unicode-range per subset, so browsers fetch only the latin and
@@ -16,9 +21,9 @@ import './app/styles.css';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+       <Router>
+          <App />
+      </Router>
     </ThemeProvider>
   </React.StrictMode>,
 );
