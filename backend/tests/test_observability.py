@@ -4,6 +4,7 @@ import logging
 import pytest
 from fastapi.testclient import TestClient
 
+from app.common.observability import HTTP_LOGGER
 from app.core.config import Settings
 from app.main import create_app
 
@@ -21,14 +22,24 @@ def request_events(caplog):
     ]
 
 
+def test_http_logger_is_enabled_and_has_a_local_handler():
+    assert HTTP_LOGGER.isEnabledFor(logging.INFO)
+    assert HTTP_LOGGER.handlers
+    assert HTTP_LOGGER.propagate is False
+
+
 def test_request_log_correlates_response_without_recording_query_or_credentials(app, caplog):
     credential = "Bearer synthetic-private-value"
     with caplog.at_level(logging.INFO, logger="eduops.http"):
-        with TestClient(app) as client:
-            response = client.get(
-                "/api/v1/health/live?token=synthetic-private-value",
-                headers={"Authorization": credential, "X-Request-ID": "untrusted-value"},
-            )
+        HTTP_LOGGER.addHandler(caplog.handler)
+        try:
+            with TestClient(app) as client:
+                response = client.get(
+                    "/api/v1/health/live?token=synthetic-private-value",
+                    headers={"Authorization": credential, "X-Request-ID": "untrusted-value"},
+                )
+        finally:
+            HTTP_LOGGER.removeHandler(caplog.handler)
 
     events = request_events(caplog)
     assert response.status_code == 200
@@ -55,8 +66,12 @@ def test_internal_error_is_logged_without_exception_details(app, caplog):
         raise RuntimeError("private database connection detail")
 
     with caplog.at_level(logging.ERROR, logger="eduops.http"):
-        with TestClient(app, raise_server_exceptions=False) as client:
-            response = client.get("/test-observability-error")
+        HTTP_LOGGER.addHandler(caplog.handler)
+        try:
+            with TestClient(app, raise_server_exceptions=False) as client:
+                response = client.get("/test-observability-error")
+        finally:
+            HTTP_LOGGER.removeHandler(caplog.handler)
 
     events = request_events(caplog)
     assert response.status_code == 500

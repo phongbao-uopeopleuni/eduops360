@@ -14,6 +14,19 @@ from fastapi import Request
 HTTP_LOGGER = logging.getLogger("eduops.http")
 
 
+def configure_http_logger() -> None:
+    """Provide one local JSON destination without relying on root logger defaults."""
+    HTTP_LOGGER.setLevel(logging.INFO)
+    HTTP_LOGGER.propagate = False
+    if not HTTP_LOGGER.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(message)s"))
+        HTTP_LOGGER.addHandler(handler)
+
+
+configure_http_logger()
+
+
 def request_route_label(request: Request) -> str:
     """Return a route template, never the raw path/query supplied by a client."""
     route = request.scope.get("route")

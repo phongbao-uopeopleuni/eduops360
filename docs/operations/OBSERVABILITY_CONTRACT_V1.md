@@ -31,6 +31,11 @@ allowlist:
 | `status_code` | Final HTTP response status |
 | `duration_ms` | In-process elapsed duration in milliseconds |
 
+The local baseline sets logger level `INFO`, writes one raw JSON event per line
+to stderr and disables propagation, so default Uvicorn/root logger levels cannot
+silently discard or duplicate the event. Any future managed destination must
+preserve this allowlist and be separately reviewed.
+
 No request/response body, query string, header, cookie, authorization token,
 session ID, IP address, user agent, password, secret, student data or exception
 detail is sent to this logger. A logging-handler failure is swallowed so it does
