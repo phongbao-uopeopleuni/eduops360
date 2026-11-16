@@ -42,6 +42,16 @@ detail is sent to this logger. A logging-handler failure is swallowed so it does
 not change the HTTP response; this does not replace audit fail-closed behavior.
 Responses at 500+ log at error level; other completion events log at info level.
 
+EDU-0068 also protects the separate Uvicorn destinations at application-factory
+startup, including CLI/factory launch: `uvicorn.access` records are suppressed in
+favor of the allowlisted completion event. Uvicorn warning/error messages become
+a fixed runtime-failure message with no arguments, traceback, cached exception
+text or stack information. Startup/shutdown info messages remain available.
+This deliberately reduces diagnostic detail; investigate with the safe request
+ID/status/route and reviewed synthetic reproduction rather than enabling raw
+tracebacks on student-data environments. App completion events still provide
+the request correlation; the generic Uvicorn failure message does not contain it.
+
 Audit logs remain a separate transactional integrity record and retain their own
 credential redaction. Operational logs must never become a substitute for audit.
 

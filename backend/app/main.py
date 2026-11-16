@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
 
-from app.common.observability import log_request_completed
+from app.common.observability import configure_runtime_log_privacy, log_request_completed
 from app.core.config import Settings
 from app.core.errors import AppError, ErrorEnvelope, error_response
 from app.db.connection import Database
@@ -20,6 +20,7 @@ from app.modules.health.router import router as health_router
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
+    configure_runtime_log_privacy()
     config = settings if settings is not None else Settings()
 
     @asynccontextmanager

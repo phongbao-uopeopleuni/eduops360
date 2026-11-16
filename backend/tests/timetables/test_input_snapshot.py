@@ -1,4 +1,4 @@
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from datetime import date, time
 from uuid import uuid4
 
@@ -107,3 +107,27 @@ def test_snapshot_preserves_local_time_and_partial_holiday_bounds() -> None:
     assert snapshot.slots[0].start_time == time(7, 0)
     assert partial_holiday.start_time == time(0, 0)
     assert partial_holiday.end_time == time(12, 0)
+
+
+@pytest.mark.parametrize(
+    "field", ["teaching_assignments", "classrooms", "class_group_loads", "slots", "holidays"]
+)
+def test_snapshot_rejects_untyped_nested_elements(field):
+    with pytest.raises(TypeError):
+        replace(build_snapshot(), **{field: ({"mutable": []},)})
+
+
+@pytest.mark.parametrize(
+    "collection,field",
+    [
+        ("teaching_assignments", "teacher_id"),
+        ("classrooms", "capacity"),
+        ("class_group_loads", "student_count"),
+        ("slots", "start_time"),
+        ("holidays", "end_time"),
+    ],
+)
+def test_snapshot_leaf_records_reject_mutable_scalar_values(collection, field):
+    record = getattr(build_snapshot(), collection)[0]
+    with pytest.raises(TypeError):
+        replace(record, **{field: []})

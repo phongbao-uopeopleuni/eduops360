@@ -14,6 +14,28 @@ from fastapi import Request
 HTTP_LOGGER = logging.getLogger("eduops.http")
 
 
+class _UvicornPrivacyFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        # The application completion event replaces raw URL/IP access logging.
+        if record.name == "uvicorn.access":
+            return False
+        if record.levelno >= logging.WARNING:
+            record.msg = "ASGI runtime failure; consult sanitized request completion events."
+            record.args = ()
+            record.exc_info = None
+            record.exc_text = None
+            record.stack_info = None
+        return True
+
+
+def configure_runtime_log_privacy() -> None:
+    """Protect Uvicorn destinations even when launched through its CLI/factory."""
+    for name in ("uvicorn.access", "uvicorn.error"):
+        logger = logging.getLogger(name)
+        if not any(isinstance(item, _UvicornPrivacyFilter) for item in logger.filters):
+            logger.addFilter(_UvicornPrivacyFilter())
+
+
 def configure_http_logger() -> None:
     """Provide one local JSON destination without relying on root logger defaults."""
     HTTP_LOGGER.setLevel(logging.INFO)

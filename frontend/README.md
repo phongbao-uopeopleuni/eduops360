@@ -1,6 +1,6 @@
 # Frontend EduOps 360
 
-React + TypeScript + Vite, giao diện tiếng Việt với Source Sans 3 tự phục vụ từ package font có license đi kèm. Node 24.12.0 là phiên bản đã dùng kiểm thử local.
+React + TypeScript + Vite, giao diện tiếng Việt với Be Vietnam Pro (display) và Inter (body), tự phục vụ từ package font có license đi kèm. Node 24.12.0 là phiên bản đã dùng kiểm thử local.
 
 Chạy tại `frontend/`.
 
@@ -12,6 +12,10 @@ npm run dev
 Mở `http://127.0.0.1:5173`. Vite chuyển `/api` đến `http://127.0.0.1:8000`. Biến `API_PROXY_TARGET` có thể đổi địa chỉ backend cho dev server. Dừng bằng Ctrl+C.
 
 Trang tổng quan, trạng thái hệ thống và 404 thuộc Phase 01. Các trạng thái loading, mất mạng, PostgreSQL chưa sẵn sàng và thử lại được hiển thị từ kết quả API. Lựa chọn giao diện theo hệ thống/sáng/tối được lưu local khi trình duyệt cho phép.
+
+Trang `/users` có IAM/Admin local: đăng nhập, lời mời, đổi trạng thái và cấp/thu hồi
+vai trò. Quyền được backend kiểm tra; đây chưa phải module quản lý học sinh.
+Tiến độ/bug/review hiện hành: [PROJECT_STATUS](../docs/progress/PROJECT_STATUS.md).
 
 ```powershell
 npm run api:generate
