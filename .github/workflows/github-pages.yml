@@ -32,8 +32,6 @@ jobs:
         working-directory: frontend
         run: |
           npm run api:check
-          npx prettier src/app/App.tsx > /tmp/App.formatted.tsx
-          diff -u src/app/App.tsx /tmp/App.formatted.tsx || true
           npm run format:check
           npm run lint
           npm run typecheck
