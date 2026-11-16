@@ -6,8 +6,10 @@
   implementations and regressions; **in review**, no independent closure claimed.
   Runtime Uvicorn access/exception logs are protected, domain constructors reject
   mutable/untyped values, and brand/text links have 44px minimum hit targets.
-- Implementation commit `bdcf508`; pushed as PR #11 stacked on PR #10. Hosted
-  check status must be read from GitHub; no self-approval/merge/deploy.
+- Implementation commit `bdcf508`; PR #11 merged under explicit user instruction
+  into the PR #10 head branch as `1307b42`. It is **not in main**; upstream PRs
+  #1–10 remain open and main requires independent approval. No self-approval,
+  branch-protection bypass, phase acceptance or deployment occurred.
 - Fail-first backend: 12 failed / 19 passed. Final: backend host 132/20 skipped;
   isolated disposable PostgreSQL full suite **152 passed / no skips**; frontend
   24 unit, targeted browser 1, root 28. Contracts/static/security gates pass.
