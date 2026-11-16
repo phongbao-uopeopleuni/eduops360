@@ -1,0 +1,20 @@
+{
+  "task_id": "EDU-0069",
+  "local_results_at": "2026-11-16T16:27:11+07:00",
+  "base_commit": "021cff8a9f96fc98ab74ede97427751113152690",
+  "configuration_fail_first": {"failed": 2, "passed": 6, "exit_code": 1},
+  "final_backend_host": {"passed": 145, "skipped": 20, "exit_code": 0, "skips": "isolated PostgreSQL DSNs not configured"},
+  "root_tests": {"passed": 30, "exit_code": 0},
+  "ruff_and_openapi": {"exit_code": 0},
+  "encoding": {"files": 525, "errors": 0, "exit_code": 0},
+  "local_image_smoke_at": "2026-11-16T10:25:57+07:00",
+  "local_image_smoke": {
+    "exit_code": 0,
+    "checks": ["migrator twice without password rotation", "restricted runtime DB readiness", "PORT=8765 honored", "preview access gate", "compiled frontend and SPA deep link", "unknown API remains 404", "unknown Host denied"],
+    "cleanup": "task containers, temporary DB storage and network removed"
+  },
+  "final_local_rebuild_attempt": {"exit_code": 1, "reason": "Docker Desktop Linux daemon unavailable; no build executed", "daemon_started": false},
+  "final_package_verification": {"workflow": ".github/workflows/railway-package-check.yml", "job": "railway-package", "authority": "GitHub PR checks, inspect actual commit and result"},
+  "external_state": {"railway_project_created": false, "resources_provisioned": false, "public_url": null, "deployed": false},
+  "side_effects": ["Task-specific local Docker image tag created/overwritten at earlier build", "Docker base image and build caches downloaded/generated", "Python bytecode, Ruff and pytest caches updated", "Synthetic test HTML/assets in test temp", "No host frontend dist build", "No cloud credentials or environment files modified"]
+}

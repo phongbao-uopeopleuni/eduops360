@@ -3,6 +3,11 @@
 
 # EduOps 360 — Triển khai local đang review
 
+Bản online đang được chuẩn bị cho Railway + Docker, dùng dữ liệu giả lập và
+domain HTTPS do Railway cấp. Cấu hình/hướng dẫn: [ONLINE_STAGING](docs/operations/ONLINE_STAGING.md).
+Chưa có URL online được xác minh; không dùng cấu hình Docker local dưới đây để
+đưa Vite dev server ra Internet.
+
 React/TypeScript/Vite, FastAPI và PostgreSQL đã được triển khai local qua các task EDU-0007..0010. Trạng thái review và bằng chứng hiện tại nằm trong `docs/progress/HANDOFF.md`. Phase 00 giữ sổ quyết định chuẩn tại `docs/phases/PHASE-00.md`.
 
 Tiến độ hiện tại: [PROJECT_STATUS](docs/progress/PROJECT_STATUS.md). IAM/Admin local

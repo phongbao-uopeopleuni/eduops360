@@ -1,5 +1,22 @@
 # Current handoff — Phase 01/02 human acceptance
 
+## Current online setup — EDU-0069, 2026-11-16
+
+- User requests online setup, prefers Railway + Docker, and has no domain/VPS.
+  `docs/operations/ONLINE_STAGING.md` describes the account/project steps and
+  Railway-generated HTTPS domain; GitHub Pages is not a Python/PostgreSQL host.
+- Root `railway.json` builds `infra/Dockerfile.railway`: compiled frontend + API
+  in a non-root container honoring `PORT`; exact-host, HTTPS-cookie and preview
+  access-key requirements; no wildcard CORS or DB-owner URL on web runtime.
+- `infra/railway.migrate.json` is a separate one-shot migrator; no automatic
+  owner migration in web. Roles and schema are prepared before readiness passes.
+- Local Docker image and migration/web smoke passed at 10:25; later local Docker
+  daemon was unavailable at 16:23, so the final package is also checked by its
+  dedicated hosted CI job. Current test/Git evidence is in EDU-0069.
+- No actual Railway project, paid resource, public URL, real-data import or
+  production acceptance exists from this work. Next external dependency is the
+  user's Railway account/project connection; never paste credentials in chat.
+
 ## Latest remediation — EDU-0068, 2026-11-16
 
 - User priority is bug/documentation closeout. A67-F01/F02/F03 and UI49-F01 have

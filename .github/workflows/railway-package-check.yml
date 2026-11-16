@@ -1,0 +1,34 @@
+name: Railway staging package
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'infra/Dockerfile.railway'
+      - 'infra/railway.migrate.json'
+      - 'railway.json'
+      - '.dockerignore'
+      - 'docs/progress/evidence/EDU-0069/smoke_image.py'
+      - '.github/workflows/railway-package-check.yml'
+  workflow_dispatch:
+
+jobs:
+  railway-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify backend against disposable PostgreSQL
+        run: |
+          python -m venv backend/.venv
+          backend/.venv/bin/python -m pip install -r backend/requirements.lock
+          backend/.venv/bin/python -m pip install --no-deps -e backend
+          backend/.venv/bin/python docs/progress/evidence/EDU-0068/verify_isolated_postgres.py
+      - name: Build compiled frontend and API image
+        run: docker build -f infra/Dockerfile.railway -t eduops360-online:edu0069 .
+      - name: Verify migration and web runtime separately with synthetic data
+        run: python docs/progress/evidence/EDU-0069/smoke_image.py

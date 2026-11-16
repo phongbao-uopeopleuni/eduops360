@@ -4,6 +4,13 @@ Operational progress snapshot, **not an alternative specification**. Canonical
 scope/decisions: `docs/phases/PHASE-00.md`; detailed tasks: phase specifications.
 Audit evidence: EDU-0067 and `docs/quality/RESIDUAL_BUG_AUDIT_2026-11-16.md`.
 
+Online setup (EDU-0069): Railway/Docker synthetic-staging package prepared with
+same-origin compiled frontend/API, isolated PostgreSQL runtime/migrator roles,
+preview protection and deployment runbook. Local image smoke passed; final
+hosted CI evidence is linked from EDU-0069. No Railway account/project connection
+or verified online URL exists yet. This is not a production release or phase
+acceptance. See `docs/operations/ONLINE_STAGING.md` for the concrete next steps.
+
 Latest remediation: EDU-0068, 2026-11-16. A67-F01/F02/F03 and UI49-F01 have code
 fixes with regression evidence, **in review, not independently accepted**.
 Implementation commit `bdcf508`; PR #11 merged under explicit user authorization

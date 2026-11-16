@@ -15,6 +15,16 @@ credential access, metrics/trace/alert backend, worker, migration against a real
 system, release or deployment. P11-T03B..T09 remain gated. Evidence: EDU-0064,
 EDU-0065 and EDU-0066.
 
+**Online setup exception — 2026-11-16 (EDU-0069):** the user explicitly requested
+an online version and preferred Railway + Docker without a purchased domain.
+This authorizes a reviewable synthetic-staging package: combined compiled
+frontend/API image, exact-host/secure-cookie/preview gate, separate migration
+service configuration and Railway runbook/CI. Local container smoke is not a
+Railway deployment. Account/project access and actual deployment evidence remain
+pending; real student data, production acceptance and unrelated P11 tasks remain
+gated. This extends the earlier no-deployable-configuration boundary only for
+this requested setup, without resolving the master OD register.
+
 ## A. Purpose and implementation boundaries
 Operations, security hardening, performance & release; implement only the scope approved on task journal, not additional speculative modules. Use synthetic data in development.
 
