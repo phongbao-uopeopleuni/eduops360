@@ -67,7 +67,7 @@ jobs:
           console.log(`Verified ${files.length} static files, /eduops360/ assets and self-hosted fonts`);
           NODE
       - name: Install Chromium for static-preview smoke test
-        run: npx --prefix frontend playwright install --with-deps chromium
+        run: npm exec --prefix frontend -- playwright install --with-deps chromium
       - name: Test the built static preview
         working-directory: frontend
         env:
@@ -84,7 +84,7 @@ jobs:
           curl --fail --silent http://127.0.0.1:4173/eduops360/ >/dev/null
           npx playwright test tests/e2e/github-pages.spec.ts --reporter=list
       - name: Prepare Pages artifact
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v5
       - name: Upload only the static frontend
         if: github.event_name != 'pull_request'
