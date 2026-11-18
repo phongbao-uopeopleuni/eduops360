@@ -137,10 +137,17 @@ Exact commands and side effects are in `docs/progress/evidence/EDU-0030/verifica
 
 ## GitHub Pages UI preview EDU-0070 — 2026-11-16
 
+- The backend-free static preview is live at
+  `https://phongbao-uopeopleuni.github.io/eduops360/`. The first successful
+  deployment was run `43863545271` (#31), attempt 2, on `851f998`; current head
+  `62d6beb` was subsequently deployed successfully by run `43870623064` (#33).
+  GitHub deployment `7824548695` is `success`, and a fresh local probe returned
+  HTTP `200` for both the HTML and its `/eduops360/assets/` JavaScript bundle.
+  The user also confirmed in the browser that the public page opens.
 - PR #14 (`codex/edu-0070-github-pages` → `main`) remains open and unmerged.
-  GitHub requires an independent approval from someone other than the last
-  pusher; the repository currently has a single maintainer. Do not self-approve,
-  fabricate an approval, use admin bypass, or weaken the `main` branch rules.
+  Its current remote state is `BLOCKED` / `REVIEW_REQUIRED`; `main` remains at
+  `c622467`. Do not self-approve, fabricate an approval, use admin bypass, or
+  weaken the `main` branch rules.
 - To make the requested static UI preview available without a second
   collaborator, the Pages workflow explicitly permits trusted pushes from
   `codex/edu-0070-github-pages` as a temporary deployment source, as well as
@@ -153,6 +160,39 @@ Exact commands and side effects are in `docs/progress/evidence/EDU-0030/verifica
 - The separate `docs/progress/PROJECT_STATUS.md` file is absent from this
   main-based task branch; do not invent a replacement or import the unrelated
   stacked PR chain to enable Pages.
-- The first trusted-branch attempt (`43862744119`, commit `bf74ee1`) completed all build/frontend/Playwright checks and uploaded the `frontend/dist` artifact, but the deploy job failed before executing any step. This is consistent with the `github-pages` environment deployment-branch allowlist rejecting the unprotected preview branch; confirm/configure the environment to allow the two explicit refs above. Do not disable environment protection or select unrestricted deployment branches.
-- Deployment is not considered complete until the trusted-branch workflow
-  succeeds and the public URL, static assets, and browser navigation are checked.
+- Historical failure `43862744119` on `bf74ee1` occurred before the environment
+  allowlist permitted the task branch. It is resolved and must not be reported as
+  the current state. Keep the allowlist restricted to the two explicit refs;
+  do not disable environment protection or select unrestricted branches.
+- Current PR checks are green: Pages build/deploy, foundation, governance and
+  blueprint. Deployment success does not merge PR #14, connect a backend,
+  establish production readiness, or accept any project phase.
+
+## Dangerous residual bug audit EDU-0071 — 2026-11-17
+
+- Audit result is **NEEDS_CHANGES** on reviewed commit `62d6beb`: no confirmed
+  P0, two new P1 findings and four open P2 findings. Full evidence, exact
+  preconditions and minimum remediation are in
+  `docs/quality/DANGEROUS_BUG_AUDIT_2026-11-17.md`.
+- P1: delegated grants can remain effective after their authorizing grant is
+  revoked early; concurrent grant requests can create duplicate active rows so
+  revoking one row leaves the duplicate effective. Both require isolated
+  PostgreSQL regression tests in a separate remediation task.
+- P2: login accepts an unbounded password/body; the known shared-peer rate-limit
+  denial of service remains open; the Pages deployment branch is allowed to
+  publish while unprotected; all 13 workflow action references use mutable
+  major tags. Policy-only and defense-in-depth items remain clearly separated.
+- Verification: root 24 passed; backend host 93 passed/20 PostgreSQL skipped;
+  backend Ruff/OpenAPI passed; frontend API/lint/typecheck/24 unit tests passed;
+  npm audits and a 41-package OSV query returned no advisories. Docker was
+  unavailable and was not started, so live concurrency proof remains pending.
+- This was an audit-only task. No product code, migration, workflow, cloud
+  setting or branch protection was changed; PR #14 was not merged and no phase
+  was accepted. Pre-existing EDU-0070 documentation edits were preserved.
+- Side effect: an initial backend scan accidentally read ignored local `.env`
+  files, exposing local DB connection material only in internal tool output.
+  The scan was stopped; no DB connection, data transfer or credential change
+  occurred. Rotate those values if they are reused beyond local development.
+- Test runs refreshed ignored pytest, Python bytecode, Ruff and Vitest caches;
+  none were added to Git or deleted. The final port check was empty for the
+  common project ports and the Docker service remained stopped.
