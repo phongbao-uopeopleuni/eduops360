@@ -12,6 +12,8 @@ from app.modules.audit_logs import models as audit_models  # noqa: F401
 
 # Import models so Alembic sees them
 from app.modules.auth import models as auth_models  # noqa: F401
+from app.modules.academic_years import models as academic_year_models  # noqa: F401
+from app.modules.students import models as student_models  # noqa: F401
 
 config = context.config
 if not os.environ.get("EDUOPS_DATABASE_URL"):

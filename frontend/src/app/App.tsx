@@ -2,6 +2,7 @@ import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HealthPanel } from '../features/system/HealthPanel';
 import { UserManagementPage } from '../features/user-management/UserManagementPage';
+import { StudentManagementPage } from '../features/student-management/StudentManagementPage';
 import { useTheme } from './ThemeProvider';
 
 type TileKind = 'students' | 'calendar' | 'exam';
@@ -237,6 +238,25 @@ function UsersPage() {
   );
 }
 
+function StudentsPage() {
+  return (
+    <section className="page">
+      <div className="container">
+        <div className="page-intro">
+          <p className="eyebrow">Học vụ · Phase 03</p>
+          <h1>Quản lý học sinh</h1>
+          <p className="lead lead--left">Trường, năm học, lớp, học sinh và ghi danh.</p>
+        </div>
+        {isGitHubPagesPreview ? (
+          <PreviewUnavailable title="Quản lý học sinh" />
+        ) : (
+          <StudentManagementPage />
+        )}
+      </div>
+    </section>
+  );
+}
+
 function NotFound() {
   return (
     <section className="section">
@@ -268,7 +288,9 @@ export function App() {
           ? 'Trạng thái hệ thống'
           : location.pathname === '/users'
             ? 'Người dùng và phân quyền'
-            : 'Không tìm thấy trang';
+            : location.pathname === '/students'
+              ? 'Quản lý học sinh'
+              : 'Không tìm thấy trang';
     document.title = `${name} · EduOps 360`;
   }, [location.pathname]);
 
@@ -301,6 +323,7 @@ export function App() {
             </NavLink>
             <NavLink to="/system">Hệ thống</NavLink>
             <NavLink to="/users">Người dùng</NavLink>
+            <NavLink to="/students">Học sinh</NavLink>
           </nav>
           <button
             className="theme-toggle"
@@ -328,6 +351,7 @@ export function App() {
           <Route path="/" element={<Overview />} />
           <Route path="/system" element={<SystemPage />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/students" element={<StudentsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
