@@ -82,7 +82,23 @@ interface Enrollment {
   enrolled_at: string;
 }
 
-type Tab = 'schools' | 'years' | 'classes' | 'students' | 'enrollments';
+interface ImportPreviewRow {
+  row_number: number;
+  student_code: string | null;
+  status: string;
+  normalized_values: Record<string, string>;
+  errors: { column: string; code: string }[];
+}
+
+interface ImportPreview {
+  id: string;
+  state: string;
+  checksum: string;
+  counts: Record<string, number>;
+  rows: ImportPreviewRow[];
+}
+
+type Tab = 'schools' | 'years' | 'classes' | 'students' | 'enrollments' | 'import';
 
 function msg(e: unknown) {
   return e instanceof Error ? e.message : 'Yêu cầu không thành công.';
@@ -99,6 +115,7 @@ export function StudentManagementPage() {
   const [classes, setClasses] = useState<SchoolClass[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
 
   async function loadSchools() {
     try {
@@ -137,18 +154,22 @@ export function StudentManagementPage() {
   }
 
   useEffect(() => {
-    loadSchools();
-    loadYears();
+    void Promise.resolve().then(() => {
+      loadSchools();
+      loadYears();
+    });
   }, []);
 
   useEffect(() => {
-    if (tab === 'classes') loadClasses();
-    if (tab === 'students') loadStudents();
-    if (tab === 'enrollments') {
-      loadEnrollments();
-      loadStudents();
-      loadClasses();
-    }
+    void Promise.resolve().then(() => {
+      if (tab === 'classes') loadClasses();
+      if (tab === 'students') loadStudents();
+      if (tab === 'enrollments') {
+        loadEnrollments();
+        loadStudents();
+        loadClasses();
+      }
+    });
   }, [tab]);
 
   async function run(action: () => Promise<void>) {
@@ -248,12 +269,81 @@ export function StudentManagementPage() {
     });
   }
 
+  function handlePreviewImport(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    run(async () => {
+      const res = await fetch('/api/v1/admin/student-import/preview', {
+        method: 'POST',
+        credentials: 'include',
+        headers: csrfToken() ? { 'X-CSRF-Token': csrfToken() as string } : {},
+        body: fd,
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(body?.error?.message || `Lỗi ${res.status}`);
+      }
+      setImportPreview(body as ImportPreview);
+      setNotice(
+        body.state === 'ready'
+          ? 'Đã kiểm tra lô. Có thể xác nhận nhập.'
+          : 'Lô cần sửa các dòng lỗi hoặc xung đột.',
+      );
+      form.reset();
+    });
+  }
+
+  function handleCommitImport() {
+    if (!importPreview) return;
+    run(async () => {
+      const result = await apiPost<{ id: string; state: string; counts: Record<string, number> }>(
+        `/api/v1/admin/student-import/${importPreview.id}/commit`,
+        {},
+      );
+      setImportPreview((previous) =>
+        previous ? { ...previous, state: result.state, counts: result.counts } : previous,
+      );
+      setNotice(
+        `Đã nhập lô: ${result.counts.created ?? 0} học sinh mới, ${result.counts.enrolled ?? 0} ghi danh mới.`,
+      );
+      await loadStudents();
+    });
+  }
+
+  function handleExportStudents(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    run(async () => {
+      const schoolId = String(fd.get('school_id') || '');
+      const yearId = String(fd.get('academic_year_id') || '');
+      const url = `/api/v1/admin/students/export?school_id=${encodeURIComponent(schoolId)}&academic_year_id=${encodeURIComponent(yearId)}`;
+      const res = await fetch(url, {
+        credentials: 'include',
+        headers: csrfToken() ? { 'X-CSRF-Token': csrfToken() as string } : {},
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error?.message || `Lỗi ${res.status}`);
+      }
+      const blob = await res.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = downloadUrl;
+      anchor.download = 'students.csv';
+      anchor.click();
+      URL.revokeObjectURL(downloadUrl);
+      setNotice('Đã tải CSV xuất học sinh.');
+    });
+  }
+
   const tabs: { key: Tab; label: string }[] = [
     { key: 'schools', label: 'Trường' },
     { key: 'years', label: 'Năm học' },
     { key: 'classes', label: 'Lớp' },
     { key: 'students', label: 'Học sinh' },
     { key: 'enrollments', label: 'Ghi danh' },
+    { key: 'import', label: 'Nhập/Xuất CSV' },
   ];
 
   return (
@@ -579,6 +669,125 @@ export function StudentManagementPage() {
             </label>
             <button type="submit" className="button" disabled={busy}>
               Ghi danh
+            </button>
+          </form>
+        </section>
+      )}
+
+      {tab === 'import' && (
+        <section className="panel" aria-label="Nhập và xuất CSV học sinh">
+          <h2>Nhập CSV học sinh</h2>
+          <p>Tệp phải dùng UTF-8 hoặc UTF-8 BOM và đúng mẫu 8 cột của hệ thống.</p>
+          <form className="form-stack" onSubmit={handlePreviewImport}>
+            <label>
+              Trường
+              <select name="school_id" required>
+                <option value="">— Chọn —</option>
+                {schools.map((school) => (
+                  <option key={school.id} value={school.id}>
+                    {school.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Năm học
+              <select name="academic_year_id" required>
+                <option value="">— Chọn —</option>
+                {years.map((year) => (
+                  <option key={year.id} value={year.id}>
+                    {year.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Khóa idempotency
+              <input name="idempotency_key" required minLength={8} maxLength={128} />
+            </label>
+            <label>
+              Tệp CSV
+              <input name="file" type="file" accept=".csv,text/csv" required />
+            </label>
+            <button type="submit" className="button" disabled={busy}>
+              Kiểm tra trước
+            </button>
+          </form>
+
+          {importPreview && (
+            <div className="import-preview">
+              <h3>Kết quả xem trước</h3>
+              <p>
+                Tổng: {importPreview.counts.total ?? 0} · Mới: {importPreview.counts.new ?? 0} · Đã
+                tồn tại: {importPreview.counts.existing ?? 0} · Xung đột:{' '}
+                {importPreview.counts.conflicting ?? 0} · Lỗi: {importPreview.counts.error ?? 0}
+              </p>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Dòng</th>
+                    <th>Mã HS</th>
+                    <th>Trạng thái</th>
+                    <th>Lỗi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {importPreview.rows.map((row) => (
+                    <tr key={row.row_number}>
+                      <td>{row.row_number}</td>
+                      <td>{row.student_code || '—'}</td>
+                      <td>{row.status}</td>
+                      <td>
+                        {row.errors.length
+                          ? row.errors.map((error) => `${error.column}:${error.code}`).join(', ')
+                          : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button
+                type="button"
+                className="button"
+                disabled={
+                  busy ||
+                  importPreview.state !== 'ready' ||
+                  (importPreview.counts.error ?? 0) > 0 ||
+                  (importPreview.counts.conflicting ?? 0) > 0
+                }
+                onClick={handleCommitImport}
+              >
+                Xác nhận nhập create-only
+              </button>
+            </div>
+          )}
+
+          <h2>Xuất CSV học sinh</h2>
+          <form className="form-stack" onSubmit={handleExportStudents}>
+            <label>
+              Trường
+              <select name="school_id" required>
+                <option value="">— Chọn —</option>
+                {schools.map((school) => (
+                  <option key={school.id} value={school.id}>
+                    {school.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Năm học
+              <select name="academic_year_id" required>
+                <option value="">— Chọn —</option>
+                {years.map((year) => (
+                  <option key={year.id} value={year.id}>
+                    {year.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="submit" className="button" disabled={busy}>
+              Tải CSV BOM
             </button>
           </form>
         </section>

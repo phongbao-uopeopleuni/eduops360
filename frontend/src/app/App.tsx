@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { HealthPanel } from '../features/system/HealthPanel';
 import { UserManagementPage } from '../features/user-management/UserManagementPage';
 import { StudentManagementPage } from '../features/student-management/StudentManagementPage';
+import { SchoolCalendarPage } from '../features/school-calendar/SchoolCalendarPage';
+import { TimetablesPage } from '../features/timetables/TimetablesPage';
 import { useTheme } from './ThemeProvider';
 
 type TileKind = 'students' | 'calendar' | 'exam';
@@ -112,14 +114,14 @@ function Overview() {
                 <TileIcon kind="students" />
               </div>
               <h3>Học sinh và nhập CSV</h3>
-              <p>Giai đoạn 03–04 · chưa triển khai</p>
+              <p>Giai đoạn 03–04 · đã có lát cắt local</p>
             </li>
             <li className="feature-tile">
               <div className="tile-art">
                 <TileIcon kind="calendar" />
               </div>
               <h3>Lịch học và thời khóa biểu</h3>
-              <p>Giai đoạn 05–06 · chưa triển khai</p>
+              <p>Giai đoạn 05–06 · đã có lịch học và CP-SAT local</p>
             </li>
             <li className="feature-tile">
               <div className="tile-art">
@@ -257,6 +259,40 @@ function StudentsPage() {
   );
 }
 
+function CalendarPage() {
+  return (
+    <section className="page">
+      <div className="container">
+        <div className="page-intro">
+          <p className="eyebrow">Thời khóa biểu · Phase 05</p>
+          <h1>Lịch học và kỳ nghỉ</h1>
+          <p className="lead lead--left">
+            Mẫu tiết học theo năm và khoảng nghỉ trong phạm vi trường.
+          </p>
+        </div>
+        {isGitHubPagesPreview ? <PreviewUnavailable title="Lịch học" /> : <SchoolCalendarPage />}
+      </div>
+    </section>
+  );
+}
+
+function TimetablesPageWrapper() {
+  return (
+    <section className="page">
+      <div className="container">
+        <div className="page-intro">
+          <p className="eyebrow">Thời khóa biểu · Phase 06</p>
+          <h1>CP-SAT thời khóa biểu</h1>
+          <p className="lead lead--left">
+            Chạy bản giả lập có giới hạn thời gian; kết quả draft chưa được công bố.
+          </p>
+        </div>
+        {isGitHubPagesPreview ? <PreviewUnavailable title="Thời khóa biểu" /> : <TimetablesPage />}
+      </div>
+    </section>
+  );
+}
+
 function NotFound() {
   return (
     <section className="section">
@@ -290,7 +326,11 @@ export function App() {
             ? 'Người dùng và phân quyền'
             : location.pathname === '/students'
               ? 'Quản lý học sinh'
-              : 'Không tìm thấy trang';
+              : location.pathname === '/calendar'
+                ? 'Lịch học và kỳ nghỉ'
+                : location.pathname === '/timetables'
+                  ? 'CP-SAT thời khóa biểu'
+                  : 'Không tìm thấy trang';
     document.title = `${name} · EduOps 360`;
   }, [location.pathname]);
 
@@ -324,6 +364,8 @@ export function App() {
             <NavLink to="/system">Hệ thống</NavLink>
             <NavLink to="/users">Người dùng</NavLink>
             <NavLink to="/students">Học sinh</NavLink>
+            <NavLink to="/calendar">Lịch học</NavLink>
+            <NavLink to="/timetables">Thời khóa biểu</NavLink>
           </nav>
           <button
             className="theme-toggle"
@@ -352,6 +394,8 @@ export function App() {
           <Route path="/system" element={<SystemPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/students" element={<StudentsPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/timetables" element={<TimetablesPageWrapper />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
