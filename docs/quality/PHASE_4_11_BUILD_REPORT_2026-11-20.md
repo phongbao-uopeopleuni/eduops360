@@ -329,7 +329,7 @@ npx prettier --write src/features/school-calendar/SchoolCalendarPage.tsx src/fea
 ## 14. Side effects
 
 - Dependency install added OR-Tools and supporting Python packages to environment.
-- `backend/requirements.lock` and `backend/pyproject.toml` changed.
+- `backend/requirements.lock`, `backend/requirements.runtime.lock`, and `backend/pyproject.toml` changed.
 - No real credential or student data was used.
 - No live PostgreSQL migration was executed.
 - No public deployment was performed.
