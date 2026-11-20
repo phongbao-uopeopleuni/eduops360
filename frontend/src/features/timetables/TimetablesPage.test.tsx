@@ -20,14 +20,10 @@ describe('TimetablesPage', () => {
     const fetchMock = vi.fn((input: string | URL | Request) => {
       const url = String(input);
       if (url === '/api/v1/admin/schools') {
-        return jsonResponse([
-          { id: '10000000-0000-4000-8000-000000000001', name: 'Trường A' },
-        ]);
+        return jsonResponse([{ id: '10000000-0000-4000-8000-000000000001', name: 'Trường A' }]);
       }
       if (url === '/api/v1/admin/academic-years') {
-        return jsonResponse([
-          { id: '20000000-0000-4000-8000-000000000001', name: '2026-2027' },
-        ]);
+        return jsonResponse([{ id: '20000000-0000-4000-8000-000000000001', name: '2026-2027' }]);
       }
       if (url.startsWith('/api/v1/admin/timetables/jobs')) {
         return jsonResponse([]);
@@ -73,14 +69,10 @@ describe('TimetablesPage', () => {
         });
       }
       if (url === '/api/v1/admin/schools') {
-        return jsonResponse([
-          { id: '10000000-0000-4000-8000-000000000001', name: 'Trường A' },
-        ]);
+        return jsonResponse([{ id: '10000000-0000-4000-8000-000000000001', name: 'Trường A' }]);
       }
       if (url === '/api/v1/admin/academic-years') {
-        return jsonResponse([
-          { id: '20000000-0000-4000-8000-000000000001', name: '2026-2027' },
-        ]);
+        return jsonResponse([{ id: '20000000-0000-4000-8000-000000000001', name: '2026-2027' }]);
       }
       if (url.startsWith('/api/v1/admin/timetables/jobs')) {
         return jsonResponse([]);
