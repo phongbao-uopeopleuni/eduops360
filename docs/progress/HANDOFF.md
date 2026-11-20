@@ -9,12 +9,10 @@
 - Draft stacked PR [#15](https://github.com/phongbao-uopeopleuni/eduops360/pull/15) uses the
   open PR #14 branch as its base to avoid duplicating GitHub Pages changes.
 - The first PR #15 foundation run failed on Ruff issues in Phase 3 prerequisite files.
-  EDU-0082 corrected formatting, one unused import, and exception chaining. The next hosted
-  run exposed the missing `python-multipart` lock entry required to import CSV upload routes;
-  that dependency is now declared in both application and runtime locks. The full-stack run
-  also exposed OR-Tools and transitive runtime packages missing from the Docker lock; these
-  are now included. Local full Ruff checks, lock resolution, app import and backend tests pass;
-  another hosted run is required after the next push.
+  EDU-0082 corrected formatting, one unused import, and exception chaining, declared
+  `python-multipart` in application and runtime locks, and added OR-Tools/transitive packages
+  to the Docker runtime lock. Latest hosted checks pass: foundation run 44681442057 and
+  governance/blueprint run 44681441925, including Compose, Alembic check, smoke and E2E.
 - PR #15 remains a draft: EDU-0080 is `NEEDS_CHANGES`, and `main` requires CI, one independent
   approval after the latest push, and resolved conversations. No merge or phase acceptance occurred.
 - Added a complete process report:
