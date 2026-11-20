@@ -4,6 +4,12 @@
 
 ## Consolidated build handoff EDU-0081 — 2026-11-20
 
+- Committed as `b86456c0890462edd867e461d98a81797e34709e` and pushed to
+  `origin/codex/edu-0075-phase7-11-implementation`.
+- Draft stacked PR [#15](https://github.com/phongbao-uopeopleuni/eduops360/pull/15) uses the
+  open PR #14 branch as its base to avoid duplicating GitHub Pages changes.
+- PR #15 remains a draft: EDU-0080 is `NEEDS_CHANGES`, and `main` requires CI, one independent
+  approval after the latest push, and resolved conversations. No merge or phase acceptance occurred.
 - Added a complete process report:
   [PHASE_4_11_BUILD_REPORT_2026-11-20.md](D:/eduops360/docs/quality/PHASE_4_11_BUILD_REPORT_2026-11-20.md).
 - Added this agent handoff task: [EDU-0081](D:/eduops360/docs/progress/tasks/EDU-0081.md).
