@@ -346,6 +346,7 @@ npx prettier --write src/features/school-calendar/SchoolCalendarPage.tsx src/fea
 - Push was verified at `origin/codex/edu-0075-phase7-11-implementation` at `b86456c0890462edd867e461d98a81797e34709e`.
 - EDU-0082 CI fixes are committed and pushed through `40921fecfc45c598c8348f2882304cbf7ebcd06a`.
 - Hosted foundation run `44681442057` and governance/blueprint run `44681441925` pass on that code.
+- The documentation head `f5e6c293489e17aa1191fb5429f3ed71abf45ce5` also passes foundation run `44681950998` and governance/blueprint run `44681951041`.
 - Draft stacked PR [#15](https://github.com/phongbao-uopeopleuni/eduops360/pull/15) targets the open PR #14 branch; no merge to `main` has occurred.
 - `main` requires three checks, one independent approval after the latest push and resolved conversations.
 - EDU-0080 remains `NEEDS_CHANGES`; no phase is accepted.

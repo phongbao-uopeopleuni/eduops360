@@ -11,8 +11,10 @@
 - The first PR #15 foundation run failed on Ruff issues in Phase 3 prerequisite files.
   EDU-0082 corrected formatting, one unused import, and exception chaining, declared
   `python-multipart` in application and runtime locks, and added OR-Tools/transitive packages
-  to the Docker runtime lock. Latest hosted checks pass: foundation run 44681442057 and
-  governance/blueprint run 44681441925, including Compose, Alembic check, smoke and E2E.
+  to the Docker runtime lock. Local full Ruff checks, lock resolution, app import and backend
+  tests pass. All three workflows also pass on PR head
+  `f5e6c293489e17aa1191fb5429f3ed71abf45ce5`: foundation run 44681950998 and
+  governance/blueprint run 44681951041.
 - PR #15 remains a draft: EDU-0080 is `NEEDS_CHANGES`, and `main` requires CI, one independent
   approval after the latest push, and resolved conversations. No merge or phase acceptance occurred.
 - Added a complete process report:
