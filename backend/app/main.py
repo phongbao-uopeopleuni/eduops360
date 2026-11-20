@@ -10,11 +10,15 @@ from starlette.exceptions import HTTPException
 from app.core.config import Settings
 from app.core.errors import AppError, ErrorEnvelope, error_response
 from app.db.connection import Database
+from app.modules.academic_years.router import router as academic_year_router
 from app.modules.auth.admin_router import catalog_router as admin_catalog_router
 from app.modules.auth.admin_router import router as admin_auth_router
 from app.modules.auth.rate_limit import LoginRateLimiter
 from app.modules.auth.router import router as auth_router
 from app.modules.health.router import router as health_router
+from app.modules.school_calendar.router import router as school_calendar_router
+from app.modules.students.router import router as student_router
+from app.modules.timetables.router import router as timetable_router
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -97,4 +101,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(admin_catalog_router, prefix="/api/v1")
     app.include_router(admin_auth_router, prefix="/api/v1")
+    app.include_router(academic_year_router, prefix="/api/v1")
+    app.include_router(student_router, prefix="/api/v1")
+    app.include_router(school_calendar_router, prefix="/api/v1")
+    app.include_router(timetable_router, prefix="/api/v1")
     return app
