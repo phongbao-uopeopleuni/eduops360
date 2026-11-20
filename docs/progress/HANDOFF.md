@@ -2,6 +2,74 @@
 
 **Status:** `P03-T01 IMPLEMENTED / IN_REVIEW UNDER USER DEBT EXCEPTION; PHASE 02 STILL NOT ACCEPTED`.
 
+## Consolidated build handoff EDU-0081 — 2026-11-20
+
+- Added a complete process report:
+  [PHASE_4_11_BUILD_REPORT_2026-11-20.md](D:/eduops360/docs/quality/PHASE_4_11_BUILD_REPORT_2026-11-20.md).
+- Added this agent handoff task: [EDU-0081](D:/eduops360/docs/progress/tasks/EDU-0081.md).
+- Replaced the stale next-agent prompt with a remediation-first prompt in
+  [NEXT_AGENT_PROMPT.md](D:/eduops360/docs/progress/NEXT_AGENT_PROMPT.md).
+- The next actor should remediate EDU-0080 F-03/F-02/F-04/F-01 first, then P2 findings,
+  and only then consider independent re-review.
+- The report and handoff do not close audit findings or mark any phase accepted.
+
+## Independent audit EDU-0080 — 2026-11-20
+
+- Reviewed Phases 4–11 implementation without product source changes.
+- Verdict: `NEEDS_CHANGES`; no confirmed P0.
+- P1: F-01 synchronous CP-SAT event-loop blocking, F-02 timetable cross-scope listing,
+  F-03 concurrent import commit race, F-04 client-controlled closed slots.
+- P2: F-05 upload memory precheck, F-06 export audit, F-07 calendar audit, F-08 analytics
+  bin validation, F-09 finite assessment values, F-10 finite ML values, F-11 shallow log redaction.
+- Remediation and independent re-review are required; this audit is not phase acceptance.
+
+## Phase 7–11 foundation EDU-0075..0079 — 2026-11-20
+
+- The user authorized continuing Phases 7–11 while skipping formal accepted-phase gates.
+- Added an umbrella implementation branch `codex/edu-0075-phase7-11-implementation`.
+- Phase 7: policy-versioned synthetic assessment domain, forward state transitions and ROUND_HALF_UP numeric rounding.
+- Phase 8: source URL, retrieval timestamp, checksum and effective-range provenance primitives.
+- Phase 9: independent histogram and quartile calculations.
+- Phase 10: `as_of` feature snapshots, mean baseline, MAE and synthetic model-card template.
+- Phase 11: credential/redaction helper and explicit not-approved release gate record.
+- Phase 7–11 remain `in_review`; no official legal policy, real student data, approved predictive target or production deployment was used.
+
+## Phase 6 implementation EDU-0074 — 2026-11-20
+
+- The user authorized continuing Phase 6 while skipping formal accepted-phase gates.
+- EDU-0074 implementation is `in_review` on branch `codex/edu-0075-phase7-11-implementation`.
+- Added OR-Tools CP-SAT snapshot, bounded solve, truthful status mapping and independent collision validation.
+- Added timetable job/version persistence migration `0013_timetable_solver`, JSONB snapshots and draft versions.
+- Added timetable job API and local `/timetables` UI.
+- Verified 5 CP-SAT/benchmark tests including 5/20/50/80 synthetic class shapes, 12 combined Phase 5/6 tests,
+  24 frontend unit tests, Ruff, frontend typecheck and OpenAPI synchronization.
+- Live PostgreSQL migration, queued worker, manual repair grid, benchmark evidence and human approval remain incomplete.
+- Formal Phase 5 acceptance and OD-009 remain open; no timetable is published automatically.
+
+## Phase 5 implementation EDU-0073 — 2026-11-20
+
+- The user authorized continuing Phase 5 while skipping formal accepted-phase gates.
+- EDU-0073 implementation is `in_review` on branch `codex/edu-0075-phase7-11-implementation`.
+- Added migration `0012_school_calendar`, schedule templates, AM/PM time slots and holiday ranges.
+- Added overlap, zero-duration, reversed-range and academic-year-boundary validation.
+- Added local calendar API and frontend route `/calendar`.
+- Verified 7 calendar temporal tests, 11 combined Phase 4/5 backend tests, 24 frontend unit tests,
+  Ruff, frontend typecheck, OpenAPI synchronization and offline SQL for migration `0012`.
+- Live PostgreSQL migration/runtime, independent review and human acceptance remain not done.
+- OD-009 and legal-holiday approval semantics remain open; no source is represented as approved.
+
+## Phase 4 implementation EDU-0072 — 2026-11-20
+
+- The user explicitly authorized continuing Phase 4 while skipping formal acceptance gates.
+- EDU-0072 implementation is `in_review` on branch `codex/edu-0075-phase7-11-implementation`.
+- Added migration `0011_student_import_staging`, staged batch/row models, strict UTF-8/BOM preview,
+  create-only transactional commit, SHA-256 idempotency replay, audit writes and BOM CSV export.
+- Added the import/export UI in the Student Management page.
+- Verified 4 pipeline unit tests, 24 frontend unit tests, frontend typecheck/lint, Ruff,
+  OpenAPI synchronization and a 2,000-row synthetic UTF-8 CSV with 0 validation errors.
+- Live PostgreSQL migration/commit, independent review and human acceptance remain not done.
+- OD-005 and OD-013 remain open; update mode and stricter import-limit policy are not approved.
+
 Start at EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly allowed the narrow P03-T01 kickoff while carrying Phase 02 debt. Phase 01/02 remain unaccepted; do not present this exception as acceptance or automatically begin P03-T02..T09.
 
 ## Git bootstrap EDU-0055 — 2026-11-15
@@ -121,7 +189,7 @@ The sections below are retained as historical audit/remediation context. Where c
 - OD-011: approve audit retention/archive delivery and production migration/downgrade authority.
 - Approve encrypted MFA secret custody, recovery authorities and notification channel before enabling enrollment/recovery.
 - Accept Phase 01 prerequisite before formal Phase 02 acceptance.
-- `D:\eduops360` is not a Git repository; commit/push/PR/merge/hosted-CI evidence is unavailable.
+- Git initialized in EDU-0055; remote at `https://github.com/phongbao-uopeopleuni/eduops360`; `main` protected after EDU-0056. PR #14 (`codex/edu-0070-github-pages`) remains open and unmerged.
 
 ## Next authorized actions
 

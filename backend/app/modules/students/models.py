@@ -20,6 +20,7 @@ from sqlalchemy import (
     func,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -143,4 +144,85 @@ class Enrollment(Base):
         Index("ix_enrollments_student", "student_id"),
         Index("ix_enrollments_class", "school_class_id"),
         Index("ix_enrollments_year", "academic_year_id"),
+    )
+
+
+class StudentImportBatch(Base):
+    __tablename__ = "student_import_batches"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    school_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("schools.id", ondelete="RESTRICT"), nullable=False
+    )
+    academic_year_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("academic_years.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    actor_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), nullable=False)
+    idempotency_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    checksum: Mapped[str] = mapped_column(String(64), nullable=False)
+    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    mode: Mapped[str] = mapped_column(String(20), nullable=False, default="create_only")
+    state: Mapped[str] = mapped_column(String(20), nullable=False, default="preview")
+    counts: Mapped[dict] = mapped_column("counts", JSONB, nullable=False, default=dict)
+    error_report: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("now()")
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("now()"), onupdate=func.now()
+    )
+    committed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        CheckConstraint(
+            "mode IN ('create_only')",
+            name="ck_student_import_batches_mode",
+        ),
+        CheckConstraint(
+            "state IN ('preview', 'ready', 'committed', 'failed')",
+            name="ck_student_import_batches_state",
+        ),
+        UniqueConstraint(
+            "school_id",
+            "actor_id",
+            "idempotency_key",
+            name="uq_student_import_batches_actor_key",
+        ),
+        Index(
+            "ix_student_import_batches_scope",
+            "school_id",
+            "academic_year_id",
+        ),
+    )
+
+
+class StudentImportRow(Base):
+    __tablename__ = "student_import_rows"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    batch_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("student_import_batches.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    row_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    student_code: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(20), nullable=False)
+    normalized_values: Mapped[dict] = mapped_column("normalized_values", JSONB, nullable=False)
+    errors: Mapped[list] = mapped_column("errors", JSONB, nullable=False, default=list)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("now()")
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('valid', 'new', 'existing', 'conflicting', 'error')",
+            name="ck_student_import_rows_status",
+        ),
+        UniqueConstraint("batch_id", "row_number", name="uq_student_import_rows_batch_row"),
+        Index("ix_student_import_rows_batch_status", "batch_id", "status"),
     )

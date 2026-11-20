@@ -17,6 +17,7 @@ dependencies = [
   "argon2-cffi==25.1.0",
   "email-validator==2.2.0",
   "anyio==4.16.0",
+  "ortools==9.14.6206",
 ]
 
 [project.optional-dependencies]

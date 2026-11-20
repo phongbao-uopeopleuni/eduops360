@@ -90,3 +90,23 @@ class EnrollmentRead(BaseModel):
 
 class EnrollmentStatusUpdate(BaseModel):
     status: str = Field(pattern=r"^(enrolled|withdrawn|transferred)$")
+
+
+class StudentImportPreviewRow(BaseModel):
+    row_number: int
+    student_code: str | None
+    status: str
+    normalized_values: dict
+    errors: list[dict]
+
+
+class StudentImportPreview(BaseModel):
+    id: UUID
+    state: str
+    checksum: str
+    counts: dict
+    rows: list[StudentImportPreviewRow]
+
+
+class StudentImportCommit(BaseModel):
+    idempotency_key: str = Field(min_length=8, max_length=128)
