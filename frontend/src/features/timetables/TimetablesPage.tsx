@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 
 interface Job {
@@ -37,29 +37,47 @@ async function apiFetch<T>(url: string, init?: RequestInit): Promise<T> {
 export function TimetablesPage() {
   const [schools, setSchools] = useState<{ id: string; name: string }[]>([]);
   const [years, setYears] = useState<{ id: string; name: string }[]>([]);
+  const [selectedSchoolId, setSelectedSchoolId] = useState('');
+  const [selectedYearId, setSelectedYearId] = useState('');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  async function load() {
+  const loadJobs = useCallback(async (schoolId: string, yearId: string) => {
+    if (!schoolId || !yearId) {
+      setJobs([]);
+      return;
+    }
+    const params = new URLSearchParams({
+      school_id: schoolId,
+      academic_year_id: yearId,
+    });
+    const jobRows = await apiFetch<Job[]>(`/api/v1/admin/timetables/jobs?${params}`);
+    setJobs(jobRows);
+  }, []);
+
+  const load = useCallback(async () => {
     try {
-      const [schoolRows, yearRows, jobRows] = await Promise.all([
+      const [schoolRows, yearRows] = await Promise.all([
         apiFetch<{ id: string; name: string }[]>('/api/v1/admin/schools'),
         apiFetch<{ id: string; name: string }[]>('/api/v1/admin/academic-years'),
-        apiFetch<Job[]>('/api/v1/admin/timetables/jobs'),
       ]);
       setSchools(schoolRows);
       setYears(yearRows);
-      setJobs(jobRows);
+      const schoolId = schoolRows[0]?.id || '';
+      const yearId = yearRows[0]?.id || '';
+      setSelectedSchoolId(schoolId);
+      setSelectedYearId(yearId);
+      await loadJobs(schoolId, yearId);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Không thể tải thời khóa biểu.');
     }
-  }
+  }, [loadJobs]);
 
   useEffect(() => {
     void Promise.resolve().then(load);
-  }, []);
+  }, [load]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -71,12 +89,6 @@ export function TimetablesPage() {
     void (async () => {
       try {
         const classCount = Number(fd.get('class_count') || 5);
-        const slots = Array.from({ length: 10 }, (_, index) => ({
-          slot_id: `slot-${index + 1}`,
-          weekday: 1 + Math.floor(index / 5),
-          start_minute: 480 + (index % 5) * 45,
-          end_minute: 525 + (index % 5) * 45,
-        }));
         const assignments = Array.from({ length: classCount }, (_, index) => ({
           assignment_id: `assignment-${index + 1}`,
           teacher_id: `teacher-${index + 1}`,
@@ -92,8 +104,6 @@ export function TimetablesPage() {
             school_id: fd.get('school_id'),
             academic_year_id: fd.get('academic_year_id'),
             assignments,
-            slots,
-            closed_slot_ids: [],
             time_limit_seconds: 10,
             random_seed: 360,
           }),
@@ -126,7 +136,16 @@ export function TimetablesPage() {
         <form className="form-stack" onSubmit={handleSubmit}>
           <label>
             Trường
-            <select name="school_id" required>
+            <select
+              name="school_id"
+              required
+              value={selectedSchoolId}
+              onChange={(event) => {
+                const schoolId = event.target.value;
+                setSelectedSchoolId(schoolId);
+                void loadJobs(schoolId, selectedYearId);
+              }}
+            >
               <option value="">— Chọn —</option>
               {schools.map((school) => (
                 <option key={school.id} value={school.id}>
@@ -137,7 +156,16 @@ export function TimetablesPage() {
           </label>
           <label>
             Năm học
-            <select name="academic_year_id" required>
+            <select
+              name="academic_year_id"
+              required
+              value={selectedYearId}
+              onChange={(event) => {
+                const yearId = event.target.value;
+                setSelectedYearId(yearId);
+                void loadJobs(selectedSchoolId, yearId);
+              }}
+            >
               <option value="">— Chọn —</option>
               {years.map((year) => (
                 <option key={year.id} value={year.id}>

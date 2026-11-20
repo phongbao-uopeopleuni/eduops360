@@ -59,6 +59,13 @@ class ScheduleTemplate(Base):
             name="uq_schedule_templates_scope_name_revision",
         ),
         Index(
+            "uq_schedule_templates_one_active_per_scope",
+            "school_id",
+            "academic_year_id",
+            unique=True,
+            postgresql_where=text("status = 'active'"),
+        ),
+        Index(
             "ix_schedule_templates_scope",
             "school_id",
             "academic_year_id",

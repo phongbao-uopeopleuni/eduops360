@@ -20,7 +20,7 @@ Không tự mark phase accepted.
 5. `docs/quality/PHASE_4_11_BUILD_REPORT_2026-11-20.md`
 6. `docs/quality/PHASE_4_11_AUDIT_2026-11-20.md`
 7. `docs/progress/HANDOFF.md`
-8. EDU-0072–EDU-0081
+8. EDU-0072–EDU-0084
 9. Relevant phase specs 4–11
 10. Relevant skills in `ai-agent-sp/skills/REGISTRY.md`
 
@@ -35,6 +35,9 @@ Không tự mark phase accepted.
 - Phase 10 implementation EDU-0078: in_review.
 - Phase 11 implementation EDU-0079: in_review.
 - EDU-0080 audit: NEEDS_CHANGES.
+- EDU-0083 F-03 remediation: implemented, in_review.
+- EDU-0084 F-02 remediation: implemented, in_review.
+- EDU-0085 F-04 prerequisite: blocked pending Product Owner decisions.
 - Current implementation umbrella branch:
   `codex/edu-0075-phase7-11-implementation`.
 
@@ -42,39 +45,48 @@ Trạng thái Git, commit, remote, PR và live processes phải được đo l�
 
 ## 4. P1 remediation queue
 
-### EDU-0080-F03 — import concurrent commit
+### EDU-0080-F03 — import concurrent commit (implemented; independent review pending)
 
-Remediate first:
+EDU-0083 now selects the batch with `FOR UPDATE` and refreshes the state before checking
+committed replay. A synthetic two-session PostgreSQL regression passed three consecutive
+runs; `tests/student_import` passed 5 tests. The implementer must not mark the audit finding
+closed: a different actor must review the change and its live evidence.
 
-- add `SELECT ... FOR UPDATE` or equivalent compare-and-set;
-- lock batch lifecycle and idempotency atomically;
-- keep replay idempotent;
-- test two sessions isolated PostgreSQL;
-- prove one mutation and no duplicate audit/enrollment.
+### EDU-0080-F02 — timetable list scope (implemented; independent review pending)
 
-Do not infer success from unit tests.
+EDU-0084 adds optional school/year filters to both job/version list endpoints, enforces the
+requested scope, and filters SQL. The live two-school/three-year test and the six-test
+timetable suite passed; OpenAPI and frontend types are synchronized. A different actor must
+review the fix before the audit finding is closed.
 
-### EDU-0080-F02 — timetable list scope
+### EDU-0080-F04 — server-derived closed slots (blocked; do not implement yet)
 
-- add explicit school/year query parameters;
-- enforce permission scope;
-- filter SQL on school/year;
-- test two synthetic schools and verify row isolation.
+EDU-0085 records why implementation stopped: holiday status has no approved state or
+approval workflow, and the schema permits multiple active schedule templates per
+school/year while job requests contain no template ID. Do not assume `active` means
+`approved`, select a template implicitly, or move to F-01 until an authorized Product Owner
+decision is recorded in canonical Phase 00.
 
-### EDU-0080-F04 — server-derived closed slots
-
-- fetch approved holidays and applicable calendar template;
-- derive closed slots server-side;
-- do not accept client closed-slot additions;
-- store snapshot checksum and independent solve evidence.
+Decisions required: (1) whether active holidays are approved for solver use or a separate
+approval workflow is required; (2) whether one active template is guaranteed per
+school/year or each job must explicitly select an active template, including fail-closed
+behavior for none/multiple.
 
 ### EDU-0080-F01 — CP-SAT availability
 
+- Keep queued after F-04; do not skip the unresolved P1 blocker.
 - move solve outside async request event loop;
 - use bounded worker/process/queue;
 - preserve queued/running/failed/cancelled status;
 - test responsive health during long solve;
 - do not auto-publish result.
+
+### Completed implementation still awaiting independent review
+
+- F-03 import commit serialization — EDU-0083; two-session PostgreSQL regression passed.
+- F-02 timetable list scope — EDU-0084; two-school/year PostgreSQL regression passed.
+
+Do not treat passing tests as audit closure or phase acceptance.
 
 ## 5. P2 queue
 

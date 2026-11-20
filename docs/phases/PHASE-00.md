@@ -260,5 +260,6 @@ No agent may claim a successful operation merely because a task file says so. Ch
 |---|---|---|---|---|
 | v2.1 | 2026-11-12 | Original separate product baseline, detailed plan, summary and open questions; 8 decisions confirmed | Not committed/pushed/merged | In review |
 | **v2.2** | 2026-11-12 | Consolidated Phase 00 into one authoritative Markdown; removed three overlapping active specification files; aligned agent entrypoints and governance tests | Not committed/pushed/merged | **In review** |
+| **v2.3** | 2026-11-20 | Added DEC-009: `SchoolHoliday.status == active` is authoritative for server-composed timetable closure. Added DEC-010: exactly one `ScheduleTemplate.status == active` is required per school/year; missing or multiple templates fail closed | Not committed/pushed/merged | Product Owner confirmed in EDU-0085; independent review pending |
 
 **New decisions:** Append `DEC-009` onward only after documented Product Owner confirmation, with date, rationale, impacted modules, tests and reviewer. **Resolved issues:** Mark OD entries RESOLVED with exact decision ID and approval evidence; do not delete their history. All unresolved items remain OPEN.

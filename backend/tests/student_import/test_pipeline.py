@@ -1,3 +1,4 @@
+import asyncio
 import unicodedata
 
 from app.modules.students.import_pipeline import (
@@ -5,7 +6,16 @@ from app.modules.students.import_pipeline import (
     decode_csv,
     escape_formula,
     normalize_row,
+    read_bounded_upload,
 )
+
+
+class SyntheticUpload:
+    def __init__(self, chunks):
+        self.chunks = iter(chunks)
+
+    async def read(self, _size):
+        return next(self.chunks, b"")
 
 
 def test_decode_accepts_bom_utf8_and_preserves_leading_zero():
@@ -53,3 +63,18 @@ def test_formula_export_is_safely_prefixed_and_csv_uses_bom():
         )[:3]
         == b"\xef\xbb\xbf"
     )
+
+
+def test_bounded_upload_rejects_content_length_and_total_byte_limit():
+    async def exercise():
+        upload = SyntheticUpload([b"x" * 64 * 1024])
+        raw, error = await read_bounded_upload(upload, 10 * 1024 * 1024 + 1)
+        assert raw is None
+        assert error == "EXCEEDS_10MB"
+
+        upload = SyntheticUpload([b"x" * (5 * 1024 * 1024), b"x" * (5 * 1024 * 1024), b"x"])
+        raw, error = await read_bounded_upload(upload, None)
+        assert raw is None
+        assert error == "EXCEEDS_10MB"
+
+    asyncio.run(exercise())

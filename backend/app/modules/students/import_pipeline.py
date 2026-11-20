@@ -35,6 +35,24 @@ MAX_BYTES = 10 * 1024 * 1024
 MAX_ROWS = 100_000
 
 
+async def read_bounded_upload(
+    file: Any, content_length: int | None
+) -> tuple[bytes | None, str | None]:
+    if content_length is not None and content_length > MAX_BYTES:
+        return None, "EXCEEDS_10MB"
+    chunks: list[bytes] = []
+    total = 0
+    while True:
+        chunk = await file.read(64 * 1024)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > MAX_BYTES:
+            return None, "EXCEEDS_10MB"
+        chunks.append(chunk)
+    return b"".join(chunks), None
+
+
 def decode_csv(raw: bytes) -> tuple[str | None, list[dict[str, Any]]]:
     if len(raw) > MAX_BYTES:
         return "EXCEEDS_10MB", []

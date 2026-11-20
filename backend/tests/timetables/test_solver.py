@@ -1,3 +1,10 @@
+from datetime import date
+from types import SimpleNamespace
+from uuid import UUID
+
+from app.modules.timetables import router as timetable_router
+from app.modules.timetables.router import _closed_slot_ids
+from app.modules.timetables.schemas import TimetableJobCreate
 from app.modules.timetables.solver import (
     AvailableSlot,
     ScheduleEntry,
@@ -8,6 +15,46 @@ from app.modules.timetables.solver import (
     solve_timetable,
     validate_schedule_entries,
 )
+
+
+def test_timetable_job_rejects_client_supplied_slots_and_closed_slots():
+    try:
+        TimetableJobCreate.model_validate(
+            {
+                "school_id": "10000000-0000-4000-8000-000000000001",
+                "academic_year_id": "20000000-0000-4000-8000-000000000001",
+                "assignments": [],
+                "slots": [],
+                "closed_slot_ids": ["client-controlled-slot"],
+            }
+        )
+    except ValueError:
+        return
+    raise AssertionError("client-supplied slots must be rejected")
+
+
+def test_server_derived_closed_slots_use_active_holiday_weekdays():
+    monday = UUID("30000000-0000-4000-8000-000000000001")
+    tuesday = UUID("30000000-0000-4000-8000-000000000002")
+    template_slots = (
+        SimpleNamespace(id=monday, weekday=1),
+        SimpleNamespace(id=tuesday, weekday=2),
+    )
+    holidays = (
+        SimpleNamespace(
+            start_date=date(2026, 9, 7),
+            end_date=date(2026, 9, 8),
+        ),
+    )
+
+    closed = _closed_slot_ids(
+        template_slots,
+        holidays,
+        date(2026, 9, 1),
+        date(2027, 6, 30),
+    )
+
+    assert closed == frozenset({str(monday), str(tuesday)})
 
 
 def make_snapshot(class_count=1, assignments_per_class=1):
@@ -101,3 +148,48 @@ def test_benchmark_shapes_5_20_50_80_classes_report_status():
         assert status in {SolverStatus.OPTIMAL, SolverStatus.FEASIBLE}
         assert len(entries) == class_count
         assert evidence["elapsed_seconds"] >= 0
+
+
+def test_solver_thread_limiter_is_bounded(monkeypatch):
+    import asyncio
+
+    limiter = object()
+    monkeypatch.setattr(timetable_router, "_current_solver_limiter", lambda: limiter)
+    captured = {}
+
+    async def run_sync(partial, **kwargs):
+        captured["limiter"] = kwargs["limiter"]
+        captured["abandon_on_cancel"] = kwargs["abandon_on_cancel"]
+        return SolverStatus.FEASIBLE, [], {"elapsed_seconds": 0.0}
+
+    monkeypatch.setattr(timetable_router.to_thread, "run_sync", run_sync)
+
+    async def exercise():
+        snapshot = make_snapshot(class_count=1)
+        return await timetable_router.to_thread.run_sync(
+            lambda: solve_timetable(snapshot),
+            limiter=timetable_router._current_solver_limiter(),
+            abandon_on_cancel=False,
+        )
+
+    asyncio.run(exercise())
+    assert captured["limiter"] is limiter
+    assert captured["abandon_on_cancel"] is False
+
+
+def test_solver_capacity_limiter_enforces_two_slots():
+    import asyncio
+
+    from anyio import CapacityLimiter
+
+    async def exercise():
+        limiter = CapacityLimiter(timetable_router.TIMETABLE_SOLVER_CONCURRENT_LIMIT)
+
+        async def guarded():
+            async with limiter:
+                await asyncio.sleep(0)
+
+        await asyncio.gather(guarded(), guarded())
+        assert limiter.available_tokens >= 0
+
+    asyncio.run(exercise())

@@ -257,42 +257,6 @@
         "title": "AccountTokenIssue",
         "type": "object"
       },
-      "AvailableSlotInput": {
-        "properties": {
-          "end_minute": {
-            "maximum": 1440.0,
-            "minimum": 1.0,
-            "title": "End Minute",
-            "type": "integer"
-          },
-          "slot_id": {
-            "maxLength": 100,
-            "minLength": 1,
-            "title": "Slot Id",
-            "type": "string"
-          },
-          "start_minute": {
-            "maximum": 1439.0,
-            "minimum": 0.0,
-            "title": "Start Minute",
-            "type": "integer"
-          },
-          "weekday": {
-            "maximum": 7.0,
-            "minimum": 1.0,
-            "title": "Weekday",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "slot_id",
-          "weekday",
-          "start_minute",
-          "end_minute"
-        ],
-        "title": "AvailableSlotInput",
-        "type": "object"
-      },
       "Body_preview_student_import_api_v1_admin_student_import_preview_post": {
         "properties": {
           "academic_year_id": {
@@ -1591,6 +1555,7 @@
         "type": "object"
       },
       "TimetableJobCreate": {
+        "additionalProperties": false,
         "properties": {
           "academic_year_id": {
             "format": "uuid",
@@ -1602,13 +1567,6 @@
               "$ref": "#/components/schemas/TeachingAssignmentInput"
             },
             "title": "Assignments",
-            "type": "array"
-          },
-          "closed_slot_ids": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Closed Slot Ids",
             "type": "array"
           },
           "random_seed": {
@@ -1623,13 +1581,6 @@
             "title": "School Id",
             "type": "string"
           },
-          "slots": {
-            "items": {
-              "$ref": "#/components/schemas/AvailableSlotInput"
-            },
-            "title": "Slots",
-            "type": "array"
-          },
           "time_limit_seconds": {
             "default": 30,
             "maximum": 300.0,
@@ -1641,8 +1592,7 @@
         "required": [
           "school_id",
           "academic_year_id",
-          "assignments",
-          "slots"
+          "assignments"
         ],
         "title": "TimetableJobCreate",
         "type": "object"
@@ -4539,6 +4489,42 @@
     "/api/v1/admin/timetables/jobs": {
       "get": {
         "operationId": "list_timetable_jobs_api_v1_admin_timetables_jobs_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "school_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "School Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "academic_year_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Academic Year Id"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -4563,6 +4549,16 @@
               }
             },
             "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           },
           "500": {
             "content": {
@@ -4643,6 +4639,42 @@
     "/api/v1/admin/timetables/versions": {
       "get": {
         "operationId": "list_timetable_versions_api_v1_admin_timetables_versions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "school_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "School Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "academic_year_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Academic Year Id"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -4667,6 +4699,16 @@
               }
             },
             "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           },
           "500": {
             "content": {

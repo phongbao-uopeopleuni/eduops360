@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.errors import AppError
 from app.db.dependencies import get_db_session
 from app.modules.academic_years.models import AcademicYear, School
+from app.modules.audit_logs.service import write_audit_in_transaction
 from app.modules.auth.constants import ActionType, ResourceType
 from app.modules.auth.guards import (
     AuthorizationContext,
@@ -137,7 +138,7 @@ async def create_template(
             )
         )
     try:
-        await db.commit()
+        await db.flush()
     except IntegrityError:
         await db.rollback()
         raise AppError(
@@ -145,6 +146,22 @@ async def create_template(
             "CALENDAR_TEMPLATE_EXISTS",
             "Mẫu lịch trùng tên hoặc phiên bản trong năm học.",
         ) from None
+    await write_audit_in_transaction(
+        db,
+        action="create",
+        resource_type=ResourceType.TIMETABLE,
+        resource_id=str(template.id),
+        actor_id=ctx.auth.user.id,
+        actor_email=getattr(ctx.auth.user, "email", None),
+        after_state={
+            "school_id": str(template.school_id),
+            "academic_year_id": str(template.academic_year_id),
+            "status": template.status,
+            "revision": template.revision,
+        },
+        create_outbox=True,
+    )
+    await db.commit()
     await db.refresh(template)
     return template
 
@@ -263,6 +280,23 @@ async def create_holiday(
         status="draft",
     )
     db.add(holiday)
+    await db.flush()
+    await write_audit_in_transaction(
+        db,
+        action="create",
+        resource_type=ResourceType.HOLIDAY,
+        resource_id=str(holiday.id),
+        actor_id=ctx.auth.user.id,
+        actor_email=getattr(ctx.auth.user, "email", None),
+        after_state={
+            "school_id": str(holiday.school_id),
+            "academic_year_id": str(holiday.academic_year_id),
+            "start_date": holiday.start_date.isoformat(),
+            "end_date": holiday.end_date.isoformat(),
+            "status": holiday.status,
+        },
+        create_outbox=True,
+    )
     await db.commit()
     await db.refresh(holiday)
     return holiday

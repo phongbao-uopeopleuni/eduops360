@@ -819,17 +819,6 @@ export interface components {
             one_time_token: string;
             user: components["schemas"]["UserRead"];
         };
-        /** AvailableSlotInput */
-        AvailableSlotInput: {
-            /** End Minute */
-            end_minute: number;
-            /** Slot Id */
-            slot_id: string;
-            /** Start Minute */
-            start_minute: number;
-            /** Weekday */
-            weekday: number;
-        };
         /** Body_preview_student_import_api_v1_admin_student_import_preview_post */
         Body_preview_student_import_api_v1_admin_student_import_preview_post: {
             /**
@@ -1446,8 +1435,6 @@ export interface components {
             academic_year_id: string;
             /** Assignments */
             assignments: components["schemas"]["TeachingAssignmentInput"][];
-            /** Closed Slot Ids */
-            closed_slot_ids?: string[];
             /**
              * Random Seed
              * @default 360
@@ -1458,8 +1445,6 @@ export interface components {
              * Format: uuid
              */
             school_id: string;
-            /** Slots */
-            slots: components["schemas"]["AvailableSlotInput"][];
             /**
              * Time Limit Seconds
              * @default 30
@@ -3358,7 +3343,10 @@ export interface operations {
     };
     list_timetable_jobs_api_v1_admin_timetables_jobs_get: {
         parameters: {
-            query?: never;
+            query?: {
+                school_id?: string | null;
+                academic_year_id?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3381,6 +3369,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Internal Server Error */
@@ -3447,7 +3444,10 @@ export interface operations {
     };
     list_timetable_versions_api_v1_admin_timetables_versions_get: {
         parameters: {
-            query?: never;
+            query?: {
+                school_id?: string | null;
+                academic_year_id?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3470,6 +3470,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
             /** @description Internal Server Error */

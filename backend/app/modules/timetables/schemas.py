@@ -23,11 +23,11 @@ class AvailableSlotInput(BaseModel):
 
 
 class TimetableJobCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     school_id: UUID
     academic_year_id: UUID
     assignments: list[TeachingAssignmentInput]
-    slots: list[AvailableSlotInput]
-    closed_slot_ids: list[str] = Field(default_factory=list)
     time_limit_seconds: int = Field(default=30, ge=1, le=300)
     random_seed: int = Field(default=360, ge=0, le=2147483647)
 

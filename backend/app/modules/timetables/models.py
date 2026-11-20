@@ -11,6 +11,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
     text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -94,6 +95,12 @@ class TimetableVersion(Base):
         CheckConstraint(
             "status IN ('draft', 'approved', 'published', 'archived')",
             name="ck_timetable_versions_status",
+        ),
+        UniqueConstraint(
+            "school_id",
+            "academic_year_id",
+            "revision",
+            name="uq_timetable_versions_scope_revision",
         ),
         Index("ix_timetable_versions_scope", "school_id", "academic_year_id"),
     )

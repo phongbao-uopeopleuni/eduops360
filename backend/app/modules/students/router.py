@@ -28,6 +28,7 @@ from app.modules.students.import_pipeline import (
     classify_rows,
     csv_sha256,
     decode_csv,
+    read_bounded_upload,
 )
 from app.modules.students.models import (
     Enrollment,
@@ -372,7 +373,16 @@ async def preview_student_import(
     if len(idempotency_key) > 128 or not idempotency_key.isascii():
         raise AppError(422, "INVALID_IDEMPOTENCY_KEY", "Khóa idempotency không hợp lệ.")
 
-    raw = await file.read()
+    content_length_header = request.headers.get("content-length")
+    content_length = (
+        int(content_length_header)
+        if content_length_header and content_length_header.isdigit()
+        else None
+    )
+    raw, upload_error = await read_bounded_upload(file, content_length)
+    if upload_error:
+        raise AppError(413, "UPLOAD_TOO_LARGE", "Tệp CSV vượt quá giới hạn 10 MB.")
+    assert raw is not None
     checksum = csv_sha256(raw)
     existing = (
         await db.execute(
@@ -498,7 +508,14 @@ async def commit_student_import(
     ctx: WriteGuard,
     db: Db,
 ):
-    batch = await db.get(StudentImportBatch, batch_id)
+    batch = (
+        await db.execute(
+            select(StudentImportBatch)
+            .where(StudentImportBatch.id == batch_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+    ).scalar_one_or_none()
     if not batch:
         raise AppError(404, "IMPORT_BATCH_NOT_FOUND", "Không tìm thấy lô nhập.")
     enforce_permission(
@@ -620,6 +637,7 @@ async def commit_student_import(
 
 @router.get("/students/export")
 async def export_students(
+    request: Request,
     ctx: WriteGuard,
     db: Db,
     school_id: UUID,
@@ -630,9 +648,6 @@ async def export_students(
         resource_type=ResourceType.STUDENT,
         action=ActionType.EXPORT,
         scope=Scope(school_id=school_id, academic_year_id=academic_year_id),
-    )
-    students = (
-        (await db.execute(select(Student).where(Student.school_id == school_id))).scalars().all()
     )
     class_ids = (
         (
@@ -660,6 +675,37 @@ async def export_students(
             .scalars()
             .all()
         )
+    enrollment_counts: dict[UUID, int] = {}
+    for enrollment in enrollments:
+        enrollment_counts[enrollment.student_id] = (
+            enrollment_counts.get(enrollment.student_id, 0) + 1
+        )
+    ambiguous_student_ids = [
+        student_id for student_id, count in enrollment_counts.items() if count > 1
+    ]
+    if ambiguous_student_ids:
+        raise AppError(
+            409,
+            "AMBIGUOUS_STUDENT_YEAR_ENROLLMENT",
+            "Một học sinh có nhiều enrollment trong cùng năm học.",
+        )
+    student_ids = list(dict.fromkeys(enrollment.student_id for enrollment in enrollments))
+    students = (
+        (
+            (
+                await db.execute(
+                    select(Student).where(
+                        Student.school_id == school_id,
+                        Student.id.in_(student_ids),
+                    )
+                )
+            )
+            .scalars()
+            .all()
+        )
+        if student_ids
+        else []
+    )
     year = await db.get(AcademicYear, academic_year_id)
     if year is None or year.school_id != school_id:
         raise AppError(422, "YEAR_SCOPE_MISMATCH", "Năm học không thuộc trường đã chọn.")
@@ -681,6 +727,25 @@ async def export_students(
         academic_year_name=year.name,
         classes=classes,
     )
+    await write_audit_in_transaction(
+        db,
+        action="export",
+        resource_type=ResourceType.STUDENT,
+        resource_id=str(school_id),
+        actor_id=ctx.auth.user.id,
+        actor_email=getattr(ctx.auth.user, "email", None),
+        request_id=getattr(request.state, "request_id", None),
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        extra_data={
+            "school_id": str(school_id),
+            "academic_year_id": str(academic_year_id),
+            "row_count": len(students),
+            "checksum_sha256": csv_sha256(raw),
+        },
+        create_outbox=True,
+    )
+    await db.commit()
     return StreamingResponse(
         iter([raw]),
         media_type="text/csv; charset=utf-8",

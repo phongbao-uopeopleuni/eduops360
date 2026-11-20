@@ -2,6 +2,63 @@
 
 **Status:** `P03-T01 IMPLEMENTED / IN_REVIEW UNDER USER DEBT EXCEPTION; PHASE 02 STILL NOT ACCEPTED`.
 
+## EDU-0083 — EDU-0080 F-03 remediation (2026-11-20)
+
+- Implemented the minimal fix in `backend/app/modules/students/router.py`: acquire a
+  PostgreSQL row lock on the import batch and refresh its state before checking whether
+  the batch is already committed. Import mutations and audit remain in the same transaction.
+- Added a two-session synthetic PostgreSQL regression in
+  `backend/tests/student_import/test_commit_concurrency.py`. The fail-first run confirmed
+  the old query lacked `FOR UPDATE`; after the fix, three consecutive concurrency runs
+  passed and `python -m pytest tests/student_import -q` reported **5 passed**.
+- Targeted Ruff check/format and `git diff --check` passed.
+- Live evidence used Compose project `eduops360-edu0083-f03`, container
+  `eduops360-edu0083-f03-db-1`, isolated volume
+  `eduops360-edu0083-f03_postgres-data`, and Alembic head `0013_timetable_solver`.
+  The disposable database was migrated only for this regression; its dedicated containers,
+  network, volume and generated env file were removed after evidence capture. No shared
+  database or real data was used.
+- Task [EDU-0083](D:/eduops360/docs/progress/tasks/EDU-0083.md) is `in_review`.
+  The implementer cannot close the audit finding: independent re-review is pending.
+  EDU-0080 remains `NEEDS_CHANGES`; no phase is accepted.
+- F-02 has since been remediated in EDU-0084; continue with F-04 next. Do not treat either
+  P1 implementation as independently reviewed.
+
+## EDU-0084 — EDU-0080 F-02 remediation (2026-11-20)
+
+- Added optional `school_id` and `academic_year_id` filters to both timetable job and version
+  list endpoints. The exact requested `Scope` is checked against the principal, and supplied
+  dimensions are included in SQL predicates.
+- Refreshed `contracts/openapi.json` and the generated TypeScript API types; optional
+  parameters preserve existing unscoped callers with global-read permission.
+- Fail-first live test confirmed the old endpoint rejected the new scope parameter. After
+  the fix, the two-school/three-year PostgreSQL regression passed; `tests/timetables`
+  reported **6 passed**. Ruff, OpenAPI, API contract and frontend type checks passed.
+- Independent review identified that the original timetable page called the job endpoint
+  without scope. The page now starts with the first selected school/year and loads jobs
+  with both query parameters; changing either selector reloads the scoped job list.
+  A focused frontend regression passed in Vitest.
+- Evidence used Compose project `eduops360-edu0084-f02`, container
+  `eduops360-edu0084-f02-db-1`, isolated volume
+  `eduops360-edu0084-f02_postgres-data`, and Alembic head `0013_timetable_solver`.
+  The dedicated containers, network, volume and generated env file were removed after tests.
+- Task [EDU-0084](D:/eduops360/docs/progress/tasks/EDU-0084.md) is `in_review`.
+  Independent re-review remains pending; EDU-0080 stays `NEEDS_CHANGES`, and no phase is
+  accepted.
+- F-04 is now blocked in [EDU-0085](D:/eduops360/docs/progress/tasks/EDU-0085.md): the
+  calendar schema has no approved holiday state/workflow and permits multiple active
+  templates per school/year. Do not equate `active` with `approved` or choose a template
+  implicitly without Product Owner confirmation. No F-04 source changes were made.
+- The Product Owner has now confirmed both F-04 decisions: active holidays are authoritative
+  for closure, and exactly one active template is required per school/year. EDU-0085 is
+  in review; the endpoint derives template slots and holiday closures on the server and
+  rejects client-supplied slots/closures. The timetable unit suite has 7 passing tests,
+  with isolated PostgreSQL scope evidence still skipped until a disposable DSN is available.
+- Migration `0014_unique_active_schedule_template` adds a partial unique index for exactly
+  one active template per school/year. The frontend now has 2 focused Vitest tests,
+  including absence of client-controlled slots/closed-slot IDs in POST payload.
+- F-03/F-02 remain in review; neither remediation is independently reviewed.
+
 ## Consolidated build handoff EDU-0081 — 2026-11-20
 
 - Committed as `b86456c0890462edd867e461d98a81797e34709e` and pushed to
@@ -22,8 +79,8 @@
 - Added this agent handoff task: [EDU-0081](D:/eduops360/docs/progress/tasks/EDU-0081.md).
 - Replaced the stale next-agent prompt with a remediation-first prompt in
   [NEXT_AGENT_PROMPT.md](D:/eduops360/docs/progress/NEXT_AGENT_PROMPT.md).
-- The next actor should remediate EDU-0080 F-03/F-02/F-04/F-01 first, then P2 findings,
-  and only then consider independent re-review.
+- EDU-0080 F-03 and F-02 are implemented in EDU-0083/0084 and await independent review.
+  Remediate F-04/F-01 next, then P2 findings, before independent audit closure.
 - The report and handoff do not close audit findings or mark any phase accepted.
 
 ## Independent audit EDU-0080 — 2026-11-20
@@ -35,6 +92,19 @@
 - P2: F-05 upload memory precheck, F-06 export audit, F-07 calendar audit, F-08 analytics
   bin validation, F-09 finite assessment values, F-10 finite ML values, F-11 shallow log redaction.
 - Remediation and independent re-review are required; this audit is not phase acceptance.
+
+## Live remediation verification — 2026-11-20
+
+- Disposable Compose project: `eduops360-remediation-validation`.
+- Loopback PostgreSQL port: `55433`.
+- Alembic head: `0014_active_template`.
+- Migration included the partial unique index
+  `uq_schedule_templates_one_active_per_scope`.
+- Live isolated suite:
+  `python -m pytest tests/student_import/test_commit_concurrency.py tests/timetables/test_list_scope.py -q`
+  — `4 passed`.
+- EDU-0083 F-03, EDU-0084 F-02 and EDU-0085 F-04 remain `in_review`.
+  Passing live tests are evidence, not independent finding closure or phase acceptance.
 
 ## Phase 7–11 foundation EDU-0075..0079 — 2026-11-20
 

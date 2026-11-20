@@ -1,8 +1,9 @@
 """Policy-versioned assessment rules. Values are synthetic, not legal policy."""
 
 from dataclasses import dataclass
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from enum import StrEnum
+from math import isfinite
 
 
 class GradeStatus(StrEnum):
@@ -40,12 +41,17 @@ def validate_transition(current: GradeStatus, target: GradeStatus) -> str | None
 def calculate_numeric_score(
     raw_score: float, policy: NumericPolicy
 ) -> tuple[float | None, str | None]:
+    if not isfinite(raw_score) or not isfinite(policy.grade_min) or not isfinite(policy.grade_max):
+        return None, "NOT_FINITE"
     if raw_score < policy.grade_min or raw_score > policy.grade_max:
         return None, "OUT_OF_RANGE"
     if policy.decimal_places < 0 or policy.decimal_places > 3:
         return None, "INVALID_POLICY"
     quantum = Decimal("1").scaleb(-policy.decimal_places)
-    rounded = Decimal(str(raw_score)).quantize(quantum, rounding=ROUND_HALF_UP)
+    try:
+        rounded = Decimal(str(raw_score)).quantize(quantum, rounding=ROUND_HALF_UP)
+    except (InvalidOperation, ValueError):
+        return None, "INVALID_SCORE"
     return float(rounded), None
 
 

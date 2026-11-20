@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
+from functools import partial
 from typing import Annotated
+from uuid import UUID
 
+from anyio import CancelScope, CapacityLimiter, get_cancelled_exc_class, to_thread
+from anyio.lowlevel import RunVar
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppError
@@ -22,6 +27,7 @@ from app.modules.auth.guards import (
     get_csrf_authorization_context,
 )
 from app.modules.auth.permissions import Scope
+from app.modules.school_calendar.models import ScheduleSlot, ScheduleTemplate, SchoolHoliday
 from app.modules.timetables.models import TimetableJob, TimetableVersion
 from app.modules.timetables.schemas import (
     TimetableJobCreate,
@@ -40,6 +46,39 @@ router = APIRouter(prefix="/admin/timetables", tags=["Timetables"])
 
 WriteGuard = Annotated[AuthorizationContext, Depends(get_csrf_authorization_context)]
 Db = Annotated[AsyncSession, Depends(get_db_session)]
+TIMETABLE_SOLVER_CONCURRENT_LIMIT = 2
+_solver_limiter: RunVar[CapacityLimiter] = RunVar("eduops_timetable_solver_limiter")
+
+
+def _current_solver_limiter() -> CapacityLimiter:
+    try:
+        return _solver_limiter.get()
+    except LookupError:
+        limiter = CapacityLimiter(TIMETABLE_SOLVER_CONCURRENT_LIMIT)
+        _solver_limiter.set(limiter)
+        return limiter
+
+
+def _closed_slot_ids(
+    template_slots: tuple[ScheduleSlot, ...],
+    holidays: tuple[SchoolHoliday, ...],
+    year_start: date,
+    year_end: date,
+) -> frozenset[str]:
+    closed_weekdays: set[int] = set()
+    for holiday in holidays:
+        start = max(holiday.start_date, year_start)
+        end = min(holiday.end_date, year_end)
+        current = start
+        while current <= end:
+            closed_weekdays.add(current.isoweekday())
+            current += timedelta(days=1)
+    return frozenset(str(slot.id) for slot in template_slots if slot.weekday in closed_weekdays)
+
+
+def _minutes(value: object) -> int:
+    hour, minute = value.hour, value.minute
+    return hour * 60 + minute
 
 
 @router.post("/jobs", response_model=TimetableJobRead, status_code=201)
@@ -67,7 +106,84 @@ async def create_timetable_job(
     if year.school_id != body.school_id:
         raise AppError(422, "SCHOOL_MISMATCH", "Năm học không thuộc trường đã chọn.")
 
+    active_templates = (
+        (
+            await db.execute(
+                select(ScheduleTemplate).where(
+                    ScheduleTemplate.school_id == body.school_id,
+                    ScheduleTemplate.academic_year_id == body.academic_year_id,
+                    ScheduleTemplate.status == "active",
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if len(active_templates) == 0:
+        raise AppError(
+            422,
+            "ACTIVE_TEMPLATE_NOT_FOUND",
+            "Không có schedule template active duy nhất cho trường và năm học.",
+        )
+    if len(active_templates) > 1:
+        raise AppError(
+            422,
+            "AMBIGUOUS_ACTIVE_TEMPLATE",
+            "Có nhiều schedule template active cho trường và năm học.",
+        )
+
+    template = active_templates[0]
+    template_slots = (
+        (
+            await db.execute(
+                select(ScheduleSlot)
+                .where(ScheduleSlot.template_id == template.id)
+                .order_by(ScheduleSlot.weekday, ScheduleSlot.slot_order)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if not template_slots:
+        raise AppError(
+            422,
+            "ACTIVE_TEMPLATE_HAS_NO_SLOTS",
+            "Schedule template active không có tiết nào.",
+        )
+
+    active_holidays = (
+        (
+            await db.execute(
+                select(SchoolHoliday).where(
+                    SchoolHoliday.school_id == body.school_id,
+                    SchoolHoliday.academic_year_id == body.academic_year_id,
+                    SchoolHoliday.status == "active",
+                    SchoolHoliday.start_date <= year.end_date,
+                    SchoolHoliday.end_date >= year.start_date,
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    closed_slots = _closed_slot_ids(
+        tuple(template_slots),
+        tuple(active_holidays),
+        year.start_date,
+        year.end_date,
+    )
+
     snapshot_payload = body.model_dump(mode="json")
+    snapshot_payload["slots"] = [
+        {
+            "slot_id": str(slot.id),
+            "weekday": slot.weekday,
+            "start_minute": _minutes(slot.start_time),
+            "end_minute": _minutes(slot.end_time),
+        }
+        for slot in template_slots
+    ]
+    snapshot_payload["closed_slot_ids"] = sorted(closed_slots)
     snapshot_checksum = hashlib.sha256(
         json.dumps(snapshot_payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
     ).hexdigest()
@@ -87,14 +203,14 @@ async def create_timetable_job(
         ),
         slots=tuple(
             AvailableSlot(
-                slot_id=item.slot_id,
-                weekday=item.weekday,
-                start_minute=item.start_minute,
-                end_minute=item.end_minute,
+                slot_id=str(slot.id),
+                weekday=slot.weekday,
+                start_minute=_minutes(slot.start_time),
+                end_minute=_minutes(slot.end_time),
             )
-            for item in body.slots
+            for slot in template_slots
         ),
-        closed_slots=frozenset(body.closed_slot_ids),
+        closed_slots=closed_slots,
     )
 
     job = TimetableJob(
@@ -111,11 +227,32 @@ async def create_timetable_job(
     db.add(job)
     await db.flush()
 
-    solver_status, entries, evidence = solve_timetable(
-        snapshot,
-        time_limit_seconds=float(body.time_limit_seconds),
-        random_seed=body.random_seed,
-    )
+    try:
+        solver_status, entries, evidence = await to_thread.run_sync(
+            partial(
+                solve_timetable,
+                snapshot,
+                time_limit_seconds=float(body.time_limit_seconds),
+                random_seed=body.random_seed,
+            ),
+            limiter=_current_solver_limiter(),
+            abandon_on_cancel=False,
+        )
+    except get_cancelled_exc_class():
+        with CancelScope(shield=True):
+            job.status = "cancelled"
+            job.completed_at = datetime.now(UTC)
+            job.error = "SOLVER_CANCELLED"
+            try:
+                await db.commit()
+            except IntegrityError:
+                await db.rollback()
+                job.status = "failed"
+                job.solver_status = SolverStatus.UNKNOWN
+                job.error = "TIMETABLE_REVISION_CONFLICT"
+                db.add(job)
+                await db.commit()
+        raise
     job.solver_status = solver_status
     job.completed_at = datetime.now(UTC)
     entry_payload = [
@@ -189,18 +326,21 @@ async def create_timetable_job(
 async def list_timetable_jobs(
     ctx: WriteGuard,
     db: Db,
+    school_id: UUID | None = None,
+    academic_year_id: UUID | None = None,
 ):
     enforce_permission(
         ctx,
         resource_type=ResourceType.TIMETABLE,
         action=ActionType.READ,
-        scope=Scope(),
+        scope=Scope(school_id=school_id, academic_year_id=academic_year_id),
     )
-    jobs = (
-        (await db.execute(select(TimetableJob).order_by(TimetableJob.created_at.desc()).limit(100)))
-        .scalars()
-        .all()
-    )
+    query = select(TimetableJob).order_by(TimetableJob.created_at.desc()).limit(100)
+    if school_id is not None:
+        query = query.where(TimetableJob.school_id == school_id)
+    if academic_year_id is not None:
+        query = query.where(TimetableJob.academic_year_id == academic_year_id)
+    jobs = (await db.execute(query)).scalars().all()
     return jobs
 
 
@@ -208,23 +348,22 @@ async def list_timetable_jobs(
 async def list_timetable_versions(
     ctx: WriteGuard,
     db: Db,
+    school_id: UUID | None = None,
+    academic_year_id: UUID | None = None,
 ):
     enforce_permission(
         ctx,
         resource_type=ResourceType.TIMETABLE,
         action=ActionType.READ,
-        scope=Scope(),
+        scope=Scope(school_id=school_id, academic_year_id=academic_year_id),
     )
-    versions = (
-        (
-            await db.execute(
-                select(TimetableVersion).order_by(
-                    TimetableVersion.academic_year_id,
-                    TimetableVersion.revision.desc(),
-                )
-            )
-        )
-        .scalars()
-        .all()
+    query = select(TimetableVersion).order_by(
+        TimetableVersion.academic_year_id,
+        TimetableVersion.revision.desc(),
     )
+    if school_id is not None:
+        query = query.where(TimetableVersion.school_id == school_id)
+    if academic_year_id is not None:
+        query = query.where(TimetableVersion.academic_year_id == academic_year_id)
+    versions = (await db.execute(query)).scalars().all()
     return versions

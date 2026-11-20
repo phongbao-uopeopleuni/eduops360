@@ -18,3 +18,22 @@ def test_empty_or_invalid_bins_fail_explicitly():
         histogram([1.0], 0)
     with pytest.raises(ValueError):
         quartiles([])
+
+
+def test_histogram_rejects_zero_bins_before_empty_values_and_non_finite():
+    with pytest.raises(ValueError, match="BIN_COUNT_REQUIRED"):
+        histogram([], 0)
+    with pytest.raises(ValueError, match="NON_FINITE_VALUE"):
+        histogram([float("inf")], 2)
+
+
+def test_quartiles_reject_non_finite_and_extreme_histogram_range():
+    with pytest.raises(ValueError, match="NON_FINITE_VALUE"):
+        quartiles([1.0, float("nan")])
+    with pytest.raises(ValueError, match="NON_FINITE_RANGE"):
+        histogram([-1e308, 1e308], 2)
+
+
+def test_quartiles_reject_overflowing_median_output():
+    with pytest.raises(ValueError, match="NON_FINITE_VALUE"):
+        quartiles([1e308, 1e308, -1e308, -1e308])
