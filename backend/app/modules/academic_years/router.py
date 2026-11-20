@@ -25,7 +25,6 @@ from app.modules.academic_years.schemas import (
     AcademicTermRead,
     AcademicYearCreate,
     AcademicYearRead,
-    AcademicYearStatusUpdate,
     AcademicYearUpdate,
     SchoolCreate,
     SchoolRead,
@@ -47,28 +46,37 @@ Db = Annotated[AsyncSession, Depends(get_db_session)]
 
 @router.get("/schools", response_model=list[SchoolRead])
 async def list_schools(ctx: WriteGuard, db: Db):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.READ, scope=Scope())
+    enforce_permission(
+        ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.READ, scope=Scope()
+    )
     result = await db.execute(select(School).order_by(School.name))
     return result.scalars().all()
 
 
 @router.post("/schools", response_model=SchoolRead, status_code=201)
 async def create_school(body: SchoolCreate, ctx: WriteGuard, db: Db):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.CREATE, scope=Scope())
+    enforce_permission(
+        ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.CREATE, scope=Scope()
+    )
     school = School(code=body.code, name=body.name, timezone=body.timezone, address=body.address)
     db.add(school)
     try:
         await db.commit()
-    except IntegrityError:
+    except IntegrityError as exc:
         await db.rollback()
-        raise AppError(409, "SCHOOL_CODE_EXISTS", f"Mã trường '{body.code}' đã tồn tại.")
+        raise AppError(409, "SCHOOL_CODE_EXISTS", f"Mã trường '{body.code}' đã tồn tại.") from exc
     await db.refresh(school)
     return school
 
 
 @router.get("/schools/{school_id}", response_model=SchoolRead)
 async def get_school(school_id: UUID, ctx: WriteGuard, db: Db):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.READ, scope=Scope(school_id=school_id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.READ,
+        scope=Scope(school_id=school_id),
+    )
     school = await db.get(School, school_id)
     if not school:
         raise AppError(404, "SCHOOL_NOT_FOUND", "Không tìm thấy trường.")
@@ -77,7 +85,12 @@ async def get_school(school_id: UUID, ctx: WriteGuard, db: Db):
 
 @router.patch("/schools/{school_id}", response_model=SchoolRead)
 async def update_school(school_id: UUID, body: SchoolUpdate, ctx: WriteGuard, db: Db):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.UPDATE, scope=Scope(school_id=school_id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.UPDATE,
+        scope=Scope(school_id=school_id),
+    )
     school = await db.get(School, school_id)
     if not school:
         raise AppError(404, "SCHOOL_NOT_FOUND", "Không tìm thấy trường.")
@@ -90,7 +103,12 @@ async def update_school(school_id: UUID, body: SchoolUpdate, ctx: WriteGuard, db
 
 @router.get("/academic-years", response_model=list[AcademicYearRead])
 async def list_academic_years(ctx: WriteGuard, db: Db, school_id: UUID | None = None):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.READ, scope=Scope(school_id=school_id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.READ,
+        scope=Scope(school_id=school_id),
+    )
     q = select(AcademicYear).order_by(AcademicYear.start_date.desc())
     if school_id:
         q = q.where(AcademicYear.school_id == school_id)
@@ -100,7 +118,12 @@ async def list_academic_years(ctx: WriteGuard, db: Db, school_id: UUID | None = 
 
 @router.post("/academic-years", response_model=AcademicYearRead, status_code=201)
 async def create_academic_year(body: AcademicYearCreate, ctx: WriteGuard, db: Db):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.CREATE, scope=Scope(school_id=body.school_id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.CREATE,
+        scope=Scope(school_id=body.school_id),
+    )
     if body.start_date >= body.end_date:
         raise AppError(422, "INVALID_DATES", "Ngày bắt đầu phải trước ngày kết thúc.")
     school = await db.get(School, body.school_id)
@@ -115,9 +138,11 @@ async def create_academic_year(body: AcademicYearCreate, ctx: WriteGuard, db: Db
     db.add(year)
     try:
         await db.commit()
-    except IntegrityError:
+    except IntegrityError as exc:
         await db.rollback()
-        raise AppError(409, "YEAR_NAME_EXISTS", f"Năm học '{body.name}' đã tồn tại cho trường này.")
+        raise AppError(
+            409, "YEAR_NAME_EXISTS", f"Năm học '{body.name}' đã tồn tại cho trường này."
+        ) from exc
     await db.refresh(year)
     return year
 
@@ -127,7 +152,12 @@ async def get_academic_year(year_id: UUID, ctx: WriteGuard, db: Db):
     year = await db.get(AcademicYear, year_id)
     if not year:
         raise AppError(404, "YEAR_NOT_FOUND", "Không tìm thấy năm học.")
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.READ, scope=Scope(school_id=year.school_id, academic_year_id=year.id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.READ,
+        scope=Scope(school_id=year.school_id, academic_year_id=year.id),
+    )
     return year
 
 
@@ -136,7 +166,12 @@ async def update_academic_year(year_id: UUID, body: AcademicYearUpdate, ctx: Wri
     year = await db.get(AcademicYear, year_id)
     if not year:
         raise AppError(404, "YEAR_NOT_FOUND", "Không tìm thấy năm học.")
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.UPDATE, scope=Scope(school_id=year.school_id, academic_year_id=year.id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.UPDATE,
+        scope=Scope(school_id=year.school_id, academic_year_id=year.id),
+    )
     ensure_year_mutable(AcademicYearStatus(year.status))
     updates = body.model_dump(exclude_unset=True)
     start = updates.get("start_date", year.start_date)
@@ -156,7 +191,12 @@ async def activate_academic_year(year_id: UUID, ctx: WriteGuard, db: Db):
     year = await db.get(AcademicYear, year_id)
     if not year:
         raise AppError(404, "YEAR_NOT_FOUND", "Không tìm thấy năm học.")
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.ACTIVATE, scope=Scope(school_id=year.school_id, academic_year_id=year.id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.ACTIVATE,
+        scope=Scope(school_id=year.school_id, academic_year_id=year.id),
+    )
     ensure_academic_year_transition(AcademicYearStatus(year.status), AcademicYearStatus.ACTIVE)
     active_check = await db.execute(
         select(AcademicYear).where(
@@ -179,7 +219,12 @@ async def archive_academic_year(year_id: UUID, ctx: WriteGuard, db: Db):
     year = await db.get(AcademicYear, year_id)
     if not year:
         raise AppError(404, "YEAR_NOT_FOUND", "Không tìm thấy năm học.")
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.ARCHIVE, scope=Scope(school_id=year.school_id, academic_year_id=year.id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.ARCHIVE,
+        scope=Scope(school_id=year.school_id, academic_year_id=year.id),
+    )
     ensure_academic_year_transition(AcademicYearStatus(year.status), AcademicYearStatus.ARCHIVED)
     year.status = AcademicYearStatus.ARCHIVED
     year.revision += 1
@@ -190,7 +235,12 @@ async def archive_academic_year(year_id: UUID, ctx: WriteGuard, db: Db):
 
 @router.get("/academic-terms", response_model=list[AcademicTermRead])
 async def list_academic_terms(ctx: WriteGuard, db: Db, academic_year_id: UUID | None = None):
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.READ, scope=Scope(academic_year_id=academic_year_id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.READ,
+        scope=Scope(academic_year_id=academic_year_id),
+    )
     q = select(AcademicTerm).order_by(AcademicTerm.term_order)
     if academic_year_id:
         q = q.where(AcademicTerm.academic_year_id == academic_year_id)
@@ -203,7 +253,12 @@ async def create_academic_term(body: AcademicTermCreate, ctx: WriteGuard, db: Db
     year = await db.get(AcademicYear, body.academic_year_id)
     if not year:
         raise AppError(404, "YEAR_NOT_FOUND", "Không tìm thấy năm học.")
-    enforce_permission(ctx, resource_type=ResourceType.ACADEMIC_YEAR, action=ActionType.CREATE, scope=Scope(school_id=year.school_id, academic_year_id=year.id))
+    enforce_permission(
+        ctx,
+        resource_type=ResourceType.ACADEMIC_YEAR,
+        action=ActionType.CREATE,
+        scope=Scope(school_id=year.school_id, academic_year_id=year.id),
+    )
     ensure_year_mutable(AcademicYearStatus(year.status))
     validate_term_window(
         term=DateWindow(start_date=body.start_date, end_date=body.end_date),
@@ -219,8 +274,10 @@ async def create_academic_term(body: AcademicTermCreate, ctx: WriteGuard, db: Db
     db.add(term)
     try:
         await db.commit()
-    except IntegrityError:
+    except IntegrityError as exc:
         await db.rollback()
-        raise AppError(409, "TERM_ORDER_EXISTS", f"Thứ tự học kỳ {body.term_order} đã tồn tại.")
+        raise AppError(
+            409, "TERM_ORDER_EXISTS", f"Thứ tự học kỳ {body.term_order} đã tồn tại."
+        ) from exc
     await db.refresh(term)
     return term

@@ -69,9 +69,7 @@ def upgrade():
         sa.CheckConstraint("revision >= 0", name="ck_academic_years_revision"),
         sa.UniqueConstraint("school_id", "name", name="uq_academic_years_school_name"),
     )
-    op.create_index(
-        "ix_academic_years_school_status", "academic_years", ["school_id", "status"]
-    )
+    op.create_index("ix_academic_years_school_status", "academic_years", ["school_id", "status"])
 
     op.create_table(
         "academic_terms",
@@ -104,9 +102,7 @@ def upgrade():
             "status IN ('draft', 'active', 'archived')", name="ck_academic_terms_status"
         ),
         sa.CheckConstraint("term_order >= 1", name="ck_academic_terms_order"),
-        sa.UniqueConstraint(
-            "academic_year_id", "term_order", name="uq_academic_terms_year_order"
-        ),
+        sa.UniqueConstraint("academic_year_id", "term_order", name="uq_academic_terms_year_order"),
     )
     op.create_index("ix_academic_terms_year", "academic_terms", ["academic_year_id"])
 
@@ -141,9 +137,7 @@ def upgrade():
             server_default=sa.text("now()"),
         ),
         sa.CheckConstraint("grade >= 1 AND grade <= 12", name="ck_school_classes_grade"),
-        sa.UniqueConstraint(
-            "school_id", "academic_year_id", "name", name="uq_school_classes_name"
-        ),
+        sa.UniqueConstraint("school_id", "academic_year_id", "name", name="uq_school_classes_name"),
     )
     op.create_index(
         "ix_school_classes_school_year", "school_classes", ["school_id", "academic_year_id"]

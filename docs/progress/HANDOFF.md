@@ -8,6 +8,9 @@
   `origin/codex/edu-0075-phase7-11-implementation`.
 - Draft stacked PR [#15](https://github.com/phongbao-uopeopleuni/eduops360/pull/15) uses the
   open PR #14 branch as its base to avoid duplicating GitHub Pages changes.
+- The first PR #15 foundation run failed on Ruff issues in Phase 3 prerequisite files.
+  EDU-0082 corrected only formatting, one unused import, and exception chaining; local full
+  Ruff checks and backend tests now pass. A hosted rerun is required after the next push.
 - PR #15 remains a draft: EDU-0080 is `NEEDS_CHANGES`, and `main` requires CI, one independent
   approval after the latest push, and resolved conversations. No merge or phase acceptance occurred.
 - Added a complete process report:
