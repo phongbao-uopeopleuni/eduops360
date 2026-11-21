@@ -166,11 +166,7 @@ function SystemPage() {
           <h1>Trạng thái hệ thống</h1>
           <p className="lead lead--left">Kiểm tra kết nối trước khi làm việc với hệ thống.</p>
         </div>
-        {isGitHubPagesPreview ? (
-          <PreviewUnavailable title="Trạng thái dịch vụ" />
-        ) : (
-          <HealthPanel />
-        )}
+        {isGitHubPagesPreview ? <PreviewUnavailable title="Trạng thái dịch vụ" /> : <HealthPanel />}
       </div>
     </section>
   );
