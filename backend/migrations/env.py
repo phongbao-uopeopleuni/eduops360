@@ -8,10 +8,15 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import Settings
 from app.core.event_loop import create_event_loop
 from app.db.base import Base
+from app.modules.academic_data import models as academic_data_models  # noqa: F401
+from app.modules.academic_years import models as academic_year_models  # noqa: F401
 from app.modules.audit_logs import models as audit_models  # noqa: F401
 
 # Import models so Alembic sees them
 from app.modules.auth import models as auth_models  # noqa: F401
+from app.modules.school_calendar import models as school_calendar_models  # noqa: F401
+from app.modules.students import models as student_models  # noqa: F401
+from app.modules.timetables import models as timetable_models  # noqa: F401
 
 config = context.config
 if not os.environ.get("EDUOPS_DATABASE_URL"):

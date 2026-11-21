@@ -242,6 +242,17 @@ main:focus-visible {
   line-height: 1.6;
 }
 
+.preview-notice {
+  margin: 12px auto;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--warm-surface);
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+}
+
 /* Navbar */
 .skip-link {
   position: fixed;

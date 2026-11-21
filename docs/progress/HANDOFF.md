@@ -2,6 +2,157 @@
 
 **Status:** `P03-T01 IMPLEMENTED / IN_REVIEW UNDER USER DEBT EXCEPTION; PHASE 02 STILL NOT ACCEPTED`.
 
+## EDU-0083 — EDU-0080 F-03 remediation (2026-11-20)
+
+- Implemented the minimal fix in `backend/app/modules/students/router.py`: acquire a
+  PostgreSQL row lock on the import batch and refresh its state before checking whether
+  the batch is already committed. Import mutations and audit remain in the same transaction.
+- Added a two-session synthetic PostgreSQL regression in
+  `backend/tests/student_import/test_commit_concurrency.py`. The fail-first run confirmed
+  the old query lacked `FOR UPDATE`; after the fix, three consecutive concurrency runs
+  passed and `python -m pytest tests/student_import -q` reported **5 passed**.
+- Targeted Ruff check/format and `git diff --check` passed.
+- Live evidence used Compose project `eduops360-edu0083-f03`, container
+  `eduops360-edu0083-f03-db-1`, isolated volume
+  `eduops360-edu0083-f03_postgres-data`, and Alembic head `0013_timetable_solver`.
+  The disposable database was migrated only for this regression; its dedicated containers,
+  network, volume and generated env file were removed after evidence capture. No shared
+  database or real data was used.
+- Task [EDU-0083](D:/eduops360/docs/progress/tasks/EDU-0083.md) is `in_review`.
+  The implementer cannot close the audit finding: independent re-review is pending.
+  EDU-0080 remains `NEEDS_CHANGES`; no phase is accepted.
+- F-02 has since been remediated in EDU-0084; continue with F-04 next. Do not treat either
+  P1 implementation as independently reviewed.
+
+## EDU-0084 — EDU-0080 F-02 remediation (2026-11-20)
+
+- Added optional `school_id` and `academic_year_id` filters to both timetable job and version
+  list endpoints. The exact requested `Scope` is checked against the principal, and supplied
+  dimensions are included in SQL predicates.
+- Refreshed `contracts/openapi.json` and the generated TypeScript API types; optional
+  parameters preserve existing unscoped callers with global-read permission.
+- Fail-first live test confirmed the old endpoint rejected the new scope parameter. After
+  the fix, the two-school/three-year PostgreSQL regression passed; `tests/timetables`
+  reported **6 passed**. Ruff, OpenAPI, API contract and frontend type checks passed.
+- Independent review identified that the original timetable page called the job endpoint
+  without scope. The page now starts with the first selected school/year and loads jobs
+  with both query parameters; changing either selector reloads the scoped job list.
+  A focused frontend regression passed in Vitest.
+- Evidence used Compose project `eduops360-edu0084-f02`, container
+  `eduops360-edu0084-f02-db-1`, isolated volume
+  `eduops360-edu0084-f02_postgres-data`, and Alembic head `0013_timetable_solver`.
+  The dedicated containers, network, volume and generated env file were removed after tests.
+- Task [EDU-0084](D:/eduops360/docs/progress/tasks/EDU-0084.md) is `in_review`.
+  Independent re-review remains pending; EDU-0080 stays `NEEDS_CHANGES`, and no phase is
+  accepted.
+- F-04 is now blocked in [EDU-0085](D:/eduops360/docs/progress/tasks/EDU-0085.md): the
+  calendar schema has no approved holiday state/workflow and permits multiple active
+  templates per school/year. Do not equate `active` with `approved` or choose a template
+  implicitly without Product Owner confirmation. No F-04 source changes were made.
+- The Product Owner has now confirmed both F-04 decisions: active holidays are authoritative
+  for closure, and exactly one active template is required per school/year. EDU-0085 is
+  in review; the endpoint derives template slots and holiday closures on the server and
+  rejects client-supplied slots/closures. The timetable unit suite has 7 passing tests,
+  with isolated PostgreSQL scope evidence still skipped until a disposable DSN is available.
+- Migration `0014_unique_active_schedule_template` adds a partial unique index for exactly
+  one active template per school/year. The frontend now has 2 focused Vitest tests,
+  including absence of client-controlled slots/closed-slot IDs in POST payload.
+- F-03/F-02 remain in review; neither remediation is independently reviewed.
+
+## Consolidated build handoff EDU-0081 — 2026-11-20
+
+- Committed as `b86456c0890462edd867e461d98a81797e34709e` and pushed to
+  `origin/codex/edu-0075-phase7-11-implementation`.
+- Draft stacked PR [#15](https://github.com/phongbao-uopeopleuni/eduops360/pull/15) uses the
+  open PR #14 branch as its base to avoid duplicating GitHub Pages changes.
+- The first PR #15 foundation run failed on Ruff issues in Phase 3 prerequisite files.
+  EDU-0082 corrected formatting, one unused import, and exception chaining, declared
+  `python-multipart` in application and runtime locks, and added OR-Tools/transitive packages
+  to the Docker runtime lock. Local full Ruff checks, lock resolution, app import and backend
+  tests pass. All three workflows also pass on PR head
+  `f5e6c293489e17aa1191fb5429f3ed71abf45ce5`: foundation run 44681950998 and
+  governance/blueprint run 44681951041.
+- PR #15 remains a draft: EDU-0080 is `NEEDS_CHANGES`, and `main` requires CI, one independent
+  approval after the latest push, and resolved conversations. No merge or phase acceptance occurred.
+- Added a complete process report:
+  [PHASE_4_11_BUILD_REPORT_2026-11-20.md](D:/eduops360/docs/quality/PHASE_4_11_BUILD_REPORT_2026-11-20.md).
+- Added this agent handoff task: [EDU-0081](D:/eduops360/docs/progress/tasks/EDU-0081.md).
+- Replaced the stale next-agent prompt with a remediation-first prompt in
+  [NEXT_AGENT_PROMPT.md](D:/eduops360/docs/progress/NEXT_AGENT_PROMPT.md).
+- EDU-0080 F-03 and F-02 are implemented in EDU-0083/0084 and await independent review.
+  Remediate F-04/F-01 next, then P2 findings, before independent audit closure.
+- The report and handoff do not close audit findings or mark any phase accepted.
+
+## Independent audit EDU-0080 — 2026-11-20
+
+- Reviewed Phases 4–11 implementation without product source changes.
+- Verdict: `NEEDS_CHANGES`; no confirmed P0.
+- P1: F-01 synchronous CP-SAT event-loop blocking, F-02 timetable cross-scope listing,
+  F-03 concurrent import commit race, F-04 client-controlled closed slots.
+- P2: F-05 upload memory precheck, F-06 export audit, F-07 calendar audit, F-08 analytics
+  bin validation, F-09 finite assessment values, F-10 finite ML values, F-11 shallow log redaction.
+- Remediation and independent re-review are required; this audit is not phase acceptance.
+
+## Live remediation verification — 2026-11-20
+
+- Disposable Compose project: `eduops360-remediation-validation`.
+- Loopback PostgreSQL port: `55433`.
+- Alembic head: `0014_active_template`.
+- Migration included the partial unique index
+  `uq_schedule_templates_one_active_per_scope`.
+- Live isolated suite:
+  `python -m pytest tests/student_import/test_commit_concurrency.py tests/timetables/test_list_scope.py -q`
+  — `4 passed`.
+- EDU-0083 F-03, EDU-0084 F-02 and EDU-0085 F-04 remain `in_review`.
+  Passing live tests are evidence, not independent finding closure or phase acceptance.
+
+## Phase 7–11 foundation EDU-0075..0079 — 2026-11-20
+
+- The user authorized continuing Phases 7–11 while skipping formal accepted-phase gates.
+- Added an umbrella implementation branch `codex/edu-0075-phase7-11-implementation`.
+- Phase 7: policy-versioned synthetic assessment domain, forward state transitions and ROUND_HALF_UP numeric rounding.
+- Phase 8: source URL, retrieval timestamp, checksum and effective-range provenance primitives.
+- Phase 9: independent histogram and quartile calculations.
+- Phase 10: `as_of` feature snapshots, mean baseline, MAE and synthetic model-card template.
+- Phase 11: credential/redaction helper and explicit not-approved release gate record.
+- Phase 7–11 remain `in_review`; no official legal policy, real student data, approved predictive target or production deployment was used.
+
+## Phase 6 implementation EDU-0074 — 2026-11-20
+
+- The user authorized continuing Phase 6 while skipping formal accepted-phase gates.
+- EDU-0074 implementation is `in_review` on branch `codex/edu-0075-phase7-11-implementation`.
+- Added OR-Tools CP-SAT snapshot, bounded solve, truthful status mapping and independent collision validation.
+- Added timetable job/version persistence migration `0013_timetable_solver`, JSONB snapshots and draft versions.
+- Added timetable job API and local `/timetables` UI.
+- Verified 5 CP-SAT/benchmark tests including 5/20/50/80 synthetic class shapes, 12 combined Phase 5/6 tests,
+  24 frontend unit tests, Ruff, frontend typecheck and OpenAPI synchronization.
+- Live PostgreSQL migration, queued worker, manual repair grid, benchmark evidence and human approval remain incomplete.
+- Formal Phase 5 acceptance and OD-009 remain open; no timetable is published automatically.
+
+## Phase 5 implementation EDU-0073 — 2026-11-20
+
+- The user authorized continuing Phase 5 while skipping formal accepted-phase gates.
+- EDU-0073 implementation is `in_review` on branch `codex/edu-0075-phase7-11-implementation`.
+- Added migration `0012_school_calendar`, schedule templates, AM/PM time slots and holiday ranges.
+- Added overlap, zero-duration, reversed-range and academic-year-boundary validation.
+- Added local calendar API and frontend route `/calendar`.
+- Verified 7 calendar temporal tests, 11 combined Phase 4/5 backend tests, 24 frontend unit tests,
+  Ruff, frontend typecheck, OpenAPI synchronization and offline SQL for migration `0012`.
+- Live PostgreSQL migration/runtime, independent review and human acceptance remain not done.
+- OD-009 and legal-holiday approval semantics remain open; no source is represented as approved.
+
+## Phase 4 implementation EDU-0072 — 2026-11-20
+
+- The user explicitly authorized continuing Phase 4 while skipping formal acceptance gates.
+- EDU-0072 implementation is `in_review` on branch `codex/edu-0075-phase7-11-implementation`.
+- Added migration `0011_student_import_staging`, staged batch/row models, strict UTF-8/BOM preview,
+  create-only transactional commit, SHA-256 idempotency replay, audit writes and BOM CSV export.
+- Added the import/export UI in the Student Management page.
+- Verified 4 pipeline unit tests, 24 frontend unit tests, frontend typecheck/lint, Ruff,
+  OpenAPI synchronization and a 2,000-row synthetic UTF-8 CSV with 0 validation errors.
+- Live PostgreSQL migration/commit, independent review and human acceptance remain not done.
+- OD-005 and OD-013 remain open; update mode and stricter import-limit policy are not approved.
+
 Start at EDU-0054, then read `docs/quality/PHASE_01_02_ACCEPTANCE_PACKAGE_2026-11-14.md`, EDU-0042 and EDU-0046..0053. The user explicitly allowed the narrow P03-T01 kickoff while carrying Phase 02 debt. Phase 01/02 remain unaccepted; do not present this exception as acceptance or automatically begin P03-T02..T09.
 
 ## Git bootstrap EDU-0055 — 2026-11-15
@@ -121,7 +272,7 @@ The sections below are retained as historical audit/remediation context. Where c
 - OD-011: approve audit retention/archive delivery and production migration/downgrade authority.
 - Approve encrypted MFA secret custody, recovery authorities and notification channel before enabling enrollment/recovery.
 - Accept Phase 01 prerequisite before formal Phase 02 acceptance.
-- `D:\eduops360` is not a Git repository; commit/push/PR/merge/hosted-CI evidence is unavailable.
+- Git initialized in EDU-0055; remote at `https://github.com/phongbao-uopeopleuni/eduops360`; `main` protected after EDU-0056. PR #14 (`codex/edu-0070-github-pages`) remains open and unmerged.
 
 ## Next authorized actions
 
@@ -133,3 +284,66 @@ The sections below are retained as historical audit/remediation context. Where c
 ## Reproduction
 
 Exact commands and side effects are in `docs/progress/evidence/EDU-0030/verification.json`. All DB tests use an isolated disposable PostgreSQL instance and synthetic identities only.
+
+
+## GitHub Pages UI preview EDU-0070 — 2026-11-16
+
+- The backend-free static preview is live at
+  `https://phongbao-uopeopleuni.github.io/eduops360/`. The first successful
+  deployment was run `43863545271` (#31), attempt 2, on `851f998`; current head
+  `62d6beb` was subsequently deployed successfully by run `43870623064` (#33).
+  GitHub deployment `7824548695` is `success`, and a fresh local probe returned
+  HTTP `200` for both the HTML and its `/eduops360/assets/` JavaScript bundle.
+  The user also confirmed in the browser that the public page opens.
+- PR #14 (`codex/edu-0070-github-pages` → `main`) remains open and unmerged.
+  Its current remote state is `BLOCKED` / `REVIEW_REQUIRED`; `main` remains at
+  `c622467`. Do not self-approve, fabricate an approval, use admin bypass, or
+  weaken the `main` branch rules.
+- To make the requested static UI preview available without a second
+  collaborator, the Pages workflow explicitly permits trusted pushes from
+  `codex/edu-0070-github-pages` as a temporary deployment source, as well as
+  `main`. Pull-request events remain validation-only and cannot deploy.
+- Pages artifact remains limited to `frontend/dist`; no backend, PostgreSQL,
+  Railway configuration, credentials, or student data are deployed.
+- This does not merge PR #14, change the default branch, alter branch
+  protection, or accept any project phase. After a future approved merge,
+  `main` remains a deployment source.
+- The separate `docs/progress/PROJECT_STATUS.md` file is absent from this
+  main-based task branch; do not invent a replacement or import the unrelated
+  stacked PR chain to enable Pages.
+- Historical failure `43862744119` on `bf74ee1` occurred before the environment
+  allowlist permitted the task branch. It is resolved and must not be reported as
+  the current state. Keep the allowlist restricted to the two explicit refs;
+  do not disable environment protection or select unrestricted branches.
+- Current PR checks are green: Pages build/deploy, foundation, governance and
+  blueprint. Deployment success does not merge PR #14, connect a backend,
+  establish production readiness, or accept any project phase.
+
+## Dangerous residual bug audit EDU-0071 — 2026-11-17
+
+- Audit result is **NEEDS_CHANGES** on reviewed commit `62d6beb`: no confirmed
+  P0, two new P1 findings and four open P2 findings. Full evidence, exact
+  preconditions and minimum remediation are in
+  `docs/quality/DANGEROUS_BUG_AUDIT_2026-11-17.md`.
+- P1: delegated grants can remain effective after their authorizing grant is
+  revoked early; concurrent grant requests can create duplicate active rows so
+  revoking one row leaves the duplicate effective. Both require isolated
+  PostgreSQL regression tests in a separate remediation task.
+- P2: login accepts an unbounded password/body; the known shared-peer rate-limit
+  denial of service remains open; the Pages deployment branch is allowed to
+  publish while unprotected; all 13 workflow action references use mutable
+  major tags. Policy-only and defense-in-depth items remain clearly separated.
+- Verification: root 24 passed; backend host 93 passed/20 PostgreSQL skipped;
+  backend Ruff/OpenAPI passed; frontend API/lint/typecheck/24 unit tests passed;
+  npm audits and a 41-package OSV query returned no advisories. Docker was
+  unavailable and was not started, so live concurrency proof remains pending.
+- This was an audit-only task. No product code, migration, workflow, cloud
+  setting or branch protection was changed; PR #14 was not merged and no phase
+  was accepted. Pre-existing EDU-0070 documentation edits were preserved.
+- Side effect: an initial backend scan accidentally read ignored local `.env`
+  files, exposing local DB connection material only in internal tool output.
+  The scan was stopped; no DB connection, data transfer or credential change
+  occurred. Rotate those values if they are reused beyond local development.
+- Test runs refreshed ignored pytest, Python bytecode, Ruff and Vitest caches;
+  none were added to Git or deleted. The final port check was empty for the
+  common project ports and the Docker service remained stopped.

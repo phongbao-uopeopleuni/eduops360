@@ -64,8 +64,15 @@ def upgrade():
 
     op.execute(
         """
-        ALTER DEFAULT PRIVILEGES FOR ROLE eduops_migrator IN SCHEMA public
-        REVOKE ALL ON TABLES FROM PUBLIC
+        DO $$
+        BEGIN
+            EXECUTE format(
+                'ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA public '
+                'REVOKE ALL ON TABLES FROM PUBLIC',
+                current_user
+            );
+        END
+        $$
         """
     )
 
