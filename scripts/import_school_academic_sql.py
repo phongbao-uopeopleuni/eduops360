@@ -14,8 +14,6 @@ from datetime import date as Date
 from pathlib import Path
 from uuid import uuid4
 
-import psycopg
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SQL = ROOT / "backend" / "school_academic_2000_import.sql"
 
@@ -154,6 +152,8 @@ def normalize_dsn(raw: str) -> str:
 
 
 def import_source(dsn: str, sql_path: Path) -> dict[str, int]:
+    import psycopg
+
     source = load_source(sql_path)
     with psycopg.connect(normalize_dsn(dsn)) as connection, connection.transaction():
             school_id = uuid4()
