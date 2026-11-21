@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import Settings
 from app.core.event_loop import create_event_loop
 from app.db.base import Base
+from app.modules.academic_data import models as academic_data_models  # noqa: F401
 from app.modules.academic_years import models as academic_year_models  # noqa: F401
 from app.modules.audit_logs import models as audit_models  # noqa: F401
 
