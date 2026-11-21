@@ -132,7 +132,7 @@ export function TimetablesPage() {
         </p>
       )}
       <section className="panel" aria-label="Tạo thời khóa biểu">
-        <h2>Chạy solver giả lập</h2>
+        <h2>Tạo thời khóa biểu</h2>
         <form className="form-stack" onSubmit={handleSubmit}>
           <label>
             Trường
@@ -175,7 +175,7 @@ export function TimetablesPage() {
             </select>
           </label>
           <label>
-            Số lớp giả lập
+            Số lớp
             <input name="class_count" type="number" min={1} max={80} defaultValue={5} required />
           </label>
           <button className="button" type="submit" disabled={busy}>

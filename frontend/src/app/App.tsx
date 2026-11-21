@@ -7,7 +7,7 @@ import { SchoolCalendarPage } from '../features/school-calendar/SchoolCalendarPa
 import { TimetablesPage } from '../features/timetables/TimetablesPage';
 import { useTheme } from './ThemeProvider';
 
-type TileKind = 'students' | 'calendar' | 'exam';
+type TileKind = 'students' | 'calendar';
 
 // Decorative "soft" icons for feature tiles: gradient only on icons, per the UI spec.
 function TileIcon({ kind }: { kind: TileKind }) {
@@ -37,14 +37,6 @@ function TileIcon({ kind }: { kind: TileKind }) {
           <rect x="39" y="57" width="10" height="10" rx="3" fill={`url(#${gradient})`} />
         </>
       )}
-      {kind === 'exam' && (
-        <>
-          <rect x="28" y="62" width="8" height="8" rx="3" fill={`url(#${gradient})`} />
-          <rect x="40" y="48" width="8" height="22" rx="3" fill={`url(#${gradient})`} />
-          <rect x="52" y="36" width="8" height="34" rx="3" fill={`url(#${gradient})`} />
-        </>
-      )}
-      {/* Clock badge = planned (these modules are not built yet; a check mark would imply done) */}
       <circle cx="74" cy="22" r="12" fill={`url(#${gradient})`} />
       <path
         d="M74 16.5V22l3.5 2.5"
@@ -63,11 +55,10 @@ function Overview() {
     <>
       <section className="section hero">
         <div className="container hero__inner">
-          <p className="eyebrow">Môi trường phát triển local · dữ liệu giả lập</p>
+          <p className="eyebrow">Môi trường vận hành local</p>
           <h1>Không gian làm việc của nhà trường</h1>
           <p className="lead">
-            Quản lý học sinh, lịch học và khảo thí trên một nền tảng thống nhất. Hiện đã có nền tảng
-            hệ thống và quản trị tài khoản; các phân hệ học vụ được bổ sung theo từng giai đoạn.
+            Quản lý học sinh, lịch học và thời khóa biểu trên một nền tảng thống nhất.
           </p>
           <div className="hero__actions">
             <Link className="button" to="/users">
@@ -77,36 +68,14 @@ function Overview() {
               Xem trạng thái hệ thống
             </Link>
           </div>
-          <div className="mockup">
-            <div className="scope-grid" aria-label="Phạm vi thiết kế">
-              <div className="stat-card">
-                <span>Đơn vị vận hành</span>
-                <strong>Một trường</strong>
-                <span className="stat-bar" aria-hidden="true" />
-              </div>
-              <div className="stat-card">
-                <span>Cấp học hỗ trợ</span>
-                <strong>Lớp 1–12</strong>
-                <span className="stat-bar" aria-hidden="true" />
-              </div>
-              <div className="stat-card">
-                <span>Ngôn ngữ làm việc</span>
-                <strong>Tiếng Việt</strong>
-                <span className="stat-bar" aria-hidden="true" />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       <section className="section section--alt" aria-labelledby="roadmap-title">
         <div className="container">
           <div className="section__intro">
-            <h2 id="roadmap-title">Các phân hệ theo lộ trình</h2>
-            <p className="lead">
-              Thứ tự triển khai đã được Product Owner xác nhận: học sinh và nhập CSV, sau đó thời
-              khóa biểu, rồi khảo thí.
-            </p>
+            <h2 id="roadmap-title">Các phân hệ đang hoạt động</h2>
+            <p className="lead">Học vụ và lịch học được cung cấp trong môi trường local.</p>
           </div>
           <ul className="feature-grid">
             <li className="feature-tile">
@@ -114,21 +83,14 @@ function Overview() {
                 <TileIcon kind="students" />
               </div>
               <h3>Học sinh và nhập CSV</h3>
-              <p>Giai đoạn 03–04 · đã có lát cắt local</p>
+              <p>Quản lý, nhập CSV và xuất dữ liệu</p>
             </li>
             <li className="feature-tile">
               <div className="tile-art">
                 <TileIcon kind="calendar" />
               </div>
               <h3>Lịch học và thời khóa biểu</h3>
-              <p>Giai đoạn 05–06 · đã có lịch học và CP-SAT local</p>
-            </li>
-            <li className="feature-tile">
-              <div className="tile-art">
-                <TileIcon kind="exam" />
-              </div>
-              <h3>Khảo thí và điểm số</h3>
-              <p>Giai đoạn 07 · chưa triển khai</p>
+              <p>Lịch học, mẫu tiết và CP-SAT</p>
             </li>
           </ul>
         </div>
@@ -202,17 +164,12 @@ function SystemPage() {
         <div className="page-intro">
           <p className="eyebrow">Vận hành local</p>
           <h1>Trạng thái hệ thống</h1>
-          <p className="lead lead--left">
-            Kiểm tra kết nối trước khi làm việc với môi trường thử nghiệm.
-          </p>
+          <p className="lead lead--left">Kiểm tra kết nối trước khi làm việc với hệ thống.</p>
         </div>
         {isGitHubPagesPreview ? (
           <PreviewUnavailable title="Trạng thái dịch vụ" />
         ) : (
-          <>
-            <HealthPanel />
-            <p className="support-note">Môi trường hiện tại sử dụng dữ liệu giả lập.</p>
-          </>
+          <HealthPanel />
         )}
       </div>
     </section>
@@ -284,7 +241,7 @@ function TimetablesPageWrapper() {
           <p className="eyebrow">Thời khóa biểu · Phase 06</p>
           <h1>CP-SAT thời khóa biểu</h1>
           <p className="lead lead--left">
-            Chạy bản giả lập có giới hạn thời gian; kết quả draft chưa được công bố.
+            Chạy giải thuật có giới hạn thời gian; kết quả ở trạng thái draft.
           </p>
         </div>
         {isGitHubPagesPreview ? <PreviewUnavailable title="Thời khóa biểu" /> : <TimetablesPage />}
@@ -402,7 +359,7 @@ export function App() {
       <footer className="app-footer">
         <div className="container app-footer__inner">
           <span>EduOps 360</span>
-          <span>Quản lý học vụ & khảo thí</span>
+          <span>Quản lý học vụ</span>
         </div>
       </footer>
     </div>

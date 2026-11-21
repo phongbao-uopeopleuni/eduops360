@@ -1,7 +1,7 @@
 > **Phase 00 canonical:** `docs/phases/PHASE-00.md` (v2.2, IN_REVIEW). Do not maintain a second product baseline or open decisions file.
 
 
-# EduOps 360 — Nền tảng local Phase 01
+# EduOps 360 — Hệ thống quản trị học vụ local
 
 React/TypeScript/Vite, FastAPI và PostgreSQL đã được triển khai local qua các task EDU-0007..0010. Trạng thái review và bằng chứng hiện tại nằm trong `docs/progress/HANDOFF.md`. Phase 00 giữ sổ quyết định chuẩn tại `docs/phases/PHASE-00.md`.
 
@@ -37,51 +37,28 @@ Sinh fixture kỹ thuật tại `.local/` với năm học được chỉ địn
 python scripts/generate_synthetic_students.py .local/synthetic/students.csv --count 2000 --seed 360 --academic-year 2026-2027
 ```
 
-Generator từ chối ghi đè file đã có. Năm học trong lệnh là ví dụ dữ liệu giả lập. `python scripts/benchmark_startup.py` đo startup local và tự dừng các process do phép đo tạo.
+Generator từ chối ghi đè file đã có. `python scripts/benchmark_startup.py` đo startup local và tự dừng các process do phép đo tạo.
 
----
+## Import dữ liệu trường/ngành học mẫu
 
-## Prior starter notes — historical v1.2 package
-# EduOps 360 — Unified AI Agent Starter v1.2
+File [backend/school_academic_2000_import.sql](backend/school_academic_2000_import.sql) chứa
+1 năm học, 72 lớp, 2.000 học sinh và 2.000 ghi danh từ SQLite-style SQL. Script sau ánh xạ
+đúng các thực thể đang có trong PostgreSQL EduOps và chạy idempotent:
 
-**Repository governance and CSV-import starter only** — not a runnable school management application and not connected to a production Git repository.
-
-## Layout
-
-- `frontend/` — React + TypeScript (scaffold only)
-- `backend/` — Python + FastAPI (scaffold only)
-- `ai-agent-sp/` — **single source of truth** for all coding agents
-- `AGENTS.md`, `CLAUDE.md` — only tool-discovery entry points
-- `docs/progress/` — task logs, handoff, incidents, generated board
-- `docs/requirements/STUDENT_IMPORT.md` — CSV requirements and staged import workflow
-- `samples/templates/students_import_template.csv` — synthetic CSV sample
-- `scripts/validate_students_csv.py` — local **preflight** CSV structure check (not a database importer)
-- `contracts/`, `infra/`, `tests/` — integration/operations scaffolding
-
-## Verify this starter
-
-```bash
-python scripts/check_structure.py
-python scripts/validate_students_csv.py samples/templates/students_import_template.csv
-python scripts/sync_task_board.py
+```powershell
+$env:EDUOPS_DATABASE_URL = "postgresql+psycopg://eduops_runtime:<mật-khẩu>@127.0.0.1:<cổng>/eduops360"
+python scripts/import_school_academic_sql.py --sql-file backend/school_academic_2000_import.sql
 ```
 
-See `ai-agent-sp/README.md` and `docs/requirements/STUDENT_IMPORT.md` before implementing any data import.
+Script cập nhật school, year, class, student, enrollment, subject, teacher,
+grade-subject, teaching assignment, assessment và attendance theo mã. Các bảng dữ liệu
+này được migration `0016_full_academic_seed` quản lý. Chỉ dùng dữ liệu tổng hợp trong
+môi trường local/isolated.
 
-## Git status
+Tạo tài khoản quản trị local với migrator DSN và mật khẩu truyền qua biến môi trường:
 
-Files are prepared in this starter ZIP only. No claim of a Git commit, push, PR, merge or deployed system is made.
-
-
-## Unicode/UTF-8 assurance (v1.2)
-
-Canonical specification: `ai-agent-sp/standards/UNICODE_UTF8.md`.
-
-```bash
-python scripts/check_text_encoding.py
-python -m unittest discover -s tests/encoding -p 'test_*.py'
+```powershell
+$env:EDUOPS_TEST_MIGRATOR_DSN = "postgresql://eduops_migrator:<mật-khẩu>@127.0.0.1:<cổng>/eduops360"
+$env:EDUOPS_LOCAL_ADMIN_PASSWORD = "<mật-khẩu-local-mạnh>"
+python scripts/seed_local_school_admin.py
 ```
-
-The CSV sample intentionally includes the UTF-8 BOM for Windows Excel compatibility. Strict UTF-8 is required in source code and agent documentation. This is a governance prototype, not a production upload service.
-
-**Hướng dẫn giải thích chi tiết bằng tiếng Việt:** `docs/ROADMAP_VI.md`.

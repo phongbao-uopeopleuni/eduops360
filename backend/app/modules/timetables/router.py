@@ -34,13 +34,6 @@ from app.modules.timetables.schemas import (
     TimetableJobRead,
     TimetableVersionRead,
 )
-from app.modules.timetables.solver import (
-    AvailableSlot,
-    Snapshot,
-    SolverStatus,
-    TeachingAssignment,
-    solve_timetable,
-)
 
 router = APIRouter(prefix="/admin/timetables", tags=["Timetables"])
 
@@ -87,6 +80,14 @@ async def create_timetable_job(
     ctx: WriteGuard,
     db: Db,
 ):
+    from app.modules.timetables.solver import (
+        AvailableSlot,
+        Snapshot,
+        SolverStatus,
+        TeachingAssignment,
+        solve_timetable,
+    )
+
     scope = Scope(
         school_id=body.school_id,
         academic_year_id=body.academic_year_id,
