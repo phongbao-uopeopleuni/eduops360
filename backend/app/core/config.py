@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import SecretStr, field_validator
+from pydantic import SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
@@ -23,6 +23,15 @@ class Settings(BaseSettings):
     login_rate_limit_window_seconds: int = 60
     # TẠM pending Security Owner: authenticated inactivity before session expiry.
     session_idle_timeout_minutes: int = 30
+
+    @model_validator(mode="after")
+    def default_local_cookies_for_http(self):
+        if (
+            self.environment in {"local", "test"}
+            and "session_cookie_secure" not in self.model_fields_set
+        ):
+            object.__setattr__(self, "session_cookie_secure", False)
+        return self
 
     @field_validator("cors_origins")
     @classmethod
